@@ -1,0 +1,2092 @@
+/* =========================================================
+   SKILLMATCH
+   A GARDEN TO LEARN, WORK & GROW
+   Botanical Olive + Gold UI
+   ========================================================= */
+
+
+/* =========================================================
+   ROOT
+   ========================================================= */
+
+:root {
+
+    --olive-deep: #26351B;
+    --olive-dark: #34451F;
+    --olive: #536B32;
+    --olive-soft: #778653;
+
+    --gold-deep: #987536;
+    --gold: #C6A15B;
+    --gold-light: #DFC98E;
+
+    --ivory: #F7F2E5;
+    --cream: #FCF9F0;
+    --paper: #FFFDF8;
+
+    --sage: #E1E7D4;
+    --sage-dark: #C8D1B3;
+
+    --brown: #3B3023;
+    --muted: #766B5B;
+
+    --line: rgba(83, 107, 50, 0.18);
+    --gold-line: rgba(198, 161, 91, 0.38);
+
+    --shadow:
+        0 20px 50px rgba(38, 53, 27, 0.10);
+
+    --radius: 18px;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--cream);
+    color: var(--brown);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BOTANICAL TEXTURE
+   ========================================================= */
+
+.botanical-bg {
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(198, 161, 91, .12),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(83, 107, 50, .10),
+            transparent 28%
+        ),
+        var(--ivory);
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+
+    border-bottom: 1px solid var(--gold-line);
+
+    background: rgba(247, 242, 229, .82);
+    backdrop-filter: blur(12px);
+}
+
+.nav-container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 19px 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 32px;
+    font-weight: 600;
+
+    color: var(--olive-deep);
+}
+
+.logo span span {
+    color: var(--gold-deep);
+}
+
+.logo-leaf {
+    color: var(--gold);
+    font-size: 30px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-links a {
+    font-size: 12px;
+    color: var(--olive-dark);
+    transition: .3s;
+}
+
+.nav-links a:hover {
+    color: var(--gold-deep);
+}
+
+.nav-login {
+    padding: 10px 22px;
+    border: 1px solid var(--gold);
+    border-radius: 30px;
+}
+
+.nav-login:hover {
+    background: var(--olive-deep);
+    color: var(--gold-light) !important;
+}
+
+
+/* =========================================================
+   BOTANICAL DECORATIONS
+   ========================================================= */
+
+.branch-decoration {
+    position: absolute;
+    pointer-events: none;
+    color: var(--olive);
+    opacity: .18;
+    z-index: 1;
+}
+
+.branch-left {
+    left: -70px;
+    bottom: -30px;
+    font-size: 280px;
+    transform: rotate(20deg);
+}
+
+.branch-right {
+    right: -70px;
+    top: 80px;
+    font-size: 270px;
+    transform: rotate(-25deg);
+}
+
+.flower-decoration {
+    position: absolute;
+    color: var(--gold);
+    font-family: "Cormorant Garamond", serif;
+    opacity: .5;
+    pointer-events: none;
+}
+
+.flower-one {
+    top: 18%;
+    left: 7%;
+    font-size: 45px;
+    transform: rotate(-15deg);
+}
+
+.flower-two {
+    right: 8%;
+    bottom: 20%;
+    font-size: 55px;
+    color: var(--olive);
+    transform: rotate(20deg);
+}
+
+.flower-three {
+    left: 35%;
+    bottom: 8%;
+    font-size: 35px;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    min-height: 850px;
+    padding: 155px 8% 100px;
+
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 70px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 15% 30%,
+            rgba(198,161,91,.18),
+            transparent 26%
+        ),
+        radial-gradient(
+            circle at 90% 75%,
+            rgba(83,107,50,.12),
+            transparent 30%
+        ),
+        var(--ivory);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 5;
+    max-width: 650px;
+}
+
+.hero-kicker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 25px;
+
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+
+    color: var(--gold-deep);
+}
+
+.hero-kicker span {
+    color: var(--gold);
+}
+
+.hero h1 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(60px, 7vw, 92px);
+    line-height: .86;
+    font-weight: 500;
+    letter-spacing: -3px;
+
+    color: var(--olive-deep);
+}
+
+.script {
+    display: block;
+
+    font-family: "Italianno", cursive;
+    font-size: 1.35em;
+    font-weight: 400;
+
+    color: var(--gold-deep);
+    letter-spacing: 0;
+}
+
+.hero-description {
+    max-width: 570px;
+    margin: 35px 0;
+
+    font-size: 15px;
+    line-height: 1.9;
+
+    color: var(--muted);
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.gold-button,
+.outline-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+
+    padding: 14px 25px;
+
+    font-size: 12px;
+    letter-spacing: 1px;
+
+    transition: .3s;
+}
+
+.gold-button {
+    background: var(--olive-deep);
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+}
+
+.gold-button:hover {
+    background: var(--gold);
+    color: var(--olive-deep);
+    transform: translateY(-3px);
+}
+
+.outline-button {
+    border: 1px solid var(--olive);
+    color: var(--olive-deep);
+}
+
+.outline-button:hover {
+    background: var(--olive);
+    color: var(--ivory);
+}
+
+.hero-quote {
+    margin-top: 42px;
+    padding-left: 18px;
+
+    border-left: 1px solid var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+    font-style: italic;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   HERO MATCH CARD
+   ========================================================= */
+
+.hero-visual {
+    position: relative;
+    z-index: 5;
+
+    min-height: 500px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gold-orbit {
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border: 1px solid var(--gold-line);
+    border-radius: 50%;
+}
+
+.gold-orbit::before {
+    content: "";
+
+    position: absolute;
+    inset: 35px;
+
+    border: 1px dashed var(--line);
+    border-radius: 50%;
+}
+
+.match-card {
+    width: 410px;
+    padding: 32px;
+
+    position: relative;
+
+    background: rgba(255,253,248,.95);
+
+    border: 1px solid var(--gold);
+
+    box-shadow: var(--shadow);
+
+    transform: rotate(1deg);
+}
+
+.match-card::before {
+    content: "";
+
+    position: absolute;
+    inset: 10px;
+
+    border: 1px solid rgba(198,161,91,.18);
+
+    pointer-events: none;
+}
+
+.card-top {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.mini-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 9px;
+    letter-spacing: 3px;
+    font-weight: 700;
+
+    color: var(--gold-deep);
+}
+
+.card-top h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 31px;
+
+    color: var(--olive-deep);
+}
+
+.card-leaf {
+    font-size: 42px;
+    color: var(--gold);
+}
+
+.score-container {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+
+    margin: 35px 0;
+}
+
+.score-circle {
+    width: 115px;
+    height: 115px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            var(--paper) 57%,
+            transparent 58%
+        ),
+        conic-gradient(
+            var(--gold) 88%,
+            #E8E3D4 0
+        );
+
+    font-family: "Cormorant Garamond", serif;
+
+    color: var(--olive-deep);
+}
+
+.score-circle span {
+    font-size: 38px;
+}
+
+.score-circle small {
+    font-size: 15px;
+}
+
+.score-container strong {
+    display: block;
+    margin-bottom: 5px;
+
+    color: var(--olive-deep);
+}
+
+.score-container p {
+    max-width: 180px;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    color: var(--muted);
+}
+
+.match-line {
+    height: 1px;
+    background: var(--gold-line);
+}
+
+.skills-title {
+    margin: 22px 0 12px;
+
+    font-size: 9px;
+    letter-spacing: 3px;
+    font-weight: 700;
+
+    color: var(--gold-deep);
+}
+
+.skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.skill-list span {
+    padding: 6px 11px;
+
+    background: var(--sage);
+
+    border: 1px solid rgba(83,107,50,.15);
+
+    font-size: 11px;
+    color: var(--olive-dark);
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 24px;
+    padding-top: 16px;
+
+    border-top: 1px solid var(--line);
+
+    font-size: 10px;
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   FLOATING CARDS
+   ========================================================= */
+
+.floating-info {
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 16px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--gold-line);
+
+    box-shadow: var(--shadow);
+
+    z-index: 10;
+}
+
+.floating-one {
+    left: -35px;
+    bottom: 55px;
+}
+
+.floating-two {
+    right: -30px;
+    top: 70px;
+}
+
+.info-icon {
+    font-size: 23px;
+    color: var(--gold);
+}
+
+.floating-info small {
+    display: block;
+
+    font-size: 8px;
+    letter-spacing: 2px;
+
+    color: var(--muted);
+}
+
+.floating-info strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 20px;
+
+    color: var(--olive-deep);
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.botanical-divider {
+    height: 100px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    color: var(--gold);
+    font-size: 22px;
+
+    background: var(--cream);
+}
+
+.botanical-divider::before,
+.botanical-divider::after {
+    content: "";
+
+    width: 120px;
+    height: 1px;
+
+    background: var(--gold-line);
+}
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+.section {
+    position: relative;
+
+    padding: 110px 8%;
+
+    overflow: hidden;
+}
+
+.section-cream {
+    background: var(--cream);
+}
+
+.section-ivory {
+    background: var(--ivory);
+}
+
+.section-dark {
+    background: var(--olive-deep);
+    color: var(--ivory);
+}
+
+.section-heading {
+    max-width: 700px;
+    margin: 0 auto 65px;
+
+    text-align: center;
+}
+
+.section-label {
+    display: block;
+
+    margin-bottom: 14px;
+
+    font-size: 9px;
+    letter-spacing: 4px;
+    font-weight: 700;
+
+    color: var(--gold-deep);
+}
+
+.section-heading h2 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 56px;
+    line-height: .95;
+    font-weight: 500;
+
+    color: var(--olive-deep);
+}
+
+.section-dark .section-heading h2 {
+    color: var(--ivory);
+}
+
+.section-heading em {
+    font-family: "Italianno", cursive;
+
+    font-size: 1.35em;
+    font-weight: 400;
+
+    color: var(--gold-deep);
+}
+
+.section-heading p {
+    max-width: 600px;
+    margin: 20px auto 0;
+
+    font-size: 14px;
+    line-height: 1.8;
+
+    color: var(--muted);
+}
+
+.section-dark .section-heading p {
+    color: rgba(247,242,229,.65);
+}
+
+
+/* =========================================================
+   GROWTH PATH
+   ========================================================= */
+
+.growth-path {
+    max-width: 1050px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.growth-item {
+    width: 280px;
+
+    text-align: center;
+}
+
+.growth-icon {
+    width: 72px;
+    height: 72px;
+
+    margin: auto auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+
+    background: var(--paper);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 25px;
+
+    color: var(--gold-deep);
+}
+
+.growth-item h3 {
+    margin-bottom: 10px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 28px;
+
+    color: var(--olive-deep);
+}
+
+.growth-item p {
+    font-size: 13px;
+    line-height: 1.7;
+
+    color: var(--muted);
+}
+
+.growth-line {
+    width: 100px;
+    height: 1px;
+
+    background: var(--gold-line);
+}
+
+
+/* =========================================================
+   JOURNEY
+   ========================================================= */
+
+.journey {
+    max-width: 1050px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+}
+
+.journey-card {
+    width: 270px;
+
+    padding: 35px 25px;
+
+    text-align: center;
+
+    border: 1px solid var(--gold-line);
+
+    background: rgba(247,242,229,.035);
+}
+
+.journey-number {
+    color: var(--gold);
+    font-family: "Cormorant Garamond", serif;
+}
+
+.journey-symbol {
+    margin: 16px 0;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 42px;
+
+    color: var(--gold);
+}
+
+.journey-card h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 31px;
+
+    color: var(--gold-light);
+}
+
+.journey-card p {
+    margin-top: 10px;
+
+    font-size: 13px;
+    line-height: 1.7;
+
+    color: rgba(247,242,229,.6);
+}
+
+.journey-connector {
+    color: var(--gold);
+    opacity: .6;
+}
+
+
+/* =========================================================
+   FEATURE GRID
+   ========================================================= */
+
+.feature-grid {
+    max-width: 1050px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.feature-card {
+    position: relative;
+
+    min-height: 250px;
+
+    padding: 35px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--line);
+
+    overflow: hidden;
+
+    transition: .35s;
+}
+
+.feature-card:hover {
+    transform: translateY(-7px);
+
+    border-color: var(--gold);
+
+    box-shadow: var(--shadow);
+}
+
+.feature-flower {
+    position: absolute;
+
+    top: 5px;
+    right: 20px;
+
+    font-size: 70px;
+
+    color: var(--gold);
+
+    opacity: .13;
+}
+
+.feature-number {
+    font-size: 10px;
+    letter-spacing: 3px;
+
+    color: var(--gold-deep);
+}
+
+.feature-card h3 {
+    margin: 20px 0 10px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 31px;
+
+    color: var(--olive-deep);
+}
+
+.feature-card p {
+    max-width: 420px;
+
+    font-size: 13px;
+    line-height: 1.8;
+
+    color: var(--muted);
+}
+
+.feature-card a {
+    display: inline-block;
+
+    margin-top: 20px;
+
+    font-size: 11px;
+    letter-spacing: 1px;
+
+    color: var(--gold-deep);
+}
+
+
+/* =========================================================
+   FINAL CTA
+   ========================================================= */
+
+.final-section {
+    position: relative;
+
+    min-height: 600px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    background: var(--ivory);
+}
+
+.final-content {
+    position: relative;
+    z-index: 5;
+
+    max-width: 700px;
+}
+
+.final-content h2 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 70px;
+    line-height: .9;
+    font-weight: 500;
+
+    color: var(--olive-deep);
+}
+
+.final-content em {
+    font-family: "Italianno", cursive;
+    font-size: 1.35em;
+
+    color: var(--gold-deep);
+}
+
+.final-content p {
+    margin: 25px 0 30px;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.app-body {
+    min-height: 100vh;
+    background: var(--cream);
+}
+
+.app-layout {
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns: 240px 1fr;
+}
+
+
+/* SIDEBAR */
+
+.sidebar {
+    position: fixed;
+
+    width: 240px;
+    height: 100vh;
+
+    padding: 30px 20px;
+
+    background: var(--olive-deep);
+
+    color: var(--ivory);
+
+    overflow-y: auto;
+}
+
+.sidebar-logo {
+    padding: 0 10px 30px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+
+    border-bottom: 1px solid rgba(198,161,91,.2);
+}
+
+.sidebar-logo span {
+    color: var(--gold);
+}
+
+.sidebar-caption {
+    margin: 28px 10px 12px;
+
+    font-size: 8px;
+    letter-spacing: 3px;
+
+    color: var(--gold-light);
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 11px 12px;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+
+    color: rgba(247,242,229,.68);
+
+    transition: .3s;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+    background: rgba(198,161,91,.12);
+
+    color: var(--gold-light);
+}
+
+.sidebar-nav .nav-icon {
+    width: 22px;
+
+    color: var(--gold);
+}
+
+.sidebar-bottom {
+    margin-top: 40px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(198,161,91,.2);
+}
+
+
+/* MAIN APP */
+
+.app-main {
+    grid-column: 2;
+
+    padding: 45px;
+
+    background:
+        radial-gradient(
+            circle at 80% 10%,
+            rgba(198,161,91,.09),
+            transparent 20%
+        ),
+        var(--cream);
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 45px;
+}
+
+.app-welcome small {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 9px;
+    letter-spacing: 3px;
+
+    color: var(--gold-deep);
+}
+
+.app-welcome h1 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 44px;
+    font-weight: 500;
+
+    color: var(--olive-deep);
+}
+
+.app-welcome h1 em {
+    font-family: "Italianno", cursive;
+
+    font-size: 1.25em;
+
+    color: var(--gold-deep);
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border: 1px solid var(--gold);
+
+    background: var(--sage);
+
+    color: var(--olive-deep);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 21px;
+}
+
+
+/* DASHBOARD GRID */
+
+.dashboard-grid {
+    display: grid;
+
+    grid-template-columns: repeat(12, 1fr);
+
+    gap: 22px;
+}
+
+.dashboard-card {
+    padding: 25px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--line);
+
+    box-shadow: 0 8px 30px rgba(38,53,27,.04);
+}
+
+.dashboard-card h3 {
+    margin-bottom: 5px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 25px;
+
+    color: var(--olive-deep);
+}
+
+.dashboard-card p {
+    font-size: 12px;
+
+    color: var(--muted);
+}
+
+.stat-card {
+    grid-column: span 4;
+}
+
+.stat-number {
+    margin-top: 15px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 42px;
+
+    color: var(--gold-deep);
+}
+
+.stat-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    color: var(--muted);
+}
+
+
+/* PROJECT CARD */
+
+.project-card {
+    grid-column: span 7;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.match-badge {
+    padding: 7px 12px;
+
+    background: var(--sage);
+
+    color: var(--olive-deep);
+
+    font-size: 10px;
+}
+
+.project-card h2 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 31px;
+
+    color: var(--olive-deep);
+}
+
+.project-card .project-domain {
+    margin: 5px 0 20px;
+
+    font-size: 10px;
+    letter-spacing: 2px;
+
+    color: var(--gold-deep);
+}
+
+
+/* GROWTH CARD */
+
+.growth-card {
+    grid-column: span 5;
+}
+
+.progress-row {
+    margin-top: 20px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 6px;
+
+    font-size: 10px;
+
+    color: var(--muted);
+}
+
+.progress-bar {
+    height: 5px;
+
+    background: var(--sage);
+}
+
+.progress-fill {
+    height: 100%;
+
+    background: var(--gold);
+
+    width: 80%;
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.profile-grid {
+    max-width: 1000px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: 280px 1fr;
+
+    gap: 25px;
+}
+
+.profile-card {
+    padding: 35px;
+
+    text-align: center;
+
+    background: var(--paper);
+
+    border: 1px solid var(--line);
+}
+
+.profile-avatar {
+    width: 95px;
+    height: 95px;
+
+    margin: auto auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--sage);
+
+    border: 1px solid var(--gold);
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 38px;
+
+    color: var(--olive-deep);
+}
+
+.profile-card h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 29px;
+
+    color: var(--olive-deep);
+}
+
+.profile-card p {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.profile-details {
+    padding: 35px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--line);
+}
+
+.profile-details h2 {
+    margin-bottom: 25px;
+
+    font-family: "Cormorant Garamond", serif;
+    font-size: 31px;
+
+    color: var(--olive-deep);
+}
+
+.skill-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-pill {
+    padding: 8px 13px;
+
+    border: 1px solid var(--gold-line);
+
+    background: var(--ivory);
+
+    font-size: 11px;
+
+    color: var(--olive-dark);
+}
+
+
+/* =========================================================
+   PROJECTS
+   ========================================================= */
+
+.projects-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+.project-tile {
+    padding: 28px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--line);
+
+    transition: .3s;
+}
+
+.project-tile:hover {
+    transform: translateY(-6px);
+
+    border-color: var(--gold);
+
+    box-shadow: var(--shadow);
+}
+
+.project-flower {
+    margin-bottom: 15px;
+
+    font-size: 30px;
+
+    color: var(--gold);
+}
+
+.project-tile h2 {
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 27px;
+
+    color: var(--olive-deep);
+}
+
+.project-tile p {
+    margin: 8px 0 18px;
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    color: var(--muted);
+}
+
+.project-match {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-top: 15px;
+
+    border-top: 1px solid var(--line);
+}
+
+.project-match strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 24px;
+
+    color: var(--gold-deep);
+}
+
+
+/* =========================================================
+   TEAM TREE
+   ========================================================= */
+
+.team-tree {
+    max-width: 850px;
+
+    margin: auto;
+
+    min-height: 500px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tree-trunk {
+    width: 12px;
+    height: 350px;
+
+    background: var(--olive);
+
+    position: absolute;
+
+    bottom: 40px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+.tree-branch-line {
+    position: absolute;
+
+    width: 260px;
+    height: 2px;
+
+    background: var(--gold);
+
+    left: 50%;
+    top: 48%;
+
+    transform: translateX(-50%);
+}
+
+.member-node {
+    position: absolute;
+
+    width: 125px;
+    height: 125px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--paper);
+
+    border: 1px solid var(--gold);
+
+    border-radius: 50%;
+
+    box-shadow: var(--shadow);
+
+    text-align: center;
+}
+
+.member-node strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+
+    color: var(--olive-deep);
+}
+
+.member-node small {
+    font-size: 9px;
+
+    color: var(--muted);
+}
+
+.member-one {
+    left: 4%;
+    top: 15%;
+}
+
+.member-two {
+    right: 4%;
+    top: 15%;
+}
+
+.member-three {
+    left: 18%;
+    bottom: 15%;
+}
+
+.member-four {
+    right: 18%;
+    bottom: 15%;
+}
+
+.team-center {
+    position: relative;
+    z-index: 5;
+
+    width: 155px;
+    height: 155px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--olive-deep);
+
+    border: 2px solid var(--gold);
+
+    color: var(--gold-light);
+
+    text-align: center;
+}
+
+.team-center strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+}
+
+
+/* =========================================================
+   SKILL GAP
+   ========================================================= */
+
+.gap-list {
+    max-width: 850px;
+    margin: auto;
+}
+
+.gap-item {
+    margin-bottom: 25px;
+
+    padding: 22px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--line);
+}
+
+.gap-header {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+.gap-header strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+
+    color: var(--olive-deep);
+}
+
+.gap-status {
+    font-size: 9px;
+    letter-spacing: 2px;
+
+    color: var(--gold-deep);
+}
+
+.gap-bar {
+    height: 8px;
+
+    background: var(--sage);
+}
+
+.gap-current {
+    height: 100%;
+
+    background: var(--olive);
+
+    width: 60%;
+}
+
+.gap-required {
+    margin-top: 8px;
+
+    font-size: 10px;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+.login-page {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 15% 50%,
+            rgba(198,161,91,.14),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(83,107,50,.12),
+            transparent 30%
+        ),
+        var(--ivory);
+}
+
+.login-container {
+    min-height: 100vh;
+
+    padding: 145px 8% 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.login-card {
+    width: 450px;
+
+    padding: 50px 45px;
+
+    position: relative;
+    z-index: 5;
+
+    background: rgba(255,253,248,.96);
+
+    border: 1px solid var(--gold);
+
+    box-shadow: var(--shadow);
+}
+
+.login-heading {
+    text-align: center;
+
+    margin-bottom: 35px;
+}
+
+.login-heading small {
+    font-size: 9px;
+    letter-spacing: 4px;
+
+    color: var(--gold-deep);
+}
+
+.login-heading h1 {
+    margin-top: 12px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 52px;
+    line-height: .9;
+    font-weight: 500;
+
+    color: var(--olive-deep);
+}
+
+.login-heading h1 em {
+    font-family: "Italianno", cursive;
+
+    font-size: 1.3em;
+
+    color: var(--gold-deep);
+}
+
+.login-heading p {
+    margin-top: 18px;
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    color: var(--muted);
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    color: var(--olive-deep);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px;
+
+    border-bottom: 1px solid var(--gold);
+
+    background: rgba(245,240,223,.4);
+}
+
+.input-wrapper span {
+    color: var(--gold-deep);
+}
+
+.input-wrapper input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-size: 13px;
+
+    color: var(--olive-deep);
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+
+    margin: 15px 0 25px;
+
+    font-size: 10px;
+
+    color: var(--muted);
+}
+
+.login-options a {
+    color: var(--gold-deep);
+}
+
+.login-button {
+    width: 100%;
+
+    padding: 15px;
+
+    border: 1px solid var(--gold);
+
+    background: var(--olive-deep);
+
+    color: var(--gold-light);
+
+    font-size: 12px;
+    letter-spacing: 1px;
+
+    transition: .3s;
+}
+
+.login-button:hover {
+    background: var(--gold);
+    color: var(--olive-deep);
+}
+
+.register-text {
+    margin-top: 25px;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    color: var(--muted);
+}
+
+.register-text a {
+    color: var(--gold-deep);
+    font-weight: 600;
+}
+
+.login-motto {
+    margin-top: 35px;
+
+    text-align: center;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-style: italic;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+    padding: 55px 8% 25px;
+
+    text-align: center;
+
+    background: var(--olive-deep);
+
+    color: var(--ivory);
+}
+
+.footer-branch {
+    margin-bottom: 25px;
+
+    color: var(--gold);
+
+    opacity: .6;
+}
+
+.footer-logo {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 34px;
+}
+
+.footer-logo span {
+    color: var(--gold);
+}
+
+.footer-content p {
+    margin: 7px 0 25px;
+
+    font-size: 11px;
+
+    color: rgba(247,242,229,.55);
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.footer-links a {
+    font-size: 11px;
+
+    color: rgba(247,242,229,.65);
+}
+
+.footer-links a:hover {
+    color: var(--gold);
+}
+
+.copyright {
+    margin-top: 30px;
+    padding-top: 18px;
+
+    border-top: 1px solid rgba(198,161,91,.15);
+
+    font-size: 9px;
+
+    color: rgba(247,242,229,.35);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width: 1000px) {
+
+    .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-content {
+        margin: auto;
+    }
+
+    .hero-description {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .hero-quote {
+        text-align: left;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .growth-path,
+    .journey {
+        flex-direction: column;
+    }
+
+    .growth-line {
+        width: 1px;
+        height: 50px;
+    }
+
+    .journey-connector {
+        transform: rotate(90deg);
+    }
+
+    .app-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .app-main {
+        grid-column: 1;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .stat-card,
+    .project-card,
+    .growth-card {
+        grid-column: span 12;
+    }
+
+    .projects-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media(max-width: 650px) {
+
+    .nav-container {
+        padding: 18px 20px;
+    }
+
+    .nav-links a:not(.nav-login) {
+        display: none;
+    }
+
+    .hero {
+        padding: 140px 20px 70px;
+    }
+
+    .hero h1 {
+        font-size: 57px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .gold-button,
+    .outline-button {
+        width: 100%;
+    }
+
+    .match-card {
+        width: 100%;
+    }
+
+    .floating-one {
+        left: -8px;
+    }
+
+    .floating-two {
+        right: -8px;
+    }
+
+    .section {
+        padding: 80px 20px;
+    }
+
+    .section-heading h2 {
+        font-size: 45px;
+    }
+
+    .feature-grid,
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .app-main {
+        padding: 25px 18px;
+    }
+
+    .dashboard-grid {
+        display: block;
+    }
+
+    .dashboard-card {
+        margin-bottom: 18px;
+    }
+
+    .login-container {
+        padding: 120px 20px 50px;
+    }
+
+    .login-card {
+        width: 100%;
+        padding: 40px 25px;
+    }
+
+    .login-heading h1 {
+        font-size: 44px;
+    }
+
+    .team-tree {
+        transform: scale(.75);
+    }
+}
