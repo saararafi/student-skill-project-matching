@@ -1,25 +1,25 @@
 const express = require("express");
 
-const studentRoutes = require("./routes/studentRoutes");
-const projectRoutes = require("./routes/projectRoutes");
-const skillRoutes = require("./routes/skillRoutes");
-const matchingRoutes = require("./routes/matchingRoutes");
-
 const app = express();
 
 app.use(express.json());
 
+const studentRoutes = require("./routes/studentRoutes");
+const skillRoutes = require("./routes/skillroutes");
+const projectRoutes = require("./routes/projectroutes");
+const matchingRoutes = require("./routes/matchingroutes");
+const errorHandler = require("./middleware/errorHandler");
+
 app.use("/student", studentRoutes);
-app.use("/project", projectRoutes);
 app.use("/skill", skillRoutes);
+app.use("/project", projectRoutes);
 app.use("/match", matchingRoutes);
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
-    res.send("Student Skill & Project Matching Backend is running!");
+    res.send("Student Skill Project Backend is running!");
 });
 
-const PORT = 5000;
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(5000, () => {
+    console.log("Server running on http://localhost:5000");
 });

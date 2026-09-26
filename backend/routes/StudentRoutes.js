@@ -1,6 +1,6 @@
 const express = require("express");
-
 const router = express.Router();
+const validateStudent = require("../middleware/validation");
 
 // Temporary student data
 // This will later be replaced with your friend's database.
@@ -41,7 +41,7 @@ router.get("/:id", (req, res) => {
 // POST /student
 // ==========================================
 
-router.post("/", (req, res) => {
+router.post("/", validateStudent, (req, res) => {
 
     const student = {
         id: students.length + 1,
@@ -117,5 +117,40 @@ router.delete("/:id", (req, res) => {
 // ==========================================
 // EXPORT ROUTER
 // ==========================================
+
+router.put("/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const student = students.find(s => s.id === id);
+
+    if (!student) {
+        return res.status(404).json({
+            message: "Student not found"
+        });
+    }
+
+    student.name = req.body.name;
+    student.email = req.body.email;
+    student.skills = req.body.skills;
+
+    res.json(student);
+});
+router.delete("/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const studentIndex = students.findIndex(s => s.id === id);
+
+    if (studentIndex === -1) {
+        return res.status(404).json({
+            message: "Student not found"
+        });
+    }
+
+    students.splice(studentIndex, 1);
+
+    res.json({
+        message: "Student deleted successfully"
+    });
+});
 
 module.exports = router;
