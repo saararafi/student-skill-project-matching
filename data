@@ -1,0 +1,636 @@
+/* ============================================================
+   STUDENT SKILL AND PROJECT MATCHING SYSTEM
+   Database: MySQL
+   Final Database SQL File
+   ============================================================ */
+
+
+/* ============================================================
+   1. CREATE DATABASE
+   ============================================================ */
+
+CREATE DATABASE IF NOT EXISTS student_skill_matching;
+
+USE student_skill_matching;
+
+
+/* ============================================================
+   2. USERS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('STUDENT', 'FACULTY', 'ADMIN') NOT NULL
+);
+
+
+/* ============================================================
+   3. STUDENTS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    department VARCHAR(100) NOT NULL,
+    year INT NOT NULL,
+    experience TEXT,
+    preferred_domain VARCHAR(100),
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+);
+
+
+/* ============================================================
+   4. FACULTY TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS faculty (
+    faculty_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    department VARCHAR(100) NOT NULL,
+    designation VARCHAR(100) NOT NULL,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+);
+
+
+/* ============================================================
+   5. SKILLS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS skills (
+    skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(100) NOT NULL UNIQUE,
+    category VARCHAR(100)
+);
+
+
+/* ============================================================
+   6. STUDENT_SKILLS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS student_skills (
+    student_skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    proficiency_level INT NOT NULL,
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id),
+
+    FOREIGN KEY (skill_id)
+        REFERENCES skills(skill_id)
+);
+
+
+/* ============================================================
+   7. PROJECTS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS projects (
+    project_id INT AUTO_INCREMENT PRIMARY KEY,
+    faculty_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    domain VARCHAR(100),
+    team_size INT,
+    status VARCHAR(30) DEFAULT 'OPEN',
+
+    FOREIGN KEY (faculty_id)
+        REFERENCES faculty(faculty_id)
+);
+
+
+/* ============================================================
+   8. PROJECT_SKILLS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS project_skills (
+    project_skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    required_proficiency INT NOT NULL,
+    importance_level INT DEFAULT 1,
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(project_id),
+
+    FOREIGN KEY (skill_id)
+        REFERENCES skills(skill_id)
+);
+
+
+/* ============================================================
+   9. APPLICATIONS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS applications (
+    application_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    project_id INT NOT NULL,
+    application_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(30) DEFAULT 'PENDING',
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id),
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(project_id)
+);
+
+
+/* ============================================================
+   10. TEAMS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS teams (
+    team_id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    team_name VARCHAR(100),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(30) DEFAULT 'ACTIVE',
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(project_id)
+);
+
+
+/* ============================================================
+   11. TEAM_MEMBERS TABLE
+   ============================================================ */
+
+CREATE TABLE IF NOT EXISTS team_members (
+    team_member_id INT AUTO_INCREMENT PRIMARY KEY,
+    team_id INT NOT NULL,
+    student_id INT NOT NULL,
+    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    member_role VARCHAR(50),
+
+    FOREIGN KEY (team_id)
+        REFERENCES teams(team_id),
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id)
+);
+
+
+/* ============================================================
+   12. SAMPLE USERS
+   ============================================================ */
+
+INSERT INTO users (name, email, password, role)
+SELECT 'Arun Kumar', 'arun@gmail.com', '123456', 'STUDENT'
+WHERE NOT EXISTS (
+    SELECT 1 FROM users WHERE email = 'arun@gmail.com'
+);
+
+INSERT INTO users (name, email, password, role)
+SELECT 'Rahul Sharma', 'rahul@gmail.com', '123456', 'STUDENT'
+WHERE NOT EXISTS (
+    SELECT 1 FROM users WHERE email = 'rahul@gmail.com'
+);
+
+INSERT INTO users (name, email, password, role)
+SELECT 'Dr. Meena Rao', 'meena@college.com', '123456', 'FACULTY'
+WHERE NOT EXISTS (
+    SELECT 1 FROM users WHERE email = 'meena@college.com'
+);
+
+
+/* ============================================================
+   13. SAMPLE STUDENTS
+   ============================================================ */
+
+INSERT INTO students
+(user_id, department, year, experience, preferred_domain)
+SELECT user_id, 'Computer Science', 3,
+       'Web development', 'Web Development'
+FROM users
+WHERE email = 'arun@gmail.com'
+AND NOT EXISTS (
+    SELECT 1 FROM students st
+    WHERE st.user_id = users.user_id
+);
+
+
+INSERT INTO students
+(user_id, department, year, experience, preferred_domain)
+SELECT user_id, 'Information Technology', 3,
+       'Python programming', 'Data Science'
+FROM users
+WHERE email = 'rahul@gmail.com'
+AND NOT EXISTS (
+    SELECT 1 FROM students st
+    WHERE st.user_id = users.user_id
+);
+
+
+/* ============================================================
+   14. SAMPLE FACULTY
+   ============================================================ */
+
+INSERT INTO faculty
+(user_id, department, designation)
+SELECT user_id, 'Computer Science', 'Professor'
+FROM users
+WHERE email = 'meena@college.com'
+AND NOT EXISTS (
+    SELECT 1 FROM faculty f
+    WHERE f.user_id = users.user_id
+);
+
+
+/* ============================================================
+   15. SAMPLE SKILLS
+   ============================================================ */
+
+INSERT INTO skills (skill_name, category)
+SELECT 'Python', 'Programming'
+WHERE NOT EXISTS (
+    SELECT 1 FROM skills WHERE skill_name = 'Python'
+);
+
+INSERT INTO skills (skill_name, category)
+SELECT 'Java', 'Programming'
+WHERE NOT EXISTS (
+    SELECT 1 FROM skills WHERE skill_name = 'Java'
+);
+
+INSERT INTO skills (skill_name, category)
+SELECT 'SQL', 'Database'
+WHERE NOT EXISTS (
+    SELECT 1 FROM skills WHERE skill_name = 'SQL'
+);
+
+INSERT INTO skills (skill_name, category)
+SELECT 'HTML', 'Web Development'
+WHERE NOT EXISTS (
+    SELECT 1 FROM skills WHERE skill_name = 'HTML'
+);
+
+INSERT INTO skills (skill_name, category)
+SELECT 'CSS', 'Web Development'
+WHERE NOT EXISTS (
+    SELECT 1 FROM skills WHERE skill_name = 'CSS'
+);
+
+INSERT INTO skills (skill_name, category)
+SELECT 'Machine Learning', 'Data Science'
+WHERE NOT EXISTS (
+    SELECT 1 FROM skills WHERE skill_name = 'Machine Learning'
+);
+
+
+/* ============================================================
+   16. SAMPLE STUDENT SKILLS
+   ============================================================ */
+
+INSERT INTO student_skills
+(student_id, skill_id, proficiency_level)
+SELECT st.student_id, sk.skill_id, 4
+FROM students st
+JOIN users u ON st.user_id = u.user_id
+JOIN skills sk ON sk.skill_name = 'Python'
+WHERE u.email = 'arun@gmail.com'
+AND NOT EXISTS (
+    SELECT 1
+    FROM student_skills ss
+    WHERE ss.student_id = st.student_id
+      AND ss.skill_id = sk.skill_id
+);
+
+
+INSERT INTO student_skills
+(student_id, skill_id, proficiency_level)
+SELECT st.student_id, sk.skill_id, 4
+FROM students st
+JOIN users u ON st.user_id = u.user_id
+JOIN skills sk ON sk.skill_name = 'SQL'
+WHERE u.email = 'arun@gmail.com'
+AND NOT EXISTS (
+    SELECT 1
+    FROM student_skills ss
+    WHERE ss.student_id = st.student_id
+      AND ss.skill_id = sk.skill_id
+);
+
+
+INSERT INTO student_skills
+(student_id, skill_id, proficiency_level)
+SELECT st.student_id, sk.skill_id, 5
+FROM students st
+JOIN users u ON st.user_id = u.user_id
+JOIN skills sk ON sk.skill_name = 'HTML'
+WHERE u.email = 'arun@gmail.com'
+AND NOT EXISTS (
+    SELECT 1
+    FROM student_skills ss
+    WHERE ss.student_id = st.student_id
+      AND ss.skill_id = sk.skill_id
+);
+
+
+INSERT INTO student_skills
+(student_id, skill_id, proficiency_level)
+SELECT st.student_id, sk.skill_id, 4
+FROM students st
+JOIN users u ON st.user_id = u.user_id
+JOIN skills sk ON sk.skill_name = 'Java'
+WHERE u.email = 'rahul@gmail.com'
+AND NOT EXISTS (
+    SELECT 1
+    FROM student_skills ss
+    WHERE ss.student_id = st.student_id
+      AND ss.skill_id = sk.skill_id
+);
+
+
+INSERT INTO student_skills
+(student_id, skill_id, proficiency_level)
+SELECT st.student_id, sk.skill_id, 3
+FROM students st
+JOIN users u ON st.user_id = u.user_id
+JOIN skills sk ON sk.skill_name = 'SQL'
+WHERE u.email = 'rahul@gmail.com'
+AND NOT EXISTS (
+    SELECT 1
+    FROM student_skills ss
+    WHERE ss.student_id = st.student_id
+      AND ss.skill_id = sk.skill_id
+);
+
+
+/* ============================================================
+   17. SAMPLE PROJECTS
+   ============================================================ */
+
+INSERT INTO projects
+(faculty_id, title, description, domain, team_size, status)
+SELECT f.faculty_id,
+       'Smart Healthcare Platform',
+       'Web platform for managing healthcare information',
+       'Web Development',
+       4,
+       'OPEN'
+FROM faculty f
+JOIN users u ON f.user_id = u.user_id
+WHERE u.email = 'meena@college.com'
+AND NOT EXISTS (
+    SELECT 1 FROM projects p
+    WHERE p.title = 'Smart Healthcare Platform'
+);
+
+
+INSERT INTO projects
+(faculty_id, title, description, domain, team_size, status)
+SELECT f.faculty_id,
+       'Student Performance Prediction',
+       'Machine learning system to predict student performance',
+       'Machine Learning',
+       3,
+       'OPEN'
+FROM faculty f
+JOIN users u ON f.user_id = u.user_id
+WHERE u.email = 'meena@college.com'
+AND NOT EXISTS (
+    SELECT 1 FROM projects p
+    WHERE p.title = 'Student Performance Prediction'
+);
+
+
+/* ============================================================
+   18. SAMPLE PROJECT SKILLS
+   ============================================================ */
+
+INSERT INTO project_skills
+(project_id, skill_id, required_proficiency, importance_level)
+SELECT p.project_id, s.skill_id, 4, 1
+FROM projects p
+JOIN skills s ON s.skill_name = 'Python'
+WHERE p.title = 'Smart Healthcare Platform'
+AND NOT EXISTS (
+    SELECT 1 FROM project_skills ps
+    WHERE ps.project_id = p.project_id
+      AND ps.skill_id = s.skill_id
+);
+
+
+INSERT INTO project_skills
+(project_id, skill_id, required_proficiency, importance_level)
+SELECT p.project_id, s.skill_id, 3, 2
+FROM projects p
+JOIN skills s ON s.skill_name = 'SQL'
+WHERE p.title = 'Smart Healthcare Platform'
+AND NOT EXISTS (
+    SELECT 1 FROM project_skills ps
+    WHERE ps.project_id = p.project_id
+      AND ps.skill_id = s.skill_id
+);
+
+
+INSERT INTO project_skills
+(project_id, skill_id, required_proficiency, importance_level)
+SELECT p.project_id, s.skill_id, 4, 1
+FROM projects p
+JOIN skills s ON s.skill_name = 'HTML'
+WHERE p.title = 'Smart Healthcare Platform'
+AND NOT EXISTS (
+    SELECT 1 FROM project_skills ps
+    WHERE ps.project_id = p.project_id
+      AND ps.skill_id = s.skill_id
+);
+
+
+INSERT INTO project_skills
+(project_id, skill_id, required_proficiency, importance_level)
+SELECT p.project_id, s.skill_id, 4, 1
+FROM projects p
+JOIN skills s ON s.skill_name = 'Python'
+WHERE p.title = 'Student Performance Prediction'
+AND NOT EXISTS (
+    SELECT 1 FROM project_skills ps
+    WHERE ps.project_id = p.project_id
+      AND ps.skill_id = s.skill_id
+);
+
+
+INSERT INTO project_skills
+(project_id, skill_id, required_proficiency, importance_level)
+SELECT p.project_id, s.skill_id, 4, 1
+FROM projects p
+JOIN skills s ON s.skill_name = 'Machine Learning'
+WHERE p.title = 'Student Performance Prediction'
+AND NOT EXISTS (
+    SELECT 1 FROM project_skills ps
+    WHERE ps.project_id = p.project_id
+      AND ps.skill_id = s.skill_id
+);
+
+
+/* ============================================================
+   19. SAMPLE APPLICATION
+   ============================================================ */
+
+INSERT INTO applications
+(student_id, project_id, status)
+SELECT st.student_id, p.project_id, 'PENDING'
+FROM students st
+JOIN users u ON st.user_id = u.user_id
+JOIN projects p ON p.title = 'Smart Healthcare Platform'
+WHERE u.email = 'arun@gmail.com'
+AND NOT EXISTS (
+    SELECT 1
+    FROM applications a
+    WHERE a.student_id = st.student_id
+      AND a.project_id = p.project_id
+);
+
+
+/* ============================================================
+   20. SAMPLE TEAM
+   ============================================================ */
+
+INSERT INTO teams
+(project_id, team_name, status)
+SELECT project_id,
+       'Smart Healthcare Team',
+       'ACTIVE'
+FROM projects
+WHERE title = 'Smart Healthcare Platform'
+AND NOT EXISTS (
+    SELECT 1 FROM teams t
+    WHERE t.project_id = projects.project_id
+      AND t.team_name = 'Smart Healthcare Team'
+);
+
+
+/* ============================================================
+   21. SAMPLE TEAM MEMBERS
+   ============================================================ */
+
+INSERT INTO team_members
+(team_id, student_id, member_role)
+SELECT t.team_id, st.student_id, 'Leader'
+FROM teams t
+JOIN projects p ON t.project_id = p.project_id
+JOIN students st ON st.user_id = (
+    SELECT user_id FROM users
+    WHERE email = 'arun@gmail.com'
+)
+WHERE t.team_name = 'Smart Healthcare Team'
+AND NOT EXISTS (
+    SELECT 1
+    FROM team_members tm
+    WHERE tm.team_id = t.team_id
+      AND tm.student_id = st.student_id
+);
+
+
+INSERT INTO team_members
+(team_id, student_id, member_role)
+SELECT t.team_id, st.student_id, 'Member'
+FROM teams t
+JOIN projects p ON t.project_id = p.project_id
+JOIN students st ON st.user_id = (
+    SELECT user_id FROM users
+    WHERE email = 'rahul@gmail.com'
+)
+WHERE t.team_name = 'Smart Healthcare Team'
+AND NOT EXISTS (
+    SELECT 1
+    FROM team_members tm
+    WHERE tm.team_id = t.team_id
+      AND tm.student_id = st.student_id
+);
+
+
+/* ============================================================
+   22. CHECK ALL TABLES
+   ============================================================ */
+
+SHOW TABLES;
+
+
+/* ============================================================
+   23. DISPLAY DATA
+   ============================================================ */
+
+SELECT * FROM users;
+
+SELECT * FROM students;
+
+SELECT * FROM faculty;
+
+SELECT * FROM skills;
+
+SELECT * FROM student_skills;
+
+SELECT * FROM projects;
+
+SELECT * FROM project_skills;
+
+SELECT * FROM applications;
+
+SELECT * FROM teams;
+
+SELECT * FROM team_members;
+
+
+/* ============================================================
+   24. TEST: STUDENT-PROJECT SKILL MATCHING
+   ============================================================ */
+
+SELECT
+    u.name AS student_name,
+    p.title AS project_name,
+    sk.skill_name,
+    ss.proficiency_level AS student_level,
+    ps.required_proficiency AS required_level
+FROM students s
+JOIN users u
+    ON s.user_id = u.user_id
+JOIN student_skills ss
+    ON s.student_id = ss.student_id
+JOIN skills sk
+    ON ss.skill_id = sk.skill_id
+JOIN project_skills ps
+    ON ss.skill_id = ps.skill_id
+JOIN projects p
+    ON ps.project_id = p.project_id
+WHERE ss.proficiency_level >= ps.required_proficiency;
+
+
+/* ============================================================
+   25. TEST: COUNT MATCHING SKILLS
+   ============================================================ */
+
+SELECT
+    u.name AS student_name,
+    p.title AS project_name,
+    COUNT(*) AS matching_skills
+FROM students s
+JOIN users u
+    ON s.user_id = u.user_id
+JOIN student_skills ss
+    ON s.student_id = ss.student_id
+JOIN project_skills ps
+    ON ss.skill_id = ps.skill_id
+JOIN projects p
+    ON ps.project_id = p.project_id
+WHERE ss.proficiency_level >= ps.required_proficiency
+GROUP BY
+    s.student_id,
+    u.name,
+    p.project_id,
+    p.title
+ORDER BY matching_skills DESC;
+
+
+/* ============================================================
+   END OF DATABASE FILE
+   ============================================================ */
