@@ -1,0 +1,2667 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>How It Works | SkillBloom</title>
+
+
+    <!-- =====================================================
+         GOOGLE FONTS
+         Great Vibes = Calligraphic font
+         Cormorant Garamond = Elegant heading font
+         Poppins = Clean body font
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #f6f2e7;
+            color: #34442d;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            height: 82px;
+
+            padding: 0 7%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: rgba(255, 253, 246, 0.98);
+
+            border-bottom: 1px solid rgba(83, 104, 59, 0.15);
+
+            box-shadow:
+                0 5px 20px rgba(45, 65, 35, 0.06);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+
+        /* CALLIGRAPHIC LOGO */
+
+        .logo {
+            text-decoration: none;
+
+            font-family: "Great Vibes", cursive;
+
+            font-size: 38px;
+
+            color: #53683b;
+
+            letter-spacing: 1px;
+        }
+
+
+        .logo span {
+            color: #b4933f;
+        }
+
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 27px;
+        }
+
+
+        .nav-links a {
+            text-decoration: none;
+
+            color: #59634d;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            transition: 0.3s;
+        }
+
+
+        .nav-links a:hover {
+            color: #a17e2d;
+        }
+
+
+        .nav-links .active {
+            color: #a17e2d;
+            font-weight: 600;
+        }
+
+
+        .nav-register {
+            padding: 9px 18px;
+
+            border-radius: 20px;
+
+            background: #53683b;
+
+            color: white !important;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            min-height: 470px;
+
+            padding: 80px 8%;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(180, 151, 61, 0.15),
+                    transparent 25%
+                ),
+
+                radial-gradient(
+                    circle at 85% 70%,
+                    rgba(73, 100, 52, 0.13),
+                    transparent 30%
+                ),
+
+                #f6f2e7;
+        }
+
+
+        .hero::before {
+            content: "❦";
+
+            position: absolute;
+
+            top: 25px;
+            left: 5%;
+
+            font-size: 160px;
+
+            color: #53683b;
+
+            opacity: 0.07;
+
+            transform: rotate(-18deg);
+        }
+
+
+        .hero::after {
+            content: "❦";
+
+            position: absolute;
+
+            bottom: -30px;
+            right: 5%;
+
+            font-size: 180px;
+
+            color: #b4933f;
+
+            opacity: 0.08;
+
+            transform: rotate(15deg);
+        }
+
+
+        .hero-label {
+            display: inline-block;
+
+            padding: 8px 18px;
+
+            border-radius: 30px;
+
+            background: #e7eadb;
+
+            color: #617149;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 18px;
+        }
+
+
+        /* MAIN CALLIGRAPHIC TITLE */
+
+        .hero h1 {
+            font-family: "Great Vibes", cursive;
+
+            font-size: clamp(58px, 8vw, 92px);
+
+            line-height: 1.1;
+
+            color: #53683b;
+
+            font-weight: 400;
+
+            margin-bottom: 18px;
+        }
+
+
+        .hero h1 span {
+            color: #b18d35;
+        }
+
+
+        .hero p {
+            max-width: 700px;
+
+            color: #747b6c;
+
+            font-size: 13px;
+
+            line-height: 1.9;
+        }
+
+
+        /* =====================================================
+           GENERAL SECTION
+        ===================================================== */
+
+        .section {
+            padding: 90px 8%;
+        }
+
+
+        .section-heading {
+            max-width: 750px;
+
+            text-align: center;
+
+            margin: 0 auto 55px;
+        }
+
+
+        .section-heading .label {
+            color: #a17e2d;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+
+        .section-heading h2 {
+            font-family: "Great Vibes", cursive;
+
+            font-size: 58px;
+
+            font-weight: 400;
+
+            color: #53683b;
+
+            margin: 7px 0 10px;
+        }
+
+
+        .section-heading p {
+            color: #7a806f;
+
+            font-size: 12px;
+
+            line-height: 1.9;
+        }
+
+
+        /* =====================================================
+           PROCESS SECTION
+        ===================================================== */
+
+        .process-section {
+            background: #ebece0;
+        }
+
+
+        .timeline {
+            max-width: 1050px;
+
+            margin: auto;
+
+            position: relative;
+        }
+
+
+        .timeline::before {
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+
+            top: 20px;
+
+            bottom: 20px;
+
+            width: 2px;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    #b49746,
+                    #53683b,
+                    #b49746
+                );
+
+            transform: translateX(-50%);
+        }
+
+
+        .timeline-item {
+            display: grid;
+
+            grid-template-columns: 1fr 90px 1fr;
+
+            align-items: center;
+
+            margin-bottom: 42px;
+
+            position: relative;
+        }
+
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .timeline-content {
+            background: #fffdf6;
+
+            border: 1px solid #dedbcc;
+
+            border-radius: 22px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 12px 28px rgba(55, 70, 40, 0.07);
+
+            transition: 0.3s;
+        }
+
+
+        .timeline-content:hover {
+            transform: translateY(-6px);
+
+            border-color: #b49746;
+
+            box-shadow:
+                0 17px 35px rgba(55, 70, 40, 0.12);
+        }
+
+
+        .timeline-left {
+            grid-column: 1;
+
+            margin-right: 20px;
+        }
+
+
+        .timeline-right {
+            grid-column: 3;
+
+            margin-left: 20px;
+        }
+
+
+        .timeline-center {
+            grid-column: 2;
+
+            grid-row: 1;
+
+            width: 76px;
+
+            height: 76px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #53683b;
+
+            color: white;
+
+            border: 5px solid #ebece0;
+
+            box-shadow:
+                0 8px 20px rgba(50, 70, 40, 0.2);
+
+            z-index: 5;
+        }
+
+
+        .timeline-center strong {
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 23px;
+
+            line-height: 1;
+        }
+
+
+        .timeline-center span {
+            font-size: 8px;
+
+            opacity: 0.8;
+        }
+
+
+        .step-icon {
+            font-size: 32px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .timeline-content h3 {
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 28px;
+
+            color: #4b6036;
+
+            margin-bottom: 7px;
+        }
+
+
+        .timeline-content p {
+            color: #777e6e;
+
+            font-size: 11px;
+
+            line-height: 1.8;
+        }
+
+
+        .step-tag {
+            display: inline-block;
+
+            margin-top: 14px;
+
+            padding: 5px 11px;
+
+            background: #edf0e3;
+
+            color: #63704e;
+
+            border-radius: 15px;
+
+            font-size: 8px;
+        }
+
+
+        /* =====================================================
+           START CARD
+        ===================================================== */
+
+        .start-card {
+            max-width: 400px;
+
+            margin: 0 auto 48px;
+
+            text-align: center;
+
+            background: #53683b;
+
+            color: white;
+
+            padding: 30px;
+
+            border-radius: 24px;
+
+            position: relative;
+
+            box-shadow:
+                0 16px 32px rgba(60, 80, 40, 0.18);
+        }
+
+
+        .start-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 2px;
+
+            height: 48px;
+
+            background: #b49746;
+
+            left: 50%;
+
+            bottom: -48px;
+        }
+
+
+        .start-card .big-icon {
+            font-size: 37px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .start-card h3 {
+            font-family: "Great Vibes", cursive;
+
+            font-size: 42px;
+
+            font-weight: 400;
+        }
+
+
+        .start-card p {
+            font-size: 10px;
+
+            opacity: 0.8;
+        }
+
+
+        /* =====================================================
+           AUDIENCE
+        ===================================================== */
+
+        .audience {
+            background: #f6f2e7;
+        }
+
+
+        .audience-grid {
+            max-width: 1050px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 22px;
+        }
+
+
+        .audience-card {
+            background: #fffdf6;
+
+            padding: 34px 25px;
+
+            border-radius: 22px;
+
+            text-align: center;
+
+            border: 1px solid #dedbcc;
+
+            transition: 0.3s;
+        }
+
+
+        .audience-card:hover {
+            transform: translateY(-7px);
+
+            border-color: #b49746;
+        }
+
+
+        .audience-icon {
+            width: 78px;
+
+            height: 78px;
+
+            border-radius: 50%;
+
+            background: #e8ebdc;
+
+            margin: 0 auto 17px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 31px;
+        }
+
+
+        .audience-card h3 {
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 29px;
+
+            color: #4b6036;
+
+            margin-bottom: 8px;
+        }
+
+
+        .audience-card p {
+            color: #777e6e;
+
+            font-size: 11px;
+
+            line-height: 1.8;
+        }
+
+
+        /* =====================================================
+           MATCHING
+        ===================================================== */
+
+        .matching-section {
+            background: #e9eadf;
+        }
+
+
+        .matching-board {
+            max-width: 1100px;
+
+            margin: auto;
+
+            background: #fffdf6;
+
+            border: 1px solid #dcd9ca;
+
+            border-radius: 26px;
+
+            padding: 42px;
+
+            box-shadow:
+                0 15px 35px rgba(55,70,40,0.08);
+        }
+
+
+        .matching-flow {
+            display: grid;
+
+            grid-template-columns:
+                1fr 70px 1fr 70px 1fr;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .match-box {
+            min-height: 175px;
+
+            padding: 24px;
+
+            border-radius: 20px;
+
+            background: #f0f1e7;
+
+            border: 1px solid #dfe1d4;
+
+            text-align: center;
+        }
+
+
+        .match-box.highlight {
+            background: #53683b;
+
+            color: white;
+
+            border-color: #53683b;
+        }
+
+
+        .match-icon {
+            font-size: 34px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .match-box h3 {
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 25px;
+
+            color: #4b6036;
+
+            margin-bottom: 7px;
+        }
+
+
+        .match-box.highlight h3 {
+            color: white;
+        }
+
+
+        .match-box p {
+            font-size: 10px;
+
+            color: #7b806f;
+
+            line-height: 1.7;
+        }
+
+
+        .match-box.highlight p {
+            color: rgba(255,255,255,0.8);
+        }
+
+
+        .arrow {
+            text-align: center;
+
+            font-size: 29px;
+
+            color: #ae8c38;
+        }
+
+
+        /* =====================================================
+           SKILL GRAPHS
+        ===================================================== */
+
+        .skill-match {
+            margin-top: 38px;
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 30px;
+        }
+
+
+        .skill-panel {
+            background: #f6f5ed;
+
+            padding: 27px;
+
+            border-radius: 20px;
+
+            border: 1px solid #dfddcf;
+        }
+
+
+        .skill-panel h4 {
+            font-family: "Great Vibes", cursive;
+
+            font-size: 37px;
+
+            font-weight: 400;
+
+            color: #53683b;
+
+            margin-bottom: 20px;
+        }
+
+
+        .skill-line {
+            margin-bottom: 17px;
+        }
+
+
+        .skill-label {
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 10px;
+
+            color: #68705c;
+
+            margin-bottom: 6px;
+        }
+
+
+        .skill-label strong {
+            color: #98762a;
+        }
+
+
+        .skill-bar {
+            height: 9px;
+
+            border-radius: 10px;
+
+            background: #dedfd4;
+
+            overflow: hidden;
+        }
+
+
+        .skill-fill {
+            height: 100%;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #53683b,
+                    #b49746
+                );
+        }
+
+
+        /* =====================================================
+           PROJECT RECOMMENDATIONS
+        ===================================================== */
+
+        .recommendation {
+            background: #f6f2e7;
+        }
+
+
+        .recommendation-grid {
+            max-width: 1100px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 22px;
+        }
+
+
+        .recommendation-card {
+            background: #fffdf6;
+
+            padding: 28px;
+
+            border-radius: 22px;
+
+            border: 1px solid #dfdccd;
+
+            transition: 0.3s;
+        }
+
+
+        .recommendation-card:hover {
+            transform: translateY(-6px);
+
+            box-shadow:
+                0 15px 30px rgba(55,70,40,0.09);
+        }
+
+
+        .match-percentage {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 17px;
+        }
+
+
+        .match-badge {
+            background: #e9ecdc;
+
+            color: #53683b;
+
+            padding: 6px 10px;
+
+            border-radius: 15px;
+
+            font-size: 8px;
+
+            font-weight: 600;
+        }
+
+
+        .percentage {
+            color: #9a792e;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+
+        .recommendation-card h3 {
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 26px;
+
+            color: #4b6036;
+
+            margin-bottom: 7px;
+        }
+
+
+        .recommendation-card p {
+            font-size: 10px;
+
+            color: #7b806f;
+
+            line-height: 1.7;
+
+            margin-bottom: 16px;
+        }
+
+
+        .tags {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+        }
+
+
+        .tag {
+            padding: 5px 9px;
+
+            border-radius: 13px;
+
+            background: #eff0e5;
+
+            color: #64704f;
+
+            font-size: 8px;
+        }
+
+
+        /* =====================================================
+           BENEFITS
+        ===================================================== */
+
+        .benefits {
+            background: #ebece0;
+        }
+
+
+        .benefit-layout {
+            max-width: 1050px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns: 0.8fr 1.2fr;
+
+            gap: 55px;
+
+            align-items: center;
+        }
+
+
+        .benefit-visual {
+            width: 310px;
+
+            height: 310px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #fffdf6 0 40%,
+                    #dfe5d2 41% 65%,
+                    #b6a15b 66% 67%,
+                    #53683b 68% 100%
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            box-shadow:
+                0 20px 40px rgba(55,70,40,0.12);
+        }
+
+
+        .benefit-center {
+            width: 130px;
+
+            height: 130px;
+
+            border-radius: 50%;
+
+            background: #53683b;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            flex-direction: column;
+        }
+
+
+        .benefit-center strong {
+            font-family: "Great Vibes", cursive;
+
+            font-size: 43px;
+
+            font-weight: 400;
+        }
+
+
+        .benefit-center span {
+            font-size: 8px;
+
+            opacity: 0.8;
+        }
+
+
+        .benefit-list {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+        }
+
+
+        .benefit-item {
+            background: #fffdf6;
+
+            border: 1px solid #dddacb;
+
+            padding: 20px;
+
+            border-radius: 18px;
+        }
+
+
+        .benefit-item strong {
+            display: block;
+
+            color: #53683b;
+
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 22px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .benefit-item span {
+            color: #777e6e;
+
+            font-size: 9px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           FINAL CTA
+        ===================================================== */
+
+        .cta {
+            margin: 80px 8%;
+
+            padding: 65px 30px;
+
+            border-radius: 28px;
+
+            background: #53683b;
+
+            text-align: center;
+
+            color: white;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .cta::before {
+            content: "❦";
+
+            position: absolute;
+
+            left: 20px;
+
+            bottom: -55px;
+
+            font-size: 180px;
+
+            opacity: 0.06;
+        }
+
+
+        .cta::after {
+            content: "❦";
+
+            position: absolute;
+
+            right: 20px;
+
+            top: -55px;
+
+            font-size: 180px;
+
+            opacity: 0.06;
+        }
+
+
+        .cta h2 {
+            font-family: "Great Vibes", cursive;
+
+            font-size: 58px;
+
+            font-weight: 400;
+
+            margin-bottom: 10px;
+        }
+
+
+        .cta p {
+            max-width: 650px;
+
+            margin: auto auto 25px;
+
+            font-size: 11px;
+
+            opacity: 0.83;
+        }
+
+
+        .cta-buttons {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .cta a {
+            display: inline-block;
+
+            padding: 12px 24px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+
+        .cta-primary {
+            background: #d1b866;
+
+            color: #3e4f2d;
+        }
+
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+        }
+
+
+        .cta-secondary {
+            border: 1px solid rgba(255,255,255,0.4);
+
+            color: white;
+        }
+
+
+        .cta-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            background: #3e502d;
+
+            color: #e9eadb;
+
+            padding: 38px 8%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        footer strong {
+            font-family: "Great Vibes", cursive;
+
+            font-size: 32px;
+
+            font-weight: 400;
+        }
+
+
+        footer p {
+            font-size: 9px;
+
+            opacity: 0.7;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE DESIGN
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .nav-links {
+                gap: 12px;
+            }
+
+
+            .audience-grid,
+            .recommendation-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+
+            .matching-flow {
+                grid-template-columns: 1fr;
+            }
+
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+
+
+            .skill-match {
+                grid-template-columns: 1fr;
+            }
+
+
+            .benefit-layout {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                height: auto;
+
+                padding: 18px 5%;
+
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+
+            .nav-links {
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+
+            .hero {
+                padding: 65px 6%;
+            }
+
+
+            .hero h1 {
+                font-size: 60px;
+            }
+
+
+            .section {
+                padding: 65px 6%;
+            }
+
+
+            .timeline::before {
+                left: 35px;
+            }
+
+
+            .timeline-item {
+                display: block;
+
+                padding-left: 75px;
+            }
+
+
+            .timeline-center {
+                position: absolute;
+
+                left: 0;
+
+                top: 10px;
+
+                width: 70px;
+
+                height: 70px;
+            }
+
+
+            .timeline-left,
+            .timeline-right {
+                margin: 0;
+            }
+
+
+            .audience-grid,
+            .recommendation-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .benefit-list {
+                grid-template-columns: 1fr;
+            }
+
+
+            .benefit-visual {
+                width: 260px;
+
+                height: 260px;
+            }
+
+
+            .cta h2 {
+                font-size: 47px;
+            }
+
+
+            footer {
+                flex-direction: column;
+
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ===================================================== -->
+
+    <nav class="navbar">
+
+        <a href="index.html" class="logo">
+            🌿 Skill<span>Bloom</span>
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="how-it-works.html" class="active">
+                How It Works
+            </a>
+
+            <a href="project.html">
+                Projects
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html" class="nav-register">
+                Register
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-label">
+            The SkillBloom Journey
+        </div>
+
+
+        <h1>
+            How Does
+            <span>SkillBloom</span>
+            Work?
+        </h1>
+
+
+        <p>
+
+            SkillBloom is a Student Skill & Project Matching System
+            that helps students understand their skills, discover
+            suitable projects and connect with students who have
+            complementary abilities.
+
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROCESS
+    ===================================================== -->
+
+    <section class="section process-section">
+
+
+        <div class="section-heading">
+
+            <span class="label">
+                Our Process
+            </span>
+
+
+            <h2>
+                From Student to Project
+            </h2>
+
+
+            <p>
+
+                Follow the complete journey of a student through
+                the SkillBloom system.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- START -->
+
+        <div class="start-card">
+
+            <div class="big-icon">
+                🎓
+            </div>
+
+            <h3>
+                Student
+            </h3>
+
+            <p>
+                Your SkillBloom journey begins here.
+            </p>
+
+        </div>
+
+
+
+        <div class="timeline">
+
+
+            <!-- 01 -->
+
+            <div class="timeline-item">
+
+                <div class="timeline-content timeline-left">
+
+                    <div class="step-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        Create Your Profile
+                    </h3>
+
+                    <p>
+
+                        Register on the platform and create your
+                        student profile with your academic details,
+                        interests and areas of expertise.
+
+                    </p>
+
+                    <span class="step-tag">
+                        Registration
+                    </span>
+
+                </div>
+
+
+                <div class="timeline-center">
+
+                    <strong>01</strong>
+
+                    <span>PROFILE</span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 02 -->
+
+            <div class="timeline-item">
+
+                <div class="timeline-center">
+
+                    <strong>02</strong>
+
+                    <span>SKILLS</span>
+
+                </div>
+
+
+                <div class="timeline-content timeline-right">
+
+                    <div class="step-icon">
+                        🌱
+                    </div>
+
+                    <h3>
+                        Select Your Skills
+                    </h3>
+
+                    <p>
+
+                        Select the technical and creative skills
+                        you already know, such as programming,
+                        web development, databases, AI and UI/UX.
+
+                    </p>
+
+                    <span class="step-tag">
+                        Skill Selection
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 03 -->
+
+            <div class="timeline-item">
+
+                <div class="timeline-content timeline-left">
+
+                    <div class="step-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Skill Analysis
+                    </h3>
+
+                    <p>
+
+                        Your selected skills can be represented
+                        using visual percentages so you can understand
+                        your strengths and identify areas for growth.
+
+                    </p>
+
+                    <span class="step-tag">
+                        Skill Assessment
+                    </span>
+
+                </div>
+
+
+                <div class="timeline-center">
+
+                    <strong>03</strong>
+
+                    <span>ANALYSIS</span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 04 -->
+
+            <div class="timeline-item">
+
+                <div class="timeline-center">
+
+                    <strong>04</strong>
+
+                    <span>MATCH</span>
+
+                </div>
+
+
+                <div class="timeline-content timeline-right">
+
+                    <div class="step-icon">
+                        ⚙️
+                    </div>
+
+                    <h3>
+                        Matching Algorithm
+                    </h3>
+
+                    <p>
+
+                        The system compares the student's selected
+                        skills with the skills required by projects
+                        and calculates a matching percentage.
+
+                    </p>
+
+                    <span class="step-tag">
+                        Smart Matching
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 05 -->
+
+            <div class="timeline-item">
+
+                <div class="timeline-content timeline-left">
+
+                    <div class="step-icon">
+                        💡
+                    </div>
+
+                    <h3>
+                        Recommended Projects
+                    </h3>
+
+                    <p>
+
+                        Projects related to the student's skills
+                        and interests can then be displayed with
+                        their matching percentage.
+
+                    </p>
+
+                    <span class="step-tag">
+                        Recommendation
+                    </span>
+
+                </div>
+
+
+                <div class="timeline-center">
+
+                    <strong>05</strong>
+
+                    <span>PROJECTS</span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- 06 -->
+
+            <div class="timeline-item">
+
+                <div class="timeline-center">
+
+                    <strong>06</strong>
+
+                    <span>TEAM</span>
+
+                </div>
+
+
+                <div class="timeline-content timeline-right">
+
+                    <div class="step-icon">
+                        🤝
+                    </div>
+
+                    <h3>
+                        Team Formation
+                    </h3>
+
+                    <p>
+
+                        Students can identify teammates whose
+                        skills complement their own and collaborate
+                        on projects.
+
+                    </p>
+
+                    <span class="step-tag">
+                        Collaboration
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         WHO CAN USE IT
+    ===================================================== -->
+
+    <section class="section audience">
+
+
+        <div class="section-heading">
+
+            <span class="label">
+                Who Is It For?
+            </span>
+
+
+            <h2>
+                Built for the Student Community
+            </h2>
+
+
+            <p>
+
+                SkillBloom can support different members of
+                an academic project environment.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="audience-grid">
+
+
+            <div class="audience-card">
+
+                <div class="audience-icon">
+                    🎓
+                </div>
+
+                <h3>
+                    Students
+                </h3>
+
+                <p>
+
+                    Create a profile, select skills, discover
+                    projects and understand areas where you
+                    can continue learning.
+
+                </p>
+
+            </div>
+
+
+
+            <div class="audience-card">
+
+                <div class="audience-icon">
+                    🤝
+                </div>
+
+                <h3>
+                    Project Teams
+                </h3>
+
+                <p>
+
+                    Find students with complementary skills
+                    and form teams for academic projects.
+
+                </p>
+
+            </div>
+
+
+
+            <div class="audience-card">
+
+                <div class="audience-icon">
+                    👨‍🏫
+                </div>
+
+                <h3>
+                    Faculty
+                </h3>
+
+                <p>
+
+                    View student skill information and help
+                    guide students towards suitable projects.
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         MATCHING ALGORITHM
+    ===================================================== -->
+
+    <section class="section matching-section">
+
+
+        <div class="section-heading">
+
+            <span class="label">
+                Behind The Match
+            </span>
+
+
+            <h2>
+                How Project Matching Works
+            </h2>
+
+
+            <p>
+
+                The system compares student skills with project
+                requirements to identify suitable project matches.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="matching-board">
+
+
+            <div class="matching-flow">
+
+
+                <div class="match-box">
+
+                    <div class="match-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        Student Skills
+                    </h3>
+
+                    <p>
+
+                        Python<br>
+                        HTML & CSS<br>
+                        MySQL<br>
+                        JavaScript
+
+                    </p>
+
+                </div>
+
+
+                <div class="arrow">
+                    →
+                </div>
+
+
+                <div class="match-box highlight">
+
+                    <div class="match-icon">
+                        ⚙️
+                    </div>
+
+                    <h3>
+                        Matching
+                    </h3>
+
+                    <p>
+
+                        Compare student skills
+                        with project requirements.
+
+                    </p>
+
+                </div>
+
+
+                <div class="arrow">
+                    →
+                </div>
+
+
+                <div class="match-box">
+
+                    <div class="match-icon">
+                        🎯
+                    </div>
+
+                    <h3>
+                        Project Match
+                    </h3>
+
+                    <p>
+
+                        Suitable projects are displayed
+                        with matching percentages.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- SKILL GRAPH -->
+
+            <div class="skill-match">
+
+
+                <div class="skill-panel">
+
+                    <h4>
+                        Student Skills
+                    </h4>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                Programming
+                            </span>
+
+                            <strong>
+                                88%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:88%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                Web Development
+                            </span>
+
+                            <strong>
+                                78%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:78%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                Database
+                            </span>
+
+                            <strong>
+                                72%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:72%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                AI / ML
+                            </span>
+
+                            <strong>
+                                64%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:64%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PROJECT REQUIREMENTS -->
+
+                <div class="skill-panel">
+
+                    <h4>
+                        Project Requirements
+                    </h4>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                Programming
+                            </span>
+
+                            <strong>
+                                85%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:85%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                Web Development
+                            </span>
+
+                            <strong>
+                                70%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:70%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                Database
+                            </span>
+
+                            <strong>
+                                75%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:75%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skill-line">
+
+                        <div class="skill-label">
+
+                            <span>
+                                AI / ML
+                            </span>
+
+                            <strong>
+                                40%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="skill-bar">
+
+                            <div
+                                class="skill-fill"
+                                style="width:40%;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RECOMMENDED PROJECTS
+    ===================================================== -->
+
+    <section class="section recommendation">
+
+
+        <div class="section-heading">
+
+            <span class="label">
+                Example Result
+            </span>
+
+
+            <h2>
+                Recommended Projects
+            </h2>
+
+
+            <p>
+
+                After comparing skills and project requirements,
+                the system can display suitable project suggestions.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="recommendation-grid">
+
+
+            <div class="recommendation-card">
+
+                <div class="match-percentage">
+
+                    <span class="match-badge">
+                        HIGH MATCH
+                    </span>
+
+                    <span class="percentage">
+                        92% Match
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Student Management System
+                </h3>
+
+
+                <p>
+
+                    A project suitable for students interested
+                    in programming, databases and web development.
+
+                </p>
+
+
+                <div class="tags">
+
+                    <span class="tag">
+                        Programming
+                    </span>
+
+                    <span class="tag">
+                        MySQL
+                    </span>
+
+                    <span class="tag">
+                        Web
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="recommendation-card">
+
+                <div class="match-percentage">
+
+                    <span class="match-badge">
+                        GOOD MATCH
+                    </span>
+
+                    <span class="percentage">
+                        84% Match
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Student Portfolio
+                </h3>
+
+
+                <p>
+
+                    A frontend-focused project for students
+                    interested in interfaces and web development.
+
+                </p>
+
+
+                <div class="tags">
+
+                    <span class="tag">
+                        HTML
+                    </span>
+
+                    <span class="tag">
+                        CSS
+                    </span>
+
+                    <span class="tag">
+                        JavaScript
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="recommendation-card">
+
+                <div class="match-percentage">
+
+                    <span class="match-badge">
+                        DEVELOPING MATCH
+                    </span>
+
+                    <span class="percentage">
+                        68% Match
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    AI Student Assistant
+                </h3>
+
+
+                <p>
+
+                    An example project for students interested
+                    in Python and artificial intelligence.
+
+                </p>
+
+
+                <div class="tags">
+
+                    <span class="tag">
+                        Python
+                    </span>
+
+                    <span class="tag">
+                        AI
+                    </span>
+
+                    <span class="tag">
+                        Machine Learning
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         BENEFITS
+    ===================================================== -->
+
+    <section class="section benefits">
+
+
+        <div class="section-heading">
+
+            <span class="label">
+                Why SkillBloom?
+            </span>
+
+
+            <h2>
+                Turn Skills Into Opportunities
+            </h2>
+
+
+            <p>
+
+                SkillBloom makes project discovery more structured,
+                visual and student-friendly.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="benefit-layout">
+
+
+            <div class="benefit-visual">
+
+                <div class="benefit-center">
+
+                    <strong>
+                        Grow
+                    </strong>
+
+                    <span>
+                        Your Skills
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="benefit-list">
+
+
+                <div class="benefit-item">
+
+                    <strong>
+                        🎯 Better Matching
+                    </strong>
+
+                    <span>
+                        Discover projects related to your current skills.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <strong>
+                        📊 Visual Progress
+                    </strong>
+
+                    <span>
+                        Understand your strengths through visual percentages.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <strong>
+                        🌱 Skill Growth
+                    </strong>
+
+                    <span>
+                        Identify areas where you can improve your skills.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <strong>
+                        🤝 Team Building
+                    </strong>
+
+                    <span>
+                        Find students with complementary abilities.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <strong>
+                        💡 Project Ideas
+                    </strong>
+
+                    <span>
+                        Explore project concepts based on technical domains.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <strong>
+                        🚀 Practical Learning
+                    </strong>
+
+                    <span>
+                        Apply classroom knowledge through practical projects.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FINAL CTA
+    ===================================================== -->
+
+    <section class="cta">
+
+
+        <h2>
+            Ready to Discover Your Skills?
+        </h2>
+
+
+        <p>
+
+            Create your SkillBloom profile, explore your strengths
+            and discover projects that match your abilities.
+
+        </p>
+
+
+        <div class="cta-buttons">
+
+            <a
+                href="register.html"
+                class="cta-primary">
+
+                Create Your Profile
+
+            </a>
+
+
+            <a
+                href="project.html"
+                class="cta-secondary">
+
+                Explore Projects
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+
+    <footer>
+
+        <div>
+
+            <strong>
+                🌿 SkillBloom
+            </strong>
+
+            <p>
+                Student Skill & Project Matching System
+            </p>
+
+        </div>
+
+
+        <p>
+            © 2026 SkillBloom · Learn · Match · Build
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
+```

@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Project Details | SkillBloom</title>
+
+
+<!-- SAME FONTS AS project.html -->
+
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+```
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    font-family: "Poppins", sans-serif;
+
+    color: #3f5032;
+
+    background:
+
+        radial-gradient(
+            circle at 8% 10%,
+            rgba(177, 151, 67, 0.12),
+            transparent 24%
+        ),
+
+        radial-gradient(
+            circle at 92% 75%,
+            rgba(76, 103, 53, 0.10),
+            transparent 28%
+        ),
+
+        #f5f2e8;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+
+    width: 100%;
+
+    min-height: 78px;
+
+    padding: 0 7%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: rgba(255, 253, 246, 0.97);
+
+    border-bottom:
+        1px solid rgba(83, 104, 59, 0.15);
+
+    box-shadow:
+        0 5px 20px rgba(45, 65, 35, 0.06);
+}
+
+
+.logo {
+
+    text-decoration: none;
+
+    color: #4d6235;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 34px;
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+}
+
+
+.logo span {
+    color: #b4933f;
+}
+
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: #59634d;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    transition: 0.3s;
+}
+
+
+.nav-links a:hover {
+    color: #a17e28;
+}
+
+
+.nav-projects {
+
+    padding: 9px 17px;
+
+    border-radius: 20px;
+
+    background: #53683b;
+
+    color: white !important;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.details-hero {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 58px 7% 62px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(83,104,59,0.98),
+            rgba(63,82,44,0.98)
+        );
+
+    color: white;
+}
+
+
+.details-hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 330px;
+
+    height: 330px;
+
+    border:
+        1px solid rgba(216,201,130,0.18);
+
+    border-radius: 50%;
+
+    right: -110px;
+
+    top: -180px;
+}
+
+
+.details-hero::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: 5%;
+
+    bottom: -90px;
+
+    font-size: 220px;
+
+    color: #d5c477;
+
+    opacity: 0.08;
+}
+
+
+.hero-content {
+
+    max-width: 1150px;
+
+    margin: auto;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.back-link {
+
+    display: inline-block;
+
+    text-decoration: none;
+
+    color: #d8c982;
+
+    font-size: 9px;
+
+    margin-bottom: 20px;
+
+    transition: 0.3s;
+}
+
+
+.back-link:hover {
+    color: white;
+}
+
+
+.hero-layout {
+
+    display: grid;
+
+    grid-template-columns: 1fr 180px;
+
+    gap: 35px;
+
+    align-items: center;
+}
+
+
+.project-category {
+
+    color: #d8c982;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+
+.details-hero h1 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 66px;
+
+    font-weight: 400;
+
+    line-height: 1.05;
+
+    margin: 8px 0 13px;
+}
+
+
+.hero-description {
+
+    max-width: 680px;
+
+    color: rgba(255,255,255,0.82);
+
+    font-size: 11px;
+
+    line-height: 1.9;
+}
+
+
+/* =====================================================
+   MATCH CIRCLE
+===================================================== */
+
+.match-circle {
+
+    width: 150px;
+
+    height: 150px;
+
+    border-radius: 50%;
+
+    border:
+        7px solid rgba(216,201,130,0.30);
+
+    outline:
+        1px solid rgba(216,201,130,0.45);
+
+    outline-offset: 7px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(255,255,255,0.05);
+}
+
+
+.match-circle strong {
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 43px;
+
+    color: #e0d293;
+}
+
+
+.match-circle span {
+
+    color: rgba(255,255,255,0.72);
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.details-main {
+
+    max-width: 1150px;
+
+    margin: auto;
+
+    padding: 45px 6% 80px;
+}
+
+
+/* =====================================================
+   QUICK INFO
+===================================================== */
+
+.quick-info {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 35px;
+}
+
+
+.info-card {
+
+    background: #fffdf6;
+
+    border:
+        1px solid rgba(170,145,64,0.22);
+
+    border-radius: 17px;
+
+    padding: 19px;
+
+    box-shadow:
+        0 8px 23px rgba(55,70,40,0.05);
+}
+
+
+.info-icon {
+
+    font-size: 19px;
+
+    margin-bottom: 8px;
+}
+
+
+.info-card span {
+
+    display: block;
+
+    color: #94998c;
+
+    font-size: 8px;
+
+    margin-bottom: 3px;
+}
+
+
+.info-card strong {
+
+    color: #52633c;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 20px;
+}
+
+
+/* =====================================================
+   CONTENT GRID
+===================================================== */
+
+.content-grid {
+
+    display: grid;
+
+    grid-template-columns: 1.55fr 0.75fr;
+
+    gap: 25px;
+
+    align-items: start;
+}
+
+
+/* =====================================================
+   CONTENT CARD
+===================================================== */
+
+.content-card {
+
+    background: #fffdf6;
+
+    border:
+        1px solid rgba(170,145,64,0.22);
+
+    border-radius: 21px;
+
+    padding: 29px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 9px 25px rgba(55,70,40,0.05);
+}
+
+
+.section-label {
+
+    color: #a17e2c;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+.content-card h2 {
+
+    color: #4d6137;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 43px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+
+    margin: 4px 0 12px;
+}
+
+
+.content-card p {
+
+    color: #7c8274;
+
+    font-size: 9px;
+
+    line-height: 1.9;
+}
+
+
+/* =====================================================
+   OBJECTIVES
+===================================================== */
+
+.objective-list {
+
+    list-style: none;
+
+    margin-top: 15px;
+}
+
+
+.objective-list li {
+
+    position: relative;
+
+    padding-left: 28px;
+
+    margin-bottom: 12px;
+
+    color: #6f7667;
+
+    font-size: 9px;
+
+    line-height: 1.7;
+}
+
+
+.objective-list li::before {
+
+    content: "✓";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 0;
+
+    width: 18px;
+
+    height: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e7eadf;
+
+    color: #607746;
+
+    font-size: 9px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   FEATURE GRID
+===================================================== */
+
+.feature-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 13px;
+
+    margin-top: 18px;
+}
+
+
+.feature {
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background: #f4f4eb;
+
+    border:
+        1px solid #e7e5d7;
+
+    transition: 0.3s;
+}
+
+
+.feature:hover {
+
+    transform: translateY(-3px);
+
+    border-color: #c6b875;
+}
+
+
+.feature-icon {
+
+    font-size: 20px;
+
+    margin-bottom: 7px;
+}
+
+
+.feature h3 {
+
+    color: #52633c;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 19px;
+
+    margin-bottom: 3px;
+}
+
+
+.feature p {
+
+    font-size: 8px;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   TECHNOLOGY
+===================================================== */
+
+.tech-list {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    margin-top: 18px;
+}
+
+
+.tech {
+
+    padding: 8px 13px;
+
+    border-radius: 20px;
+
+    background: #edf0e7;
+
+    border:
+        1px solid #dfe4d6;
+
+    color: #596a47;
+
+    font-size: 8px;
+
+    font-weight: 500;
+}
+
+
+.tech.gold {
+
+    background: #eee7cc;
+
+    border-color: #e0d4a5;
+
+    color: #927329;
+}
+
+
+/* =====================================================
+   WORKFLOW
+===================================================== */
+
+.workflow {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+.workflow-step {
+
+    text-align: center;
+
+    padding: 15px 8px;
+
+    position: relative;
+}
+
+
+.workflow-step:not(:last-child)::after {
+
+    content: "→";
+
+    position: absolute;
+
+    right: -8px;
+
+    top: 24px;
+
+    color: #b4933f;
+
+    font-size: 15px;
+}
+
+
+.step-number {
+
+    width: 35px;
+
+    height: 35px;
+
+    border-radius: 50%;
+
+    margin: auto auto 8px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #53683b;
+
+    color: white;
+
+    font-size: 9px;
+
+    font-weight: 600;
+}
+
+
+.workflow-step strong {
+
+    display: block;
+
+    color: #5a684c;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 18px;
+}
+
+
+.workflow-step small {
+
+    display: block;
+
+    color: #92978b;
+
+    font-size: 7px;
+
+    margin-top: 3px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar-card {
+
+    background: #fffdf6;
+
+    border:
+        1px solid rgba(170,145,64,0.22);
+
+    border-radius: 20px;
+
+    padding: 23px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 9px 25px rgba(55,70,40,0.05);
+}
+
+
+.sidebar-card h3 {
+
+    color: #4d6137;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 26px;
+
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   SKILL BARS
+===================================================== */
+
+.skill-item {
+
+    margin-bottom: 16px;
+}
+
+
+.skill-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 5px;
+}
+
+
+.skill-top span {
+
+    color: #6e7666;
+
+    font-size: 8px;
+}
+
+
+.skill-top strong {
+
+    color: #a17e2c;
+
+    font-size: 8px;
+}
+
+
+.skill-track {
+
+    width: 100%;
+
+    height: 6px;
+
+    background: #e9e9df;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+
+.skill-fill {
+
+    height: 100%;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #53683b,
+            #b4933f
+        );
+}
+
+
+/* =====================================================
+   TEAM
+===================================================== */
+
+.team-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 11px 0;
+
+    border-bottom:
+        1px solid #ebe9de;
+}
+
+
+.team-box:last-child {
+    border-bottom: none;
+}
+
+
+.avatar {
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #e7eadf;
+
+    font-size: 14px;
+}
+
+
+.team-box strong {
+
+    display: block;
+
+    color: #5b674f;
+
+    font-size: 8px;
+}
+
+
+.team-box small {
+
+    color: #979c90;
+
+    font-size: 7px;
+}
+
+
+/* =====================================================
+   JOIN PROJECT
+===================================================== */
+
+.join-card {
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #53683b,
+            #3f542f
+        );
+
+    border-radius: 21px;
+
+    padding: 26px;
+
+    color: white;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.join-card::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: -10px;
+
+    bottom: -55px;
+
+    font-size: 150px;
+
+    color: #d8c982;
+
+    opacity: 0.09;
+}
+
+
+.join-card > * {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.small-title {
+
+    color: #d8c982;
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+}
+
+
+.join-card h3 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 38px;
+
+    font-weight: 400;
+
+    margin: 5px 0 8px;
+}
+
+
+.join-card p {
+
+    color: rgba(255,255,255,0.76);
+
+    font-size: 8px;
+
+    line-height: 1.7;
+
+    margin-bottom: 17px;
+}
+
+
+.join-btn {
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 20px;
+
+    padding: 11px;
+
+    background: #d8c982;
+
+    color: #43532f;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+.join-btn:hover {
+
+    background: #eee4ac;
+
+    transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   BOTTOM BUTTON
+===================================================== */
+
+.bottom-navigation {
+
+    text-align: center;
+
+    margin-top: 8px;
+}
+
+
+.back-projects {
+
+    display: inline-block;
+
+    text-decoration: none;
+
+    color: #596947;
+
+    border:
+        1px solid #cfd3c4;
+
+    border-radius: 20px;
+
+    padding: 10px 18px;
+
+    font-size: 9px;
+
+    transition: 0.3s;
+}
+
+
+.back-projects:hover {
+
+    background: #53683b;
+
+    color: white;
+
+    border-color: #53683b;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    color: #929688;
+
+    font-size: 9px;
+
+    border-top:
+        1px solid rgba(83,104,59,0.10);
+}
+
+
+.footer strong {
+
+    color: #53683b;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 20px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 950px) {
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .quick-info {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .navbar {
+
+        padding: 15px 5%;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 9px;
+    }
+
+
+    .nav-links a {
+        font-size: 9px;
+    }
+
+
+    .logo {
+        font-size: 30px;
+    }
+
+
+    .hero-layout {
+        grid-template-columns: 1fr;
+    }
+
+
+    .details-hero h1 {
+        font-size: 52px;
+    }
+
+
+    .match-circle {
+
+        width: 125px;
+
+        height: 125px;
+    }
+
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .workflow {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .workflow-step:nth-child(2)::after {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .quick-info {
+        grid-template-columns: 1fr;
+    }
+
+
+    .workflow {
+        grid-template-columns: 1fr;
+    }
+
+
+    .workflow-step::after {
+        display: none !important;
+    }
+
+
+    .content-card {
+        padding: 21px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+```
+<a href="index.html"
+   class="logo">
+
+    🌿 Skill<span>Bloom</span>
+
+</a>
+
+
+<div class="nav-links">
+
+
+    <a href="index.html">
+        Home
+    </a>
+
+
+    <a href="how-it-works.html">
+        How It Works
+    </a>
+
+
+    <a href="project.html"
+       class="nav-projects">
+
+        Projects
+
+    </a>
+
+
+    <a href="dashboard.html">
+        Dashboard
+    </a>
+
+
+    <a href="login.html">
+        Login
+    </a>
+
+
+    <a href="register.html">
+        Register
+    </a>
+
+
+</div>
+```
+
+</nav>
+
+<!-- =====================================================
+     PROJECT HERO
+===================================================== -->
+
+<section class="details-hero">
+
+```
+<div class="hero-content">
+
+
+    <a href="project.html"
+       class="back-link">
+
+        ← Back to Projects
+
+    </a>
+
+
+    <div class="hero-layout">
+
+
+        <div>
+
+
+            <span class="project-category" id="selected-skill">
+
+                💻 Programming • Database
+
+            </span>
+
+
+            <h1>
+                Student Management System
+            </h1>
+
+
+            <p class="hero-description">
+
+                A collaborative project where students
+                can use programming, database and
+                problem-solving skills to build a
+                practical student management application.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="match-circle">
+
+            <strong>
+                92%
+            </strong>
+
+            <span>
+                SKILL MATCH
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="details-main">
+
+```
+<!-- QUICK INFORMATION -->
+
+<section class="quick-info">
+
+
+    <div class="info-card">
+
+        <div class="info-icon">
+            👥
+        </div>
+
+        <span>
+            TEAM SIZE
+        </span>
+
+        <strong>
+            3–4 Students
+        </strong>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <div class="info-icon">
+            📈
+        </div>
+
+        <span>
+            DIFFICULTY
+        </span>
+
+        <strong>
+            Intermediate
+        </strong>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <div class="info-icon">
+            ⏳
+        </div>
+
+        <span>
+            ESTIMATED TIME
+        </span>
+
+        <strong>
+            4–6 Weeks
+        </strong>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <div class="info-icon">
+            🌱
+        </div>
+
+        <span>
+            STATUS
+        </span>
+
+        <strong>
+            Open
+        </strong>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- TWO COLUMN CONTENT -->
+
+<div class="content-grid">
+
+
+    <!-- =============================================
+         LEFT SIDE
+    ============================================== -->
+
+    <div>
+
+
+        <!-- ABOUT -->
+
+        <section class="content-card">
+
+
+            <span class="section-label">
+                Project Overview
+            </span>
+
+
+            <h2>
+                About The Project
+            </h2>
+
+
+            <p>
+
+                The Student Management System is a
+                practical project designed for students
+                who want to apply their programming and
+                database knowledge to a real-world style
+                application.
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                The system can organize student profiles,
+                academic records, courses and other
+                information through a simple and
+                user-friendly interface.
+
+            </p>
+
+
+        </section>
+
+
+
+        <!-- OBJECTIVES -->
+
+        <section class="content-card">
+
+
+            <span class="section-label">
+                Project Goals
+            </span>
+
+
+            <h2>
+                Main Objectives
+            </h2>
+
+
+            <ul class="objective-list">
+
+
+                <li>
+                    Store and manage student information
+                    in an organized database.
+                </li>
+
+
+                <li>
+                    Practice database design and SQL
+                    operations.
+                </li>
+
+
+                <li>
+                    Create a simple interface for
+                    accessing student records.
+                </li>
+
+
+                <li>
+                    Add, update, search and manage
+                    student information.
+                </li>
+
+
+                <li>
+                    Give students experience in
+                    developing a complete software project.
+                </li>
+
+
+            </ul>
+
+
+        </section>
+
+
+
+        <!-- FEATURES -->
+
+        <section class="content-card">
+
+
+            <span class="section-label">
+                What You Can Build
+            </span>
+
+
+            <h2>
+                Key Features
+            </h2>
+
+
+            <div class="feature-grid">
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        Student Profiles
+                    </h3>
+
+                    <p>
+                        Store student details and
+                        academic information.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        📚
+                    </div>
+
+                    <h3>
+                        Course Management
+                    </h3>
+
+                    <p>
+                        Organize courses and student
+                        enrollment information.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Search Records
+                    </h3>
+
+                    <p>
+                        Find student records quickly
+                        using search functionality.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Academic Records
+                    </h3>
+
+                    <p>
+                        Manage marks and academic
+                        performance information.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- TECHNOLOGIES -->
+
+        <section class="content-card">
+
+
+            <span class="section-label">
+                Development Tools
+            </span>
+
+
+            <h2>
+                Technology Stack
+            </h2>
+
+
+            <div class="tech-list">
+
+
+                <span class="tech gold">
+                    HTML
+                </span>
+
+
+                <span class="tech gold">
+                    CSS
+                </span>
+
+
+                <span class="tech gold">
+                    JavaScript
+                </span>
+
+
+                <span class="tech">
+                    Python
+                </span>
+
+
+                <span class="tech">
+                    MySQL
+                </span>
+
+
+                <span class="tech">
+                    SQL
+                </span>
+
+
+                <span class="tech">
+                    Flask
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- WORKFLOW -->
+
+        <section class="content-card">
+
+
+            <span class="section-label">
+                Development Journey
+            </span>
+
+
+            <h2>
+                Project Workflow
+            </h2>
+
+
+            <div class="workflow">
+
+
+                <div class="workflow-step">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                    <strong>
+                        Plan
+                    </strong>
+
+                    <small>
+                        Understand requirements
+                    </small>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                    <strong>
+                        Design
+                    </strong>
+
+                    <small>
+                        Design interface and database
+                    </small>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                    <strong>
+                        Develop
+                    </strong>
+
+                    <small>
+                        Build the application
+                    </small>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <div class="step-number">
+                        04
+                    </div>
+
+                    <strong>
+                        Test
+                    </strong>
+
+                    <small>
+                        Test and improve
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+
+
+    <!-- =============================================
+         RIGHT SIDE
+    ============================================== -->
+
+    <aside>
+
+
+        <!-- SKILL MATCH -->
+
+        <section class="sidebar-card">
+
+
+            <h3>
+                Skill Match
+            </h3>
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Programming
+                    </span>
+
+                    <strong>
+                        92%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:92%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Database
+                    </span>
+
+                    <strong>
+                        88%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:88%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Web Development
+                    </span>
+
+                    <strong>
+                        74%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:74%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Problem Solving
+                    </span>
+
+                    <strong>
+                        84%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:84%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- REQUIRED SKILLS -->
+
+        <section class="sidebar-card">
+
+
+            <h3>
+                Skills Required
+            </h3>
+
+
+            <div class="tech-list">
+
+
+                <span class="tech">
+                    Programming
+                </span>
+
+
+                <span class="tech">
+                    SQL
+                </span>
+
+
+                <span class="tech">
+                    DBMS
+                </span>
+
+
+                <span class="tech">
+                    HTML
+                </span>
+
+
+                <span class="tech">
+                    CSS
+                </span>
+
+
+                <span class="tech">
+                    JavaScript
+                </span>
+
+
+                <span class="tech">
+                    Problem Solving
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- TEAM -->
+
+        <section class="sidebar-card">
+
+
+            <h3>
+                Suggested Team
+            </h3>
+
+
+            <div class="team-box">
+
+                <div class="avatar">
+                    👩🏻‍💻
+                </div>
+
+                <div>
+
+                    <strong>
+                        Frontend Developer
+                    </strong>
+
+                    <small>
+                        HTML • CSS • JavaScript
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="team-box">
+
+                <div class="avatar">
+                    👨🏻‍💻
+                </div>
+
+                <div>
+
+                    <strong>
+                        Backend Developer
+                    </strong>
+
+                    <small>
+                        Python • Flask
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="team-box">
+
+                <div class="avatar">
+                    🧑🏻‍💻
+                </div>
+
+                <div>
+
+                    <strong>
+                        Database Developer
+                    </strong>
+
+                    <small>
+                        MySQL • SQL
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- JOIN PROJECT -->
+
+        <section class="join-card">
+
+
+            <span class="small-title">
+                Ready to build?
+            </span>
+
+
+            <h3>
+                Join This Project
+            </h3>
+
+
+            <p>
+
+                Connect with students who have
+                complementary skills and start
+                building together.
+
+            </p>
+
+
+            <button
+                class="join-btn"
+                onclick="joinProject()">
+
+                🌱 Join Project
+
+            </button>
+
+
+        </section>
+
+
+    </aside>
+
+
+</div>
+
+
+
+<!-- BACK BUTTON -->
+
+<div class="bottom-navigation">
+
+
+    <a href="project.html"
+       class="back-projects">
+
+        ← Explore More Projects
+
+    </a>
+
+
+</div>
+```
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+```
+Learn • Build • Collaborate
+
+<strong>
+    SkillBloom
+</strong>
+
+🌿
+```
+
+</footer>
+
+<script>
+
+/* =====================================================
+   JOIN PROJECT
+===================================================== */
+
+function joinProject() {
+
+    alert(
+        "Project request received! 🌿\n\n" +
+        "The team-matching feature will be connected " +
+        "to the student database in the next stage."
+    );
+
+}
+
+/* Get selected skill from project page */
+const selectedSkill = localStorage.getItem("selectedSkill");
+
+
+ 
+if (selectedSkill) {
+
+    console.log("Selected Skill:", selectedSkill);
+    document.getElementById("selected-skill").textContent =
+        "🌱 Selected Skill: " + selectedSkill;
+}
+
+
+
+</script>
+
+</body>
+
+</html>
+

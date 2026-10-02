@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>My Profile | SkillBloom</title>
+
+
+<!-- SAME FONTS USED IN PROJECT.HTML -->
+
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+```
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    font-family: "Poppins", sans-serif;
+
+    color: #465638;
+
+    background:
+
+        radial-gradient(
+            circle at 8% 10%,
+            rgba(177,151,67,0.11),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 92% 80%,
+            rgba(76,103,53,0.10),
+            transparent 28%
+        ),
+
+        #f5f2e8;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+
+    min-height: 78px;
+
+    padding: 0 7%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: rgba(255,253,246,0.97);
+
+    border-bottom:
+        1px solid rgba(83,104,59,0.15);
+
+    box-shadow:
+        0 5px 20px rgba(45,65,35,0.06);
+}
+
+
+.logo {
+
+    text-decoration: none;
+
+    color: #4d6235;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 34px;
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+}
+
+
+.logo span {
+    color: #b4933f;
+}
+
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: #59634d;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    transition: 0.3s;
+}
+
+
+.nav-links a:hover {
+    color: #a17e28;
+}
+
+
+.active-link {
+
+    color: #a17e28 !important;
+
+    font-weight: 600 !important;
+}
+
+
+.nav-button {
+
+    padding: 9px 17px;
+
+    border-radius: 20px;
+
+    background: #53683b;
+
+    color: white !important;
+}
+
+
+/* =====================================================
+   PROFILE HERO
+===================================================== */
+
+.profile-hero {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 58px 7% 75px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #53683b,
+            #405331
+        );
+
+    color: white;
+}
+
+
+.profile-hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+
+    height: 350px;
+
+    border:
+        1px solid rgba(216,201,130,0.20);
+
+    border-radius: 50%;
+
+    right: -120px;
+
+    top: -170px;
+}
+
+
+.profile-hero::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: 5%;
+
+    bottom: -100px;
+
+    font-size: 220px;
+
+    color: #d8c982;
+
+    opacity: 0.08;
+}
+
+
+.profile-hero-content {
+
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+}
+
+
+/* =====================================================
+   PROFILE AVATAR
+===================================================== */
+
+.profile-avatar {
+
+    width: 125px;
+
+    height: 125px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #e7eadf;
+
+    border:
+        6px solid rgba(216,201,130,0.65);
+
+    outline:
+        1px solid rgba(216,201,130,0.5);
+
+    outline-offset: 6px;
+
+    color: #53683b;
+
+    font-size: 47px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.14);
+}
+
+
+.profile-heading {
+
+    flex: 1;
+}
+
+
+.profile-label {
+
+    color: #d8c982;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+
+.profile-heading h1 {
+
+    margin: 5px 0 5px;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 65px;
+
+    font-weight: 400;
+
+    line-height: 1.05;
+}
+
+
+.profile-heading p {
+
+    color: rgba(255,255,255,0.78);
+
+    font-size: 10px;
+
+    line-height: 1.8;
+}
+
+
+.profile-status {
+
+    padding: 8px 15px;
+
+    border-radius: 20px;
+
+    background: rgba(216,201,130,0.15);
+
+    border:
+        1px solid rgba(216,201,130,0.35);
+
+    color: #e1d493;
+
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.profile-main {
+
+    max-width: 1150px;
+
+    margin: auto;
+
+    padding: 42px 6% 80px;
+}
+
+
+/* =====================================================
+   PROFILE STATS
+===================================================== */
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 28px;
+}
+
+
+.stat-card {
+
+    background: #fffdf6;
+
+    border:
+        1px solid rgba(170,145,64,0.22);
+
+    border-radius: 17px;
+
+    padding: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 23px rgba(55,70,40,0.05);
+}
+
+
+.stat-icon {
+
+    font-size: 21px;
+
+    margin-bottom: 6px;
+}
+
+
+.stat-card strong {
+
+    display: block;
+
+    color: #53683b;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 28px;
+}
+
+
+.stat-card span {
+
+    color: #969b90;
+
+    font-size: 8px;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* =====================================================
+   CONTENT GRID
+===================================================== */
+
+.profile-grid {
+
+    display: grid;
+
+    grid-template-columns: 1.25fr 0.75fr;
+
+    gap: 24px;
+
+    align-items: start;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card {
+
+    background: #fffdf6;
+
+    border:
+        1px solid rgba(170,145,64,0.22);
+
+    border-radius: 21px;
+
+    padding: 28px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 9px 25px rgba(55,70,40,0.05);
+}
+
+
+.section-label {
+
+    color: #a17e2c;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+.card h2 {
+
+    color: #4d6137;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 43px;
+
+    font-weight: 400;
+
+    margin: 4px 0 17px;
+
+    line-height: 1.1;
+}
+
+
+/* =====================================================
+   INFORMATION ROW
+===================================================== */
+
+.info-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 13px;
+}
+
+
+.info-box {
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    background: #f4f4eb;
+
+    border:
+        1px solid #e6e5d8;
+}
+
+
+.info-box span {
+
+    display: block;
+
+    color: #969b90;
+
+    font-size: 8px;
+
+    margin-bottom: 4px;
+}
+
+
+.info-box strong {
+
+    color: #596946;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 19px;
+}
+
+
+/* =====================================================
+   SKILLS
+===================================================== */
+
+.skill-item {
+
+    margin-bottom: 18px;
+}
+
+
+.skill-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 6px;
+}
+
+
+.skill-top span {
+
+    color: #65705c;
+
+    font-size: 9px;
+}
+
+
+.skill-top strong {
+
+    color: #a17e2c;
+
+    font-size: 8px;
+}
+
+
+.skill-track {
+
+    width: 100%;
+
+    height: 7px;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    background: #e7e8df;
+}
+
+
+.skill-fill {
+
+    height: 100%;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #53683b,
+            #b4933f
+        );
+}
+
+
+/* =====================================================
+   SKILL TAGS
+===================================================== */
+
+.skill-tags {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    margin-top: 10px;
+}
+
+
+.skill-tag {
+
+    padding: 8px 13px;
+
+    border-radius: 20px;
+
+    background: #edf0e7;
+
+    border:
+        1px solid #dfe4d6;
+
+    color: #596a47;
+
+    font-size: 8px;
+
+    font-weight: 500;
+}
+
+
+.skill-tag.gold {
+
+    background: #eee7cc;
+
+    border-color: #e0d4a5;
+
+    color: #927329;
+}
+
+
+/* =====================================================
+   BIO
+===================================================== */
+
+.bio-text {
+
+    color: #7c8274;
+
+    font-size: 9px;
+
+    line-height: 1.9;
+}
+
+
+/* =====================================================
+   PROJECT ACTIVITY
+===================================================== */
+
+.project-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid #ebe9de;
+}
+
+
+.project-item:last-child {
+    border-bottom: none;
+}
+
+
+.project-icon {
+
+    width: 40px;
+
+    height: 40px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #e7eadf;
+
+    font-size: 17px;
+}
+
+
+.project-item strong {
+
+    display: block;
+
+    color: #5b684e;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 19px;
+}
+
+
+.project-item small {
+
+    color: #999e92;
+
+    font-size: 7px;
+}
+
+
+/* =====================================================
+   EDIT PROFILE CARD
+===================================================== */
+
+.edit-card {
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #53683b,
+            #3f542f
+        );
+
+    border-radius: 21px;
+
+    padding: 26px;
+
+    color: white;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.edit-card::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: -10px;
+
+    bottom: -55px;
+
+    font-size: 150px;
+
+    color: #d8c982;
+
+    opacity: 0.09;
+}
+
+
+.edit-card > * {
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.edit-small {
+
+    color: #d8c982;
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+}
+
+
+.edit-card h3 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 39px;
+
+    font-weight: 400;
+
+    margin: 4px 0 8px;
+}
+
+
+.edit-card p {
+
+    color: rgba(255,255,255,0.76);
+
+    font-size: 8px;
+
+    line-height: 1.7;
+
+    margin-bottom: 17px;
+}
+
+
+.edit-btn {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    background: #d8c982;
+
+    color: #43532f;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+.edit-btn:hover {
+
+    background: #eee4ac;
+
+    transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   PROFILE COMPLETION
+===================================================== */
+
+.completion {
+
+    margin-top: 18px;
+}
+
+
+.completion-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+
+.completion-top span {
+
+    color: #6f7768;
+
+    font-size: 8px;
+}
+
+
+.completion-top strong {
+
+    color: #a17e2c;
+
+    font-size: 8px;
+}
+
+
+.completion-track {
+
+    height: 7px;
+
+    background: #e7e8df;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+
+.completion-fill {
+
+    width: 85%;
+
+    height: 100%;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #53683b,
+            #b4933f
+        );
+}
+
+
+/* =====================================================
+   QUICK LINKS
+===================================================== */
+
+.quick-links {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+
+.quick-link {
+
+    text-decoration: none;
+
+    padding: 12px;
+
+    border-radius: 13px;
+
+    background: #f4f4eb;
+
+    color: #5e6d4c;
+
+    font-size: 8px;
+
+    border:
+        1px solid #e5e5d9;
+
+    transition: 0.3s;
+}
+
+
+.quick-link:hover {
+
+    background: #e8eadf;
+
+    border-color: #c6b875;
+
+    transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    color: #929688;
+
+    font-size: 9px;
+
+    border-top:
+        1px solid rgba(83,104,59,0.10);
+}
+
+
+.footer strong {
+
+    color: #53683b;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 20px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 950px) {
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .navbar {
+
+        padding: 15px 5%;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 9px;
+    }
+
+
+    .profile-hero-content {
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+
+    .profile-heading h1 {
+        font-size: 53px;
+    }
+
+
+    .profile-status {
+        margin-top: 5px;
+    }
+
+
+    .info-row {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .card {
+        padding: 21px;
+    }
+
+
+    .profile-avatar {
+
+        width: 105px;
+
+        height: 105px;
+
+        font-size: 40px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+```
+<a href="index.html"
+   class="logo">
+
+    🌿 Skill<span>Bloom</span>
+
+</a>
+
+
+<div class="nav-links">
+
+
+    <a href="index.html">
+        Home
+    </a>
+
+
+    <a href="how-it-works.html">
+        How It Works
+    </a>
+
+
+    <a href="project.html">
+        Projects
+    </a>
+
+
+    <a href="dashboard.html">
+        Dashboard
+    </a>
+
+
+    <a href="profile.html"
+       class="active-link">
+        Profile
+    </a>
+
+
+    <a href="login.html">
+        Login
+    </a>
+
+
+    <a href="register.html"
+       class="nav-button">
+        Register
+    </a>
+
+
+</div>
+```
+
+</nav>
+
+<!-- =====================================================
+     PROFILE HERO
+===================================================== -->
+
+<section class="profile-hero">
+
+```
+<div class="profile-hero-content">
+
+
+    <div class="profile-avatar">
+
+        👩🏻‍💻
+
+    </div>
+
+
+    <div class="profile-heading">
+
+
+        <span class="profile-label">
+            Student Profile
+        </span>
+
+
+        <h1>
+            Swapna Ashok
+        </h1>
+
+
+        <p>
+            CSE Student • Skill Explorer • Project Builder
+        </p>
+
+
+    </div>
+
+
+    <div class="profile-status">
+
+        ● Profile Active
+
+    </div>
+
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="profile-main">
+
+```
+<!-- =================================================
+     PROFILE STATS
+================================================== -->
+
+<section class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🌱
+        </div>
+
+        <strong>
+            7
+        </strong>
+
+        <span>
+            Skills Added
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            💡
+        </div>
+
+        <strong>
+            12
+        </strong>
+
+        <span>
+            Projects Found
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🤝
+        </div>
+
+        <strong>
+            3
+        </strong>
+
+        <span>
+            Team Matches
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ⭐
+        </div>
+
+        <strong>
+            92%
+        </strong>
+
+        <span>
+            Average Match
+        </span>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =================================================
+     PROFILE GRID
+================================================== -->
+
+<div class="profile-grid">
+
+
+    <!-- =============================================
+         LEFT COLUMN
+    ============================================== -->
+
+    <div>
+
+
+        <!-- ABOUT ME -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                About Student
+            </span>
+
+
+            <h2>
+                About Me
+            </h2>
+
+
+            <p class="bio-text">
+
+                I am a Computer Science student interested
+                in building practical projects, improving my
+                technical skills and collaborating with
+                students who have different strengths.
+
+                <br><br>
+
+                SkillBloom helps me discover projects that
+                match my abilities and connect with students
+                who can contribute complementary skills.
+
+            </p>
+
+
+        </section>
+
+
+
+        <!-- PERSONAL INFORMATION -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                Student Information
+            </span>
+
+
+            <h2>
+                My Details
+            </h2>
+
+
+            <div class="info-row">
+
+
+                <div class="info-box">
+
+                    <span>
+                        FULL NAME
+                    </span>
+
+                    <strong>
+                        Swapna Ashok
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>
+                        DEPARTMENT
+                    </span>
+
+                    <strong>
+                        Computer Science
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>
+                        YEAR
+                    </span>
+
+                    <strong>
+                        3rd Year
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>
+                        INTEREST
+                    </span>
+
+                    <strong>
+                        Software Development
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- SKILL PROFILE -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                Skill Analysis
+            </span>
+
+
+            <h2>
+                My Skills
+            </h2>
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Programming
+                    </span>
+
+                    <strong>
+                        90%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:90%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Web Development
+                    </span>
+
+                    <strong>
+                        85%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:85%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Database
+                    </span>
+
+                    <strong>
+                        78%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:78%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        Problem Solving
+                    </span>
+
+                    <strong>
+                        82%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:82%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="skill-item">
+
+
+                <div class="skill-top">
+
+                    <span>
+                        JavaScript
+                    </span>
+
+                    <strong>
+                        72%
+                    </strong>
+
+                </div>
+
+
+                <div class="skill-track">
+
+                    <div class="skill-fill"
+                         style="width:72%">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- SKILL TAGS -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                My Skill Set
+            </span>
+
+
+            <h2>
+                Skills I Know
+            </h2>
+
+
+            <div class="skill-tags">
+
+
+                <span class="skill-tag gold">
+                    HTML
+                </span>
+
+
+                <span class="skill-tag gold">
+                    CSS
+                </span>
+
+
+                <span class="skill-tag">
+                    JavaScript
+                </span>
+
+
+                <span class="skill-tag">
+                    Python
+                </span>
+
+
+                <span class="skill-tag">
+                    MySQL
+                </span>
+
+
+                <span class="skill-tag">
+                    DBMS
+                </span>
+
+
+                <span class="skill-tag">
+                    Problem Solving
+                </span>
+
+
+                <span class="skill-tag">
+                    GitHub
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+
+    </div>
+
+
+
+    <!-- =============================================
+         RIGHT COLUMN
+    ============================================== -->
+
+    <aside>
+
+
+        <!-- PROFILE COMPLETION -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                Profile Progress
+            </span>
+
+
+            <h2>
+                Profile Complete
+            </h2>
+
+
+            <p class="bio-text">
+
+                Complete your profile to improve project
+                matching and help teammates understand
+                your strengths.
+
+            </p>
+
+
+            <div class="completion">
+
+
+                <div class="completion-top">
+
+                    <span>
+                        Completion
+                    </span>
+
+                    <strong>
+                        85%
+                    </strong>
+
+                </div>
+
+
+                <div class="completion-track">
+
+                    <div class="completion-fill">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- RECENT PROJECTS -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                Project Activity
+            </span>
+
+
+            <h2>
+                Recent Projects
+            </h2>
+
+
+            <div class="project-item">
+
+
+                <div class="project-icon">
+                    📚
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Student Management
+                    </strong>
+
+                    <small>
+                        92% skill match
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="project-item">
+
+
+                <div class="project-icon">
+                    🤖
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        AI Chatbot
+                    </strong>
+
+                    <small>
+                        81% skill match
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="project-item">
+
+
+                <div class="project-icon">
+                    🌐
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        College Website
+                    </strong>
+
+                    <small>
+                        76% skill match
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- QUICK LINKS -->
+
+        <section class="card">
+
+
+            <span class="section-label">
+                Explore SkillBloom
+            </span>
+
+
+            <h2>
+                Quick Links
+            </h2>
+
+
+            <div class="quick-links">
+
+
+                <a href="project.html"
+                   class="quick-link">
+
+                    🌱 Find Projects
+
+                </a>
+
+
+                <a href="dashboard.html"
+                   class="quick-link">
+
+                    📊 Dashboard
+
+                </a>
+
+
+                <a href="how-it-works.html"
+                   class="quick-link">
+
+                    💡 How It Works
+
+                </a>
+
+
+                <a href="login.html"
+                   class="quick-link">
+
+                    🔐 Login
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- EDIT PROFILE -->
+
+        <section class="edit-card">
+
+
+            <span class="edit-small">
+                Keep Growing
+            </span>
+
+
+            <h3>
+                Update Your Profile
+            </h3>
+
+
+            <p>
+
+                Add new skills and interests to get
+                better project recommendations.
+
+            </p>
+
+
+            <button
+                class="edit-btn"
+                onclick="editProfile()">
+
+                ✨ Edit Profile
+
+            </button>
+
+
+        </section>
+
+
+    </aside>
+
+
+</div>
+```
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+```
+Learn • Build • Collaborate
+
+<strong>
+    SkillBloom
+</strong>
+
+🌿
+```
+
+</footer>
+
+<script>
+
+/* =====================================================
+   EDIT PROFILE BUTTON
+===================================================== */
+
+function editProfile() {
+
+    alert(
+        "Profile editing will be connected to the " +
+        "student database in the next stage. 🌿"
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>

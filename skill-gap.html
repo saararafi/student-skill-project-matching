@@ -1,0 +1,1434 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SkillBloom | Skill Gap</title>
+
+
+    <!-- GOOGLE FONTS -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+
+    <style>
+
+        /* ==============================
+           BASIC RESET
+        ============================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            font-family: "Poppins", sans-serif;
+
+            background: #f6f2e7;
+
+            color: #34442d;
+
+            line-height: 1.6;
+        }
+
+
+        /* ==============================
+           NAVBAR
+        ============================== */
+
+        .navbar {
+
+            min-height: 82px;
+
+            padding: 0 6%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            background: #fffdf6;
+
+            border-bottom: 1px solid rgba(83,104,59,0.15);
+
+            box-shadow:
+                0 5px 20px rgba(45,65,35,0.06);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+        }
+
+
+        .logo {
+
+            text-decoration: none;
+
+            font-family: "Great Vibes", cursive;
+
+            font-size: 38px;
+
+            color: #53683b;
+
+            white-space: nowrap;
+        }
+
+
+        .logo span {
+            color: #b4933f;
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .nav-links a {
+
+            text-decoration: none;
+
+            color: #59634d;
+
+            font-size: 11px;
+
+            font-weight: 500;
+
+            transition: 0.3s;
+        }
+
+
+        .nav-links a:hover {
+
+            color: #a17e2d;
+        }
+
+
+        .nav-links .active {
+
+            color: #9b7727;
+
+            font-weight: 600;
+        }
+
+
+        .nav-register {
+
+            padding: 9px 17px;
+
+            border-radius: 20px;
+
+            background: #53683b;
+
+            color: white !important;
+        }
+
+
+        /* ==============================
+           HERO
+        ============================== */
+
+        .hero {
+
+            padding: 75px 8% 65px;
+
+            text-align: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+
+                radial-gradient(
+                    circle at 15% 25%,
+                    rgba(180,151,61,0.12),
+                    transparent 25%
+                ),
+
+                radial-gradient(
+                    circle at 85% 70%,
+                    rgba(73,100,52,0.12),
+                    transparent 28%
+                );
+        }
+
+
+        .hero::before {
+
+            content: "❦";
+
+            position: absolute;
+
+            left: -25px;
+
+            top: -55px;
+
+            font-size: 180px;
+
+            color: #53683b;
+
+            opacity: 0.06;
+
+            transform: rotate(-15deg);
+        }
+
+
+        .hero::after {
+
+            content: "❦";
+
+            position: absolute;
+
+            right: -10px;
+
+            bottom: -75px;
+
+            font-size: 190px;
+
+            color: #b4933f;
+
+            opacity: 0.07;
+
+            transform: rotate(15deg);
+        }
+
+
+        .hero-label {
+
+            display: inline-block;
+
+            padding: 8px 17px;
+
+            border-radius: 30px;
+
+            background: #e5e9da;
+
+            color: #617149;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+
+        .hero h1 {
+
+            font-family: "Great Vibes", cursive;
+
+            font-size: clamp(60px, 8vw, 90px);
+
+            font-weight: 400;
+
+            line-height: 1;
+
+            color: #53683b;
+
+            margin: 15px 0 12px;
+        }
+
+
+        .hero h1 span {
+
+            color: #b18d35;
+        }
+
+
+        .hero p {
+
+            max-width: 650px;
+
+            margin: auto;
+
+            color: #777e6e;
+
+            font-size: 11px;
+
+            line-height: 1.9;
+        }
+
+
+        /* ==============================
+           MAIN SECTION
+        ============================== */
+
+        .section {
+
+            padding: 70px 8%;
+        }
+
+
+        .section-heading {
+
+            text-align: center;
+
+            max-width: 700px;
+
+            margin: 0 auto 40px;
+        }
+
+
+        .section-heading h2 {
+
+            font-family: "Great Vibes", cursive;
+
+            font-size: 54px;
+
+            font-weight: 400;
+
+            color: #53683b;
+        }
+
+
+        .section-heading p {
+
+            color: #777e6e;
+
+            font-size: 10px;
+
+            margin-top: 5px;
+        }
+
+
+        /* ==============================
+           SKILL COMPARISON
+        ============================== */
+
+        .comparison {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 25px;
+        }
+
+
+        .skill-box {
+
+            background: #fffdf6;
+
+            border: 1px solid #dedbcc;
+
+            border-radius: 23px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 10px 25px rgba(55,70,40,0.05);
+        }
+
+
+        .skill-box h3 {
+
+            font-family: "Cormorant Garamond", serif;
+
+            color: #4b6036;
+
+            font-size: 32px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .skill-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 13px 15px;
+
+            background: #f0f1e7;
+
+            border-radius: 12px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .skill-name {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            color: #5f6953;
+
+            font-size: 10px;
+        }
+
+
+        .skill-icon {
+
+            font-size: 18px;
+        }
+
+
+        .status {
+
+            font-size: 8px;
+
+            font-weight: 600;
+
+            padding: 5px 9px;
+
+            border-radius: 12px;
+        }
+
+
+        .matched {
+
+            background: #dfe8d4;
+
+            color: #52703c;
+        }
+
+
+        .missing {
+
+            background: #eee2c6;
+
+            color: #96752d;
+        }
+
+
+        /* ==============================
+           SKILL GAP GRAPH
+        ============================== */
+
+        .graph-section {
+
+            background: #ebece0;
+        }
+
+
+        .graph {
+
+            max-width: 1000px;
+
+            margin: auto;
+
+            background: #fffdf6;
+
+            border: 1px solid #dedbcc;
+
+            border-radius: 25px;
+
+            padding: 35px;
+        }
+
+
+        .graph-row {
+
+            margin-bottom: 22px;
+        }
+
+
+        .graph-label {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 10px;
+
+            color: #68705c;
+
+            margin-bottom: 7px;
+        }
+
+
+        .graph-label strong {
+
+            color: #a17e2d;
+        }
+
+
+        .bar {
+
+            height: 12px;
+
+            background: #dedfd4;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+
+        .bar-fill {
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #53683b,
+                    #b49746
+                );
+        }
+
+
+        /* ==============================
+           RECOMMENDATION
+        ============================== */
+
+        .recommendation {
+
+            max-width: 900px;
+
+            margin: auto;
+
+            padding: 35px;
+
+            border-radius: 25px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #53683b,
+                    #687b4c
+                );
+
+            color: white;
+
+            text-align: center;
+
+            box-shadow:
+                0 15px 35px rgba(55,70,40,0.15);
+        }
+
+
+        .recommendation .icon {
+
+            font-size: 42px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .recommendation h2 {
+
+            font-family: "Great Vibes", cursive;
+
+            font-size: 48px;
+
+            font-weight: 400;
+        }
+
+
+        .recommendation p {
+
+            max-width: 650px;
+
+            margin: 8px auto 20px;
+
+            font-size: 10px;
+
+            line-height: 1.9;
+
+            opacity: 0.88;
+        }
+
+
+        .recommendation a {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 11px 20px;
+
+            background: #b49746;
+
+            color: white;
+
+            border-radius: 10px;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+
+        .recommendation a:hover {
+
+            transform: translateY(-2px);
+
+            background: #a58537;
+        }
+
+
+        /* ==============================
+           HOW IT WORKS
+        ============================== */
+
+        .process {
+
+            background: #f6f2e7;
+        }
+
+
+        .process-grid {
+
+            max-width: 1000px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .process-card {
+
+            text-align: center;
+
+            padding: 25px 15px;
+
+            background: #fffdf6;
+
+            border: 1px solid #dedbcc;
+
+            border-radius: 18px;
+        }
+
+
+        .process-number {
+
+            width: 42px;
+
+            height: 42px;
+
+            margin: 0 auto 10px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #53683b;
+
+            color: white;
+
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 19px;
+        }
+
+
+        .process-card h3 {
+
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: 23px;
+
+            color: #4b6036;
+
+            margin-bottom: 5px;
+        }
+
+
+        .process-card p {
+
+            color: #777e6e;
+
+            font-size: 8px;
+
+            line-height: 1.7;
+        }
+
+
+        /* ==============================
+           FOOTER
+        ============================== */
+
+        footer {
+
+            background: #3e502d;
+
+            color: #e9eadb;
+
+            padding: 38px 8%;
+
+            text-align: center;
+        }
+
+
+        footer strong {
+
+            font-family: "Great Vibes", cursive;
+
+            font-size: 34px;
+
+            font-weight: 400;
+        }
+
+
+        footer p {
+
+            font-size: 9px;
+
+            opacity: 0.7;
+
+            margin-top: 4px;
+        }
+
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 850px) {
+
+            .navbar {
+
+                flex-direction: column;
+
+                padding: 18px 5%;
+
+                gap: 15px;
+            }
+
+
+            .nav-links {
+
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+
+            .comparison {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .process-grid {
+
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .section {
+
+                padding: 55px 6%;
+            }
+
+
+            .process-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .hero h1 {
+
+                font-size: 58px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==============================
+         NAVBAR
+    ============================== -->
+
+    <nav class="navbar">
+
+
+        <a href="index.html" class="logo">
+            🌿 Skill<span>Bloom</span>
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="how-it-works.html">
+                How It Works
+            </a>
+
+            <a href="project.html">
+                Projects
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="skill-gap.html" class="active">
+                Skill Gap
+            </a>
+
+            <a href="faculty.html">
+                Faculty
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html" class="nav-register">
+                Register
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ==============================
+         HERO
+    ============================== -->
+
+    <section class="hero">
+
+
+        <span class="hero-label">
+            Student Skill Analysis
+        </span>
+
+
+        <h1>
+
+            Discover Your
+            <span>Skill Gap</span>
+
+        </h1>
+
+
+        <p>
+
+            Understand which skills you already have,
+            identify the skills required for your chosen
+            project, and discover areas where you can improve.
+
+        </p>
+
+
+    </section>
+
+
+
+    <!-- ==============================
+         CURRENT VS REQUIRED
+    ============================== -->
+
+    <section class="section">
+
+
+        <div class="section-heading">
+
+            <h2>
+                Your Skills vs Project Skills
+            </h2>
+
+            <p>
+                A simple comparison between existing skills
+                and the skills required by a project.
+            </p>
+
+        </div>
+
+
+
+        <div class="comparison">
+
+
+            <!-- CURRENT SKILLS -->
+
+            <div class="skill-box">
+
+
+                <h3>
+                    🌿 Your Skills
+                </h3>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            💻
+                        </span>
+
+                        HTML
+                    </div>
+
+                    <span class="status matched">
+                        Matched
+                    </span>
+
+                </div>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            🎨
+                        </span>
+
+                        CSS
+                    </div>
+
+                    <span class="status matched">
+                        Matched
+                    </span>
+
+                </div>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            ⚡
+                        </span>
+
+                        JavaScript
+                    </div>
+
+                    <span class="status matched">
+                        Matched
+                    </span>
+
+                </div>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            🗄️
+                        </span>
+
+                        MySQL
+                    </div>
+
+                    <span class="status matched">
+                        Matched
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- REQUIRED SKILLS -->
+
+            <div class="skill-box">
+
+
+                <h3>
+                    💡 Project Needs
+                </h3>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            💻
+                        </span>
+
+                        HTML
+                    </div>
+
+                    <span class="status matched">
+                        Available
+                    </span>
+
+                </div>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            🎨
+                        </span>
+
+                        CSS
+                    </div>
+
+                    <span class="status matched">
+                        Available
+                    </span>
+
+                </div>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            🐍
+                        </span>
+
+                        Python
+                    </div>
+
+                    <span class="status missing">
+                        Improve
+                    </span>
+
+                </div>
+
+
+                <div class="skill-item">
+
+                    <div class="skill-name">
+
+                        <span class="skill-icon">
+                            🤖
+                        </span>
+
+                        Machine Learning
+                    </div>
+
+                    <span class="status missing">
+                        Learn
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==============================
+         GRAPH
+    ============================== -->
+
+    <section class="section graph-section">
+
+
+        <div class="section-heading">
+
+            <h2>
+                Skill Progress
+            </h2>
+
+            <p>
+                Example visual representation of current
+                skill strength.
+            </p>
+
+        </div>
+
+
+
+        <div class="graph">
+
+
+            <div class="graph-row">
+
+                <div class="graph-label">
+
+                    <span>
+                        HTML
+                    </span>
+
+                    <strong>
+                        90%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+                        class="bar-fill"
+                        style="width:90%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="graph-row">
+
+                <div class="graph-label">
+
+                    <span>
+                        CSS
+                    </span>
+
+                    <strong>
+                        82%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+                        class="bar-fill"
+                        style="width:82%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="graph-row">
+
+                <div class="graph-label">
+
+                    <span>
+                        JavaScript
+                    </span>
+
+                    <strong>
+                        68%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+                        class="bar-fill"
+                        style="width:68%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="graph-row">
+
+                <div class="graph-label">
+
+                    <span>
+                        Python
+                    </span>
+
+                    <strong>
+                        42%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+                        class="bar-fill"
+                        style="width:42%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="graph-row">
+
+                <div class="graph-label">
+
+                    <span>
+                        Machine Learning
+                    </span>
+
+                    <strong>
+                        30%
+                    </strong>
+
+                </div>
+
+
+                <div class="bar">
+
+                    <div
+                        class="bar-fill"
+                        style="width:30%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==============================
+         RECOMMENDATION
+    ============================== -->
+
+    <section class="section">
+
+
+        <div class="recommendation">
+
+
+            <div class="icon">
+                🌱
+            </div>
+
+
+            <h2>
+                Your Growth Path
+            </h2>
+
+
+            <p>
+
+                Based on the example skill comparison,
+                Python and Machine Learning are areas where
+                additional learning could help you participate
+                in more AI-based projects.
+
+            </p>
+
+
+            <a href="project.html">
+                Explore Projects →
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==============================
+         PROCESS
+    ============================== -->
+
+    <section class="section process">
+
+
+        <div class="section-heading">
+
+            <h2>
+                How Skill Gap Analysis Works
+            </h2>
+
+            <p>
+                The system can follow these steps when
+                connected to the student's profile.
+            </p>
+
+        </div>
+
+
+
+        <div class="process-grid">
+
+
+            <div class="process-card">
+
+                <div class="process-number">
+                    1
+                </div>
+
+                <h3>
+                    Select Skills
+                </h3>
+
+                <p>
+                    Student selects or updates current skills.
+                </p>
+
+            </div>
+
+
+
+            <div class="process-card">
+
+                <div class="process-number">
+                    2
+                </div>
+
+                <h3>
+                    Choose Project
+                </h3>
+
+                <p>
+                    Student selects an area or project.
+                </p>
+
+            </div>
+
+
+
+            <div class="process-card">
+
+                <div class="process-number">
+                    3
+                </div>
+
+                <h3>
+                    Compare
+                </h3>
+
+                <p>
+                    System compares student skills
+                    with project requirements.
+                </p>
+
+            </div>
+
+
+
+            <div class="process-card">
+
+                <div class="process-number">
+                    4
+                </div>
+
+                <h3>
+                    Improve
+                </h3>
+
+                <p>
+                    Missing skills can become learning
+                    targets for the student.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==============================
+         FOOTER
+    ============================== -->
+
+    <footer>
+
+        <strong>
+            🌿 SkillBloom
+        </strong>
+
+        <p>
+            Student Skill & Project Matching System
+        </p>
+
+        <p>
+            © 2026 SkillBloom · Learn · Match · Grow
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
+```

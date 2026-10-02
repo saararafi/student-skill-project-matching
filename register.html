@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Register | SkillBloom</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+```
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+
+    min-height: 100vh;
+
+    font-family: "Poppins", sans-serif;
+
+    color: #3f5032;
+
+    background:
+
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(177, 151, 67, 0.13),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(76, 103, 53, 0.12),
+            transparent 28%
+        ),
+
+        #f5f2e8;
+
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+
+    width: 100%;
+
+    min-height: 78px;
+
+    padding: 0 7%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: rgba(255, 253, 246, 0.97);
+
+    border-bottom: 1px solid rgba(83, 104, 59, 0.15);
+
+    box-shadow:
+        0 5px 20px rgba(45, 65, 35, 0.06);
+
+}
+
+
+/* Logo */
+
+.logo {
+
+    text-decoration: none;
+
+    color: #4d6235;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 34px;
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+
+}
+
+.logo span {
+
+    color: #b4933f;
+
+}
+
+
+/* Navigation */
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+
+}
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: #59634d;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition: 0.3s;
+
+}
+
+.nav-links a:hover {
+
+    color: #a17e28;
+
+}
+
+
+/* Register active */
+
+.nav-register {
+
+    padding: 9px 18px;
+
+    border-radius: 20px;
+
+    background: #53683b;
+
+    color: white !important;
+
+}
+
+
+/* =====================================================
+   MAIN REGISTER AREA
+===================================================== */
+
+.register-section {
+
+    min-height: calc(100vh - 78px);
+
+    padding: 65px 6% 80px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+/* Decorative leaves */
+
+.register-section::before {
+
+    content: "❦";
+
+    position: absolute;
+
+    left: 4%;
+
+    top: 45px;
+
+    font-size: 150px;
+
+    color: #60754a;
+
+    opacity: 0.07;
+
+    transform: rotate(-18deg);
+
+}
+
+
+.register-section::after {
+
+    content: "❧";
+
+    position: absolute;
+
+    right: 4%;
+
+    bottom: 20px;
+
+    font-size: 170px;
+
+    color: #a88b3c;
+
+    opacity: 0.07;
+
+    transform: rotate(15deg);
+
+}
+
+
+/* =====================================================
+   REGISTER CONTAINER
+===================================================== */
+
+.register-container {
+
+    width: 100%;
+
+    max-width: 1050px;
+
+    display: grid;
+
+    grid-template-columns: 0.85fr 1.15fr;
+
+    background: rgba(255, 253, 246, 0.96);
+
+    border: 1px solid rgba(170, 145, 64, 0.25);
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 25px 60px rgba(55, 70, 40, 0.12);
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* =====================================================
+   LEFT SIDE
+===================================================== */
+
+.register-intro {
+
+    padding: 55px 42px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #53683b,
+            #40552f
+        );
+
+    color: white;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+}
+
+
+/* Decorative circle */
+
+.register-intro::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+
+    height: 300px;
+
+    border: 1px solid rgba(215, 199, 127, 0.18);
+
+    border-radius: 50%;
+
+    right: -130px;
+
+    top: -80px;
+
+}
+
+
+.register-intro::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: 10px;
+
+    bottom: -65px;
+
+    font-size: 190px;
+
+    color: #d2bd6e;
+
+    opacity: 0.08;
+
+}
+
+
+/* Small label */
+
+.intro-label {
+
+    color: #d8c982;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* Main heading */
+
+.register-intro h1 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 62px;
+
+    line-height: 1.05;
+
+    font-weight: 400;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* Paragraph */
+
+.register-intro p {
+
+    color: rgba(255,255,255,0.82);
+
+    font-size: 12px;
+
+    line-height: 1.9;
+
+    max-width: 370px;
+
+    margin-bottom: 30px;
+
+}
+
+
+/* Benefits */
+
+.benefits {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+
+}
+
+
+.benefit {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    color: rgba(255,255,255,0.88);
+
+    font-size: 11px;
+
+}
+
+
+.benefit-icon {
+
+    width: 31px;
+
+    height: 31px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(255,255,255,0.10);
+
+    border: 1px solid rgba(216,201,130,0.35);
+
+}
+
+
+/* =====================================================
+   RIGHT FORM
+===================================================== */
+
+.register-form-area {
+
+    padding: 50px 55px;
+
+    background: #fffdf6;
+
+}
+
+
+/* Form heading */
+
+.form-heading {
+
+    margin-bottom: 28px;
+
+}
+
+
+.form-heading .small {
+
+    color: #a17e2d;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+}
+
+
+.form-heading h2 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 50px;
+
+    line-height: 1;
+
+    font-weight: 400;
+
+    color: #465b32;
+
+    margin: 7px 0;
+
+}
+
+
+.form-heading p {
+
+    color: #7b806f;
+
+    font-size: 11px;
+
+}
+
+
+/* =====================================================
+   FORM GRID
+===================================================== */
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 17px 18px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.form-group.full {
+
+    grid-column: 1 / -1;
+
+}
+
+
+.form-group label {
+
+    color: #59634d;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+}
+
+
+.form-group input,
+.form-group select {
+
+    width: 100%;
+
+    height: 43px;
+
+    padding: 0 13px;
+
+    border-radius: 9px;
+
+    border: 1px solid #d8d8c9;
+
+    background: #faf9f1;
+
+    color: #4d5c3c;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 11px;
+
+    outline: none;
+
+    transition: 0.25s;
+
+}
+
+
+.form-group input::placeholder {
+
+    color: #a2a696;
+
+}
+
+
+.form-group input:focus,
+.form-group select:focus {
+
+    border-color: #a9924d;
+
+    background: #fffdf6;
+
+    box-shadow:
+        0 0 0 3px rgba(169,146,77,0.10);
+
+}
+
+
+/* =====================================================
+   CREATE ACCOUNT BUTTON
+===================================================== */
+
+.register-button {
+
+    width: 100%;
+
+    height: 47px;
+
+    margin-top: 24px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #53683b;
+
+    color: white;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 22px rgba(70,91,48,0.18);
+
+    transition: 0.3s;
+
+}
+
+
+.register-button:hover {
+
+    background: #44582f;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 13px 25px rgba(70,91,48,0.22);
+
+}
+
+
+/* =====================================================
+   LOGIN LINK
+===================================================== */
+
+.login-text {
+
+    text-align: center;
+
+    margin-top: 19px;
+
+    color: #858a7b;
+
+    font-size: 10px;
+
+}
+
+
+.login-text a {
+
+    color: #98772d;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+}
+
+
+.login-text a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* =====================================================
+   FOOTNOTE
+===================================================== */
+
+.form-note {
+
+    text-align: center;
+
+    color: #a0a493;
+
+    font-size: 8px;
+
+    margin-top: 13px;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 850px) {
+
+    .register-container {
+
+        grid-template-columns: 1fr;
+
+        max-width: 650px;
+
+    }
+
+    .register-intro {
+
+        padding: 40px;
+
+    }
+
+    .register-intro h1 {
+
+        font-size: 52px;
+
+    }
+
+    .register-form-area {
+
+        padding: 40px;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+
+        padding: 15px 5%;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 9px;
+
+    }
+
+    .nav-links a {
+
+        font-size: 9px;
+
+    }
+
+    .logo {
+
+        font-size: 30px;
+
+    }
+
+    .register-section {
+
+        padding: 35px 5% 55px;
+
+    }
+
+    .register-intro {
+
+        padding: 32px 25px;
+
+    }
+
+    .register-form-area {
+
+        padding: 32px 25px;
+
+    }
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .form-group.full {
+
+        grid-column: auto;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+```
+<a href="index.html" class="logo">
+    🌿 Skill<span>Bloom</span>
+</a>
+
+
+<div class="nav-links">
+
+    <a href="index.html">
+        Home
+    </a>
+
+    <a href="how-it-works.html">
+        How It Works
+    </a>
+
+    <a href="project.html">
+        Projects
+    </a>
+
+    <a href="login.html">
+        Login
+    </a>
+
+    <a href="register.html"
+       class="nav-register">
+        Register
+    </a>
+
+</div>
+```
+
+</nav>
+
+<!-- =====================================================
+     REGISTER SECTION
+===================================================== -->
+
+<section class="register-section">
+
+```
+<div class="register-container">
+
+
+    <!-- =============================================
+         LEFT INTRODUCTION
+    ============================================== -->
+
+    <div class="register-intro">
+
+
+        <span class="intro-label">
+            🌿 Welcome to SkillBloom
+        </span>
+
+
+        <h1>
+            Let Your Skills Bloom
+        </h1>
+
+
+        <p>
+            Create your student profile and begin
+            discovering projects that match your
+            skills, interests and future goals.
+        </p>
+
+
+        <div class="benefits">
+
+
+            <div class="benefit">
+
+                <span class="benefit-icon">
+                    🌱
+                </span>
+
+                <span>
+                    Discover your strongest skills
+                </span>
+
+            </div>
+
+
+            <div class="benefit">
+
+                <span class="benefit-icon">
+                    🎯
+                </span>
+
+                <span>
+                    Find projects matched to you
+                </span>
+
+            </div>
+
+
+            <div class="benefit">
+
+                <span class="benefit-icon">
+                    🤝
+                </span>
+
+                <span>
+                    Connect with suitable teammates
+                </span>
+
+            </div>
+
+
+            <div class="benefit">
+
+                <span class="benefit-icon">
+                    📈
+                </span>
+
+                <span>
+                    Track your skill development
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =============================================
+         REGISTRATION FORM
+    ============================================== -->
+
+    <div class="register-form-area">
+
+
+        <div class="form-heading">
+
+            <span class="small">
+                Create Your Account
+            </span>
+
+            <h2>
+                Join SkillBloom
+            </h2>
+
+            <p>
+                Enter your details to create your student profile.
+            </p>
+
+        </div>
+
+
+        <form
+            action="#"
+            method="post"
+            onsubmit="return registerStudent(event)"
+        >
+
+
+            <div class="form-grid">
+
+
+                <!-- Full Name -->
+
+                <div class="form-group full">
+
+                    <label for="fullName">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="example@email.com"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Phone -->
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter phone number"
+                    >
+
+                </div>
+
+
+                <!-- Department -->
+
+                <div class="form-group">
+
+                    <label for="department">
+                        Department
+                    </label>
+
+                    <select
+                        id="department"
+                        name="department"
+                        required
+                    >
+
+                        <option value="">
+                            Select department
+                        </option>
+
+                        <option value="CSE">
+                            Computer Science & Engineering
+                        </option>
+
+                        <option value="ISE">
+                            Information Science
+                        </option>
+
+                        <option value="ECE">
+                            Electronics & Communication
+                        </option>
+
+                        <option value="EEE">
+                            Electrical & Electronics
+                        </option>
+
+                        <option value="ME">
+                            Mechanical Engineering
+                        </option>
+
+                        <option value="CIVIL">
+                            Civil Engineering
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Year -->
+
+                <div class="form-group">
+
+                    <label for="year">
+                        Current Year
+                    </label>
+
+                    <select
+                        id="year"
+                        name="year"
+                        required
+                    >
+
+                        <option value="">
+                            Select year
+                        </option>
+
+                        <option value="1">
+                            1st Year
+                        </option>
+
+                        <option value="2">
+                            2nd Year
+                        </option>
+
+                        <option value="3">
+                            3rd Year
+                        </option>
+
+                        <option value="4">
+                            4th Year
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Confirm Password -->
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm password"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="register-button"
+            >
+                Create My Account →
+            </button>
+
+
+        </form>
+
+
+        <p class="login-text">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login here
+            </a>
+
+        </p>
+
+
+        <p class="form-note">
+
+            🌿 Your profile helps SkillBloom understand
+            your skills and recommend suitable projects.
+
+        </p>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<script>
+
+/*
+=====================================================
+REGISTER FORM
+Basic frontend validation for now.
+Database connection can be added later.
+=====================================================
+*/
+
+function registerStudent(event) {
+
+    event.preventDefault();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+
+    if (password !== confirmPassword) {
+
+        alert("Passwords do not match.");
+
+        return false;
+
+    }
+
+
+    alert(
+        "Registration form submitted successfully!"
+    );
+
+
+    return false;
+}
+
+</script>
+
+</body>
+
+</html>

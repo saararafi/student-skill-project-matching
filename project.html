@@ -1,0 +1,3192 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Projects | SkillBloom</title>
+
+
+<!-- =================================================
+     GOOGLE FONTS
+================================================== -->
+
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+```
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+html {
+
+    scroll-behavior: smooth;
+
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    font-family: "Poppins", sans-serif;
+
+    color: #3f5032;
+
+    background:
+
+        radial-gradient(
+            circle at 8% 10%,
+            rgba(177, 151, 67, 0.12),
+            transparent 24%
+        ),
+
+        radial-gradient(
+            circle at 92% 75%,
+            rgba(76, 103, 53, 0.10),
+            transparent 28%
+        ),
+
+        #f5f2e8;
+
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+
+    width: 100%;
+
+    min-height: 78px;
+
+    padding: 0 7%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: rgba(255, 253, 246, 0.97);
+
+    border-bottom: 1px solid rgba(83, 104, 59, 0.15);
+
+    box-shadow:
+        0 5px 20px rgba(45, 65, 35, 0.06);
+
+}
+
+
+.logo {
+
+    text-decoration: none;
+
+    color: #4d6235;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 34px;
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+
+}
+
+
+.logo span {
+
+    color: #b4933f;
+
+}
+
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+}
+
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: #59634d;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    transition: 0.3s;
+
+}
+
+
+.nav-links a:hover {
+
+    color: #a17e28;
+
+}
+
+
+.nav-projects {
+
+    padding: 9px 17px;
+
+    border-radius: 20px;
+
+    background: #53683b;
+
+    color: white !important;
+
+}
+
+
+/* =====================================================
+   PAGE HERO
+===================================================== */
+
+.projects-hero {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 58px 7% 52px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(83,104,59,0.97),
+            rgba(63,82,44,0.97)
+        );
+
+    color: white;
+
+}
+
+
+.projects-hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 330px;
+
+    height: 330px;
+
+    border: 1px solid rgba(216,201,130,0.18);
+
+    border-radius: 50%;
+
+    right: -110px;
+
+    top: -180px;
+
+}
+
+
+.projects-hero::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: 5%;
+
+    bottom: -90px;
+
+    font-size: 220px;
+
+    color: #d5c477;
+
+    opacity: 0.08;
+
+}
+
+
+.hero-content {
+
+    max-width: 1150px;
+
+    margin: auto;
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.hero-label {
+
+    color: #d8c982;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+}
+
+
+.projects-hero h1 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 64px;
+
+    font-weight: 400;
+
+    line-height: 1.05;
+
+    margin: 8px 0 12px;
+
+}
+
+
+.projects-hero p {
+
+    max-width: 650px;
+
+    color: rgba(255,255,255,0.82);
+
+    font-size: 12px;
+
+    line-height: 1.9;
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.projects-main {
+
+    max-width: 1150px;
+
+    margin: auto;
+
+    padding: 42px 6% 80px;
+
+}
+/* =====================================================
+   STUDENT SKILL SELECTION
+===================================================== */
+
+.student-skills {
+
+    background: #fffdf6;
+
+    border: 1px solid rgba(170,145,64,0.22);
+
+    border-radius: 22px;
+
+    padding: 28px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 10px 28px rgba(55,70,40,0.06);
+
+}
+
+
+.skill-heading {
+
+    text-align: center;
+
+    margin-bottom: 22px;
+
+}
+
+
+.skill-heading span {
+
+    color: #a17e28;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+}
+
+
+.skill-heading h2 {
+
+    margin: 5px 0;
+
+    color: #53683b;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 38px;
+
+    font-weight: 400;
+
+}
+
+
+.skill-heading p {
+
+    color: #858b7d;
+
+    font-size: 9px;
+
+    line-height: 1.7;
+
+}
+
+
+.skill-selection {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 10px;
+
+}
+
+
+.skill-selection label {
+
+    cursor: pointer;
+
+}
+
+
+.skill-selection input {
+
+    display: none;
+
+}
+
+
+.skill-selection label span {
+
+    display: block;
+
+    padding: 10px 15px;
+
+    border-radius: 22px;
+
+    border: 1px solid #d7d6c8;
+
+    background: #faf9f1;
+
+    color: #657052;
+
+    font-size: 9px;
+
+    transition: 0.25s;
+
+}
+
+
+.skill-selection label span:hover {
+
+    border-color: #a9924d;
+
+    transform: translateY(-2px);
+
+}
+
+
+.skill-selection input:checked + span {
+
+    background: #53683b;
+
+    border-color: #53683b;
+
+    color: white;
+
+    box-shadow:
+        0 5px 15px rgba(83,104,59,0.18);
+
+}
+
+/* =====================================================
+   SEARCH + FILTER AREA
+===================================================== */
+
+.project-tools {
+
+    background: #fffdf6;
+
+    border: 1px solid rgba(170,145,64,0.22);
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 10px 28px rgba(55,70,40,0.06);
+
+    margin-bottom: 35px;
+
+}
+
+
+.search-box {
+
+    position: relative;
+
+    margin-bottom: 18px;
+
+}
+
+
+.search-box span {
+
+    position: absolute;
+
+    left: 15px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 15px;
+
+}
+
+
+.search-box input {
+
+    width: 100%;
+
+    height: 46px;
+
+    padding: 0 15px 0 43px;
+
+    border: 1px solid #d8d8c9;
+
+    border-radius: 10px;
+
+    background: #faf9f1;
+
+    color: #4d5c3c;
+
+    outline: none;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 11px;
+
+}
+
+
+.search-box input:focus {
+
+    border-color: #a9924d;
+
+    background: #fffdf6;
+
+    box-shadow:
+        0 0 0 3px rgba(169,146,77,0.10);
+
+}
+
+
+.filter-row {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+}
+
+
+.filter-btn {
+
+    border: 1px solid #d2d2c2;
+
+    background: #faf9f1;
+
+    color: #69715e;
+
+    padding: 8px 15px;
+
+    border-radius: 20px;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 9px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+
+}
+
+
+.filter-btn:hover {
+
+    border-color: #a9924d;
+
+    color: #8b6e29;
+
+}
+
+
+.filter-btn.active {
+
+    background: #53683b;
+
+    border-color: #53683b;
+
+    color: white;
+
+}
+
+
+/* =====================================================
+   MATCHING SUMMARY
+===================================================== */
+
+.match-summary {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+
+}
+
+
+.match-summary h2 {
+
+    font-family: "Great Vibes", cursive;
+
+    color: #465b32;
+
+    font-size: 42px;
+
+    font-weight: 400;
+
+}
+
+
+.match-summary p {
+
+    color: #8a8f80;
+
+    font-size: 9px;
+
+}
+
+
+.project-count {
+
+    color: #9a792c;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================================
+   PROJECT GRID
+===================================================== */
+
+.project-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+}
+
+
+/* =====================================================
+   PROJECT CARD
+===================================================== */
+
+.project-card {
+
+    background: #fffdf6;
+
+    border: 1px solid rgba(170,145,64,0.22);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 28px rgba(55,70,40,0.06);
+
+    transition: 0.3s;
+
+}
+
+
+.project-card:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 18px 35px rgba(55,70,40,0.11);
+
+}
+
+
+.project-top {
+
+    padding: 23px 23px 15px;
+
+    position: relative;
+
+}
+
+
+.project-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 15px;
+
+    background: #edf0e6;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 23px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.match-badge {
+
+    position: absolute;
+
+    top: 20px;
+
+    right: 20px;
+
+    padding: 6px 9px;
+
+    border-radius: 15px;
+
+    background: #eee7cc;
+
+    color: #927329;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+}
+
+
+.project-card h3 {
+
+    color: #465b32;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 24px;
+
+    line-height: 1.1;
+
+    margin-bottom: 7px;
+
+}
+
+
+.project-description {
+
+    color: #818777;
+
+    font-size: 9px;
+
+    line-height: 1.7;
+
+    min-height: 46px;
+
+}
+
+
+/* =====================================================
+   PROJECT TAGS
+===================================================== */
+
+.tags {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 14px;
+
+}
+
+
+.tag {
+
+    padding: 5px 8px;
+
+    border-radius: 12px;
+
+    background: #eef0e8;
+
+    color: #657052;
+
+    font-size: 7px;
+
+}
+
+
+/* =====================================================
+   PROJECT INFO
+===================================================== */
+
+.project-info-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    padding: 15px 23px;
+
+    border-top: 1px solid #ececdf;
+
+    border-bottom: 1px solid #ececdf;
+
+}
+
+
+.info-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.info-item span {
+
+    font-size: 13px;
+
+}
+
+
+.info-item div {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.info-item strong {
+
+    color: #5c674e;
+
+    font-size: 8px;
+
+}
+
+
+.info-item small {
+
+    color: #999d91;
+
+    font-size: 7px;
+
+}
+
+
+/* =====================================================
+   CARD FOOTER
+===================================================== */
+
+.project-footer {
+
+    padding: 15px 23px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.project-status {
+
+    color: #768067;
+
+    font-size: 8px;
+
+}
+
+
+.view-project {
+
+    text-decoration: none;
+
+    padding: 8px 13px;
+
+    border-radius: 17px;
+
+    background: #53683b;
+
+    color: white;
+
+    font-size: 8px;
+
+    font-weight: 500;
+
+    transition: 0.3s;
+
+}
+
+
+.view-project:hover {
+
+    background: #435730;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* =====================================================
+   NO RESULTS
+===================================================== */
+
+.no-results {
+
+    display: none;
+
+    text-align: center;
+
+    padding: 55px 20px;
+
+    background: #fffdf6;
+
+    border: 1px solid rgba(170,145,64,0.22);
+
+    border-radius: 20px;
+
+}
+
+
+.no-results .icon {
+
+    font-size: 35px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.no-results h3 {
+
+    font-family: "Cormorant Garamond", serif;
+
+    color: #53633e;
+
+    font-size: 24px;
+
+}
+
+
+.no-results p {
+
+    color: #929688;
+
+    font-size: 9px;
+
+    margin-top: 5px;
+
+}
+
+
+/* =====================================================
+   PROJECT MATCHING INFO
+===================================================== */
+
+.matching-section {
+
+    margin-top: 48px;
+
+}
+
+
+.matching-card {
+
+    display: grid;
+
+    grid-template-columns: 0.8fr 1.2fr;
+
+    gap: 30px;
+
+    align-items: center;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #53683b,
+            #40552f
+        );
+
+    color: white;
+
+    border-radius: 23px;
+
+    padding: 32px;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+.matching-card::after {
+
+    content: "❦";
+
+    position: absolute;
+
+    right: 10px;
+
+    bottom: -90px;
+
+    font-size: 220px;
+
+    color: #d5c477;
+
+    opacity: 0.07;
+
+}
+
+
+.matching-heading {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.matching-heading span {
+
+    color: #d8c982;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+}
+
+
+.matching-heading h2 {
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 43px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+
+    margin-top: 5px;
+
+}
+
+
+.matching-heading p {
+
+    color: rgba(255,255,255,0.76);
+
+    font-size: 9px;
+
+    line-height: 1.7;
+
+    margin-top: 7px;
+
+}
+
+
+.matching-bars {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.match-row {
+
+    margin-bottom: 13px;
+
+}
+
+
+.match-row-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 5px;
+
+}
+
+
+.match-row-top span {
+
+    color: rgba(255,255,255,0.82);
+
+    font-size: 8px;
+
+}
+
+
+.match-row-top strong {
+
+    color: #d8c982;
+
+    font-size: 8px;
+
+}
+
+
+.match-track {
+
+    width: 100%;
+
+    height: 7px;
+
+    background: rgba(255,255,255,0.13);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+.match-fill {
+
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        #c6ae60,
+        #e0d293
+    );
+
+    border-radius: 20px;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    color: #929688;
+
+    font-size: 9px;
+
+}
+
+
+.footer strong {
+
+    color: #53683b;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: 19px;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .project-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .matching-card {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .navbar {
+
+        padding: 15px 5%;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 9px;
+
+    }
+
+
+    .nav-links a {
+
+        font-size: 9px;
+
+    }
+
+
+    .logo {
+
+        font-size: 30px;
+
+    }
+
+
+    .projects-hero {
+
+        padding: 45px 7%;
+
+    }
+
+
+    .projects-hero h1 {
+
+        font-size: 52px;
+
+    }
+
+
+    .projects-main {
+
+        padding: 35px 5% 60px;
+
+    }
+
+
+    .project-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .match-summary {
+
+        align-items: flex-start;
+
+        gap: 10px;
+
+        flex-direction: column;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+```
+<a href="index.html"
+   class="logo">
+
+    🌿 Skill<span>Bloom</span>
+
+</a>
+
+
+<div class="nav-links">
+
+
+    <a href="index.html">
+        Home
+    </a>
+
+
+    <a href="how-it-works.html">
+        How It Works
+    </a>
+
+
+    <a href="project.html"
+       class="nav-projects">
+
+        Projects
+
+    </a>
+
+
+    <a href="dashboard.html">
+        Dashboard
+    </a>
+
+
+    <a href="login.html">
+        Login
+    </a>
+
+
+    <a href="register.html">
+        Register
+    </a>
+
+
+</div>
+```
+
+</nav>
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="projects-hero">
+
+```
+<div class="hero-content">
+
+
+    <span class="hero-label">
+
+        🌿 Discover • Match • Build
+
+    </span>
+
+
+    <h1>
+
+        Find Your Perfect Project
+
+    </h1>
+
+
+    <p>
+
+        Explore projects based on your skills,
+        interests and learning goals. SkillBloom
+        helps students discover meaningful projects
+        and find opportunities to build together.
+
+    </p>
+
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     MAIN PROJECT AREA
+===================================================== -->
+
+<main class="projects-main">
+
+```
+<!-- ================================================
+     SEARCH AND FILTER
+================================================= -->
+<!-- ================================================
+     STUDENT SKILL SELECTION
+================================================= -->
+
+<section class="student-skills">
+
+    <div class="skill-heading">
+
+        <span>🌿 PERSONALIZED MATCHING</span>
+
+        <h2>Select Your Skills</h2>
+
+        <p>
+            Select the skills you already know.
+            SkillBloom will calculate which projects
+            match your skill set.
+        </p>
+
+    </div>
+
+
+    <div class="skill-selection">
+
+        <label>
+            <input type="checkbox"
+                   value="html"
+                   onchange="calculateMatches()">
+            <span>🌐 HTML</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="css"
+                   onchange="calculateMatches()">
+            <span>🎨 CSS</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="javascript"
+                   onchange="calculateMatches()">
+            <span>⚡ JavaScript</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="python"
+                   onchange="calculateMatches()">
+            <span>🐍 Python</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="java"
+                   onchange="calculateMatches()">
+            <span>☕ Java</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="mysql"
+                   onchange="calculateMatches()">
+            <span>🗄️ MySQL</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="ai"
+                   onchange="calculateMatches()">
+            <span>🤖 AI</span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="data"
+                   onchange="calculateMatches()">
+            <span>📊 Data Science</span>
+        </label>
+
+    </div>
+
+</section>
+<section class="project-tools">
+
+
+    <div class="search-box">
+
+        <span>
+            🔎
+        </span>
+
+
+        <input
+            type="text"
+            id="projectSearch"
+            placeholder="Search projects, skills or technologies..."
+            onkeyup="searchProjects()"
+        >
+
+    </div>
+
+
+
+    <div class="filter-row">
+
+
+        <button
+            class="filter-btn active"
+            onclick="filterProjects('all', this)"
+        >
+
+            All Projects
+
+        </button>
+
+
+        <button
+            class="filter-btn"
+            onclick="filterProjects('programming', this)"
+        >
+
+            💻 Programming
+
+        </button>
+
+
+        <button
+            class="filter-btn"
+            onclick="filterProjects('web', this)"
+        >
+
+            🌐 Web Development
+
+        </button>
+
+
+        <button
+            class="filter-btn"
+            onclick="filterProjects('ai', this)"
+        >
+
+            🤖 AI & ML
+
+        </button>
+
+
+        <button
+            class="filter-btn"
+            onclick="filterProjects('data', this)"
+        >
+
+            📊 Data Science
+
+        </button>
+
+
+        <button
+            class="filter-btn"
+            onclick="filterProjects('database', this)"
+        >
+
+            🗄️ Database
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================
+     PROJECT TITLE
+================================================= -->
+
+<section class="match-summary">
+
+
+    <div>
+
+        <h2>
+            Recommended Projects
+        </h2>
+
+        <p>
+            Projects are displayed according to
+            student skills and matching areas.
+        </p>
+
+    </div>
+
+
+    <span
+        class="project-count"
+        id="projectCount"
+    >
+
+        9 Projects
+
+    </span>
+
+
+</section>
+
+
+
+<!-- ================================================
+     PROJECT GRID
+================================================= -->
+
+<section class="project-grid"
+         id="projectGrid">
+
+
+
+    <!-- PROJECT 1 -->
+
+    <article 
+    class="project-card" 
+    data-category="programming database" 
+    data-search="student management system programming database mysql python"
+    data-skills="python,mysql"
+>
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                📚
+            </div>
+
+
+            <span class="match-badge">
+                Select Skills
+            </span>
+
+            <h3>
+                Student Management System
+            </h3>
+
+
+            <p class="project-description">
+
+                A system for managing student records,
+                academic information and course details.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    Python
+                </span>
+
+                <span class="tag">
+                    MySQL
+                </span>
+
+                <span class="tag">
+                    DBMS
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        3–4 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Intermediate
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project1"
+               class="view-project"
+               onclick="viewProject('Student Management System')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 2 -->
+
+    <article
+        class="project-card"
+        data-category="web"
+        data-search="student portfolio website html css javascript web development"
+        data-skills="html,css,javascript"
+    >
+  
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                🌐
+            </div>
+
+
+            <span class="match-badge">
+                select skills
+            </span>
+
+
+            <h3>
+                Student Portfolio Website
+            </h3>
+
+
+            <p class="project-description">
+
+                Create a modern portfolio website where
+                students can showcase their skills and work.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    HTML
+                </span>
+
+                <span class="tag">
+                    CSS
+                </span>
+
+                <span class="tag">
+                    JavaScript
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        2–3 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Beginner
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project2"
+               class="view-project"
+               onclick="viewProject('Student Portfolio Website')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 3 -->
+
+    <article
+        class="project-card"
+        data-category="ai"
+        data-search="ai student assistant chatbot machine learning python artificial intelligence"
+    >   data-skills="python,ai
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                🤖
+            </div>
+
+
+            <span class="match-badge">
+                select skills 
+            </span>
+
+
+            <h3>
+                AI Student Assistant
+            </h3>
+
+
+            <p class="project-description">
+
+                Build an intelligent assistant that helps
+                students find academic information and resources.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    Python
+                </span>
+
+                <span class="tag">
+                    AI
+                </span>
+
+                <span class="tag">
+                    NLP
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        3–4 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Advanced
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project3"
+               class="view-project"
+               onclick="viewProject('AI Student Assistant')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 4 -->
+
+    <article
+        class="project-card"
+        data-category="data"
+        data-search="student performance analysis data science python pandas visualization"
+        data-skills="python,data"
+    >
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                📊
+            </div>
+
+
+            <span class="match-badge">
+                select skills 
+            </span>
+
+
+            <h3>
+                Student Performance Analysis
+            </h3>
+
+
+            <p class="project-description">
+
+                Analyze student academic data and create
+                useful visualizations to understand performance.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    Python
+                </span>
+
+                <span class="tag">
+                    Pandas
+                </span>
+
+                <span class="tag">
+                    Data Analysis
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        2–4 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    Level
+                </strong>
+
+                <small>
+                    Intermediate
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project4"
+               class="view-project"
+               onclick="viewProject('Student Performance Analysis')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 5 -->
+
+    <article
+        class="project-card"
+        data-category="web database"
+        data-search="online event management website web development database html css javascript mysql"
+         data-skills="html,javascript,mysql"
+    >
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                🎪
+            </div>
+
+
+            <span class="match-badge">
+               select skills
+            </span>
+
+
+            <h3>
+                Online Event Management
+            </h3>
+
+
+            <p class="project-description">
+
+                Develop a platform for creating, managing
+                and registering for college events.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    HTML
+                </span>
+
+                <span class="tag">
+                    JavaScript
+                </span>
+
+                <span class="tag">
+                    MySQL
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        3–4 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Intermediate
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project5"
+               class="view-project"
+               onclick="viewProject('Online Event Management')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 6 -->
+
+    <article
+        class="project-card"
+        data-category="programming"
+        data-search="online quiz application programming python javascript quiz"
+        data-skills="python,javascript"
+    >
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                📝
+            </div>
+
+
+            <span class="match-badge">
+              select skills
+            </span>
+
+
+            <h3>
+                Online Quiz Application
+            </h3>
+
+
+            <p class="project-description">
+
+                Create an interactive quiz platform with
+                questions, scoring and student results.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    Python
+                </span>
+
+                <span class="tag">
+                    JavaScript
+                </span>
+
+                <span class="tag">
+                    Logic
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        2–3 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Beginner
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project6"
+               class="view-project"
+               onclick="viewProject('Online Quiz Application')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 7 -->
+
+    <article
+        class="project-card"
+        data-category="ai"
+        data-search="image classification machine learning python computer vision ai"
+        data-skills="python,ai"
+    >
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                🖼️
+            </div>
+
+
+            <span class="match-badge">
+               select skills
+            </span>
+
+
+            <h3>
+                Image Classification
+            </h3>
+
+
+            <p class="project-description">
+
+                Build a machine learning model that
+                classifies images into predefined categories.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    Python
+                </span>
+
+                <span class="tag">
+                    ML
+                </span>
+
+                <span class="tag">
+                    Computer Vision
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        3–4 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Advanced
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project7"
+               class="view-project"
+               onclick="viewProject('Image Classification')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 8 -->
+
+    <article
+        class="project-card"
+        data-category="database"
+        data-search="library management system database mysql sql dbms programming"
+        data-skills="mysql"
+    >
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                📖
+            </div>
+
+
+            <span class="match-badge">
+               select skills
+            </span>
+
+
+            <h3>
+                Library Management System
+            </h3>
+
+
+            <p class="project-description">
+
+                Manage books, students, borrowing records
+                and returns using a database system.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    MySQL
+                </span>
+
+                <span class="tag">
+                    SQL
+                </span>
+
+                <span class="tag">
+                    DBMS
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        2–3 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Beginner
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project8"
+               class="view-project"
+               onclick="viewProject('Library Management System')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+
+    <!-- PROJECT 9 -->
+
+    <article
+        class="project-card"
+        data-category="web"
+        data-search="responsive college website web development html css javascript ui"
+        data-skills="html,css,javascript"
+    >
+
+
+        <div class="project-top">
+
+
+            <div class="project-icon">
+                🏫
+            </div>
+
+
+            <span class="match-badge">
+             select skills
+            </span>
+
+
+            <h3>
+                Responsive College Website
+            </h3>
+
+
+            <p class="project-description">
+
+                Design a responsive college website
+                containing departments, events and student resources.
+
+            </p>
+
+
+            <div class="tags">
+
+                <span class="tag">
+                    HTML
+                </span>
+
+                <span class="tag">
+                    CSS
+                </span>
+
+                <span class="tag">
+                    UI Design
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-info-row">
+
+
+            <div class="info-item">
+
+                <span>
+                    👥
+                </span>
+
+                <div>
+
+                    <strong>
+                        Team
+                    </strong>
+
+                    <small>
+                        2–4 Students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span>
+                    📈
+                </span>
+
+                <div>
+
+                    <strong>
+                        Level
+                    </strong>
+
+                    <small>
+                        Beginner
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project-footer">
+
+            <span class="project-status">
+                🌱 Open for teams
+            </span>
+
+
+            <a href="#project9"
+               class="view-project"
+               onclick="viewProject('Responsive College Website')">
+
+                View Project →
+
+            </a>
+
+        </div>
+
+
+    </article>
+
+
+</section>
+
+
+
+<!-- NO RESULTS -->
+
+<div class="no-results"
+     id="noResults">
+
+
+    <div class="icon">
+        🌱
+    </div>
+
+
+    <h3>
+        No matching projects found
+    </h3>
+
+
+    <p>
+        Try another skill, technology or project name.
+    </p>
+
+
+</div>
+
+
+
+<!-- =================================================
+     MATCHING EXPLANATION
+================================================== -->
+
+<section class="matching-section">
+
+
+    <div class="matching-card">
+
+
+        <div class="matching-heading">
+
+
+            <span>
+                How SkillBloom Matches You
+            </span>
+
+
+            <h2>
+                Your Skills Meet
+                The Right Project
+            </h2>
+
+
+            <p>
+
+                Project suggestions can be based on
+                the skills and interests added to your
+                student profile.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="matching-bars">
+
+
+            <div class="match-row">
+
+
+                <div class="match-row-top">
+
+                    <span>
+                        Programming Skills
+                    </span>
+
+                    <strong>
+                        82%
+                    </strong>
+
+                </div>
+
+
+                <div class="match-track">
+
+                    <div
+                        class="match-fill"
+                        style="width:82%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="match-row">
+
+
+                <div class="match-row-top">
+
+                    <span>
+                        Web Development
+                    </span>
+
+                    <strong>
+                        74%
+                    </strong>
+
+                </div>
+
+
+                <div class="match-track">
+
+                    <div
+                        class="match-fill"
+                        style="width:74%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="match-row">
+
+
+                <div class="match-row-top">
+
+                    <span>
+                        AI & Machine Learning
+                    </span>
+
+                    <strong>
+                        61%
+                    </strong>
+
+                </div>
+
+
+                <div class="match-track">
+
+                    <div
+                        class="match-fill"
+                        style="width:61%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="match-row">
+
+
+                <div class="match-row-top">
+
+                    <span>
+                        Database
+                    </span>
+
+                    <strong>
+                        78%
+                    </strong>
+
+                </div>
+
+
+                <div class="match-track">
+
+                    <div
+                        class="match-fill"
+                        style="width:78%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+```
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+```
+Discover. Build. Grow.
+
+<strong>
+    SkillBloom
+</strong>
+
+🌿
+```
+
+</footer>
+
+<script>
+
+/* =====================================================
+   PROJECT FILTER
+===================================================== */
+
+let currentCategory = "all";
+
+
+function filterProjects(category, button) {
+
+
+    currentCategory = category;
+
+
+    /* Remove active from all buttons */
+
+    const buttons =
+        document.querySelectorAll(".filter-btn");
+
+
+    buttons.forEach(function(btn) {
+
+        btn.classList.remove("active");
+
+    });
+
+
+    /* Add active to clicked button */
+
+    button.classList.add("active");
+
+
+    searchProjects();
+
+}
+
+
+
+/* =====================================================
+   SEARCH PROJECTS
+===================================================== */
+
+function searchProjects() {
+
+
+    const searchInput =
+        document.getElementById("projectSearch");
+
+
+    const searchText =
+        searchInput.value.toLowerCase().trim();
+
+
+    const cards =
+        document.querySelectorAll(".project-card");
+
+
+    let visibleCount = 0;
+
+
+    cards.forEach(function(card) {
+
+
+        const category =
+            card.dataset.category.toLowerCase();
+
+
+        const searchableText =
+            card.dataset.search.toLowerCase();
+
+
+        const categoryMatch =
+            currentCategory === "all" ||
+            category.includes(currentCategory);
+
+
+        const searchMatch =
+            searchableText.includes(searchText);
+
+
+        if (categoryMatch && searchMatch) {
+
+            card.style.display = "";
+
+            visibleCount++;
+
+        }
+
+        else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    /* Update count */
+
+    document.getElementById("projectCount").textContent =
+        visibleCount + (visibleCount === 1
+            ? " Project"
+            : " Projects");
+
+
+    /* No results */
+
+    const noResults =
+        document.getElementById("noResults");
+
+
+    if (visibleCount === 0) {
+
+        noResults.style.display = "block";
+
+    }
+
+    else {
+
+        noResults.style.display = "none";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   VIEW PROJECT
+===================================================== */
+
+function viewProject(projectName) {
+
+
+    alert(
+
+        projectName +
+        "\n\nProject details will be connected here."
+
+    );
+
+}
+
+/* =====================================================
+   STUDENT SKILL MATCHING
+===================================================== */
+
+function calculateMatches() {
+
+    /* Get selected skills */
+
+    const selectedSkills = [];
+
+    document
+        .querySelectorAll(
+            '.skill-selection input:checked'
+        )
+        .forEach(function(input) {
+
+            selectedSkills.push(
+                input.value
+            );
+
+        });
+        console.log("Selected skills:", selectedSkills);
+
+
+    /* Get all project cards */
+
+    const cards =
+        document.querySelectorAll(
+            ".project-card"
+        );
+
+
+    cards.forEach(function(card) {
+
+        const requiredSkills =
+            card.dataset.skills
+                .toLowerCase()
+                .split(",");
+
+
+        let matchedSkills = 0;
+
+
+        /* Compare student skills
+           with project skills */
+
+        requiredSkills.forEach(
+            function(skill) {
+
+                if (
+                    selectedSkills
+                    .includes(skill)
+                ) {
+
+                    matchedSkills++;
+
+                }
+
+            }
+        );
+
+
+        /* Calculate percentage */
+
+        let percentage = 0;
+
+
+        if (requiredSkills.length > 0) {
+
+            percentage =
+                Math.round(
+                    (matchedSkills /
+                     requiredSkills.length) * 100
+                );
+
+        }
+
+
+        /* Find match badge */
+
+        const badge =
+            card.querySelector(
+                ".match-badge"
+            );
+
+
+        if (selectedSkills.length === 0) {
+
+            badge.textContent =
+                "Select Skills";
+
+        }
+
+        else {
+
+            badge.textContent =
+                percentage + "% Match";
+
+        }
+
+    });
+
+}
+
+
+</script>
+
+</body>
+
+</html>
