@@ -37,82 +37,83 @@ def calculate_interest_match(student_interests, project_interests):
     return round(interest_score, 2)
 
 
-# ---------------------------------------------------------
-# SAMPLE STUDENT DATA
-# ---------------------------------------------------------
+if __name__ == "__main__":   # demo code only runs when executed directly
+    # ---------------------------------------------------------
+    # SAMPLE STUDENT DATA
+    # ---------------------------------------------------------
 
-student_interests = [
-    "Artificial Intelligence",
-    "Web Development",
-    "Cybersecurity",
-    "Data Science"
-]
-
-
-# ---------------------------------------------------------
-# SAMPLE PROJECT DATA
-# ---------------------------------------------------------
-
-project_interests = [
-    "Artificial Intelligence",
-    "Web Development",
-    "Mobile Development"
-]
+    student_interests = [
+        "Artificial Intelligence",
+        "Web Development",
+        "Cybersecurity",
+        "Data Science"
+    ]
 
 
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # SAMPLE PROJECT DATA
+    # ---------------------------------------------------------
 
-interest_score = calculate_interest_match(
-    student_interests,
-    project_interests
-)
-
-
-# Find matching interests for display
-student_normalized = {
-    interest.strip().lower()
-    for interest in student_interests
-}
+    project_interests = [
+        "Artificial Intelligence",
+        "Web Development",
+        "Mobile Development"
+    ]
 
 
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-print("\n" + "=" * 65)
-print("                INTEREST COMPATIBILITY")
-print("=" * 65)
-
-print(
-    f"{'Project Interest':<35}"
-    f"{'Match':<15}"
-    f"{'Status':<15}"
-)
-
-print("-" * 65)
-
-for interest in project_interests:
-
-    if interest.strip().lower() in student_normalized:
-        match = "Yes"
-        status = "Matched"
-    else:
-        match = "No"
-        status = "Not Matched"
-
-    print(
-        f"{interest:<35}"
-        f"{match:<15}"
-        f"{status:<15}"
+    interest_score = calculate_interest_match(
+        student_interests,
+        project_interests
     )
 
-print("-" * 65)
 
-print(
-    f"{'Interest Match Score':<50}"
-    f"{interest_score}%"
-)
+    # Find matching interests for display
+    student_normalized = {
+        interest.strip().lower()
+        for interest in student_interests
+    }
 
-print("=" * 65)
+
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
+
+    print("\n" + "=" * 65)
+    print("                INTEREST COMPATIBILITY")
+    print("=" * 65)
+
+    print(
+        f"{'Project Interest':<35}"
+        f"{'Match':<15}"
+        f"{'Status':<15}"
+    )
+
+    print("-" * 65)
+
+    for interest in project_interests:
+
+        if interest.strip().lower() in student_normalized:
+            match = "Yes"
+            status = "Matched"
+        else:
+            match = "No"
+            status = "Not Matched"
+
+        print(
+            f"{interest:<35}"
+            f"{match:<15}"
+            f"{status:<15}"
+        )
+
+    print("-" * 65)
+
+    print(
+        f"{'Interest Match Score':<50}"
+        f"{interest_score}%"
+    )
+
+    print("=" * 65)

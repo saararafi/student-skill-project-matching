@@ -1,0 +1,14 @@
+# Secrets — never commit these
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node (from the old backend — kept so it never comes back)
+node_modules/
+
+# OS junk
+.DS_Store
+Thumbs.db

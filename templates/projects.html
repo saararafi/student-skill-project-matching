@@ -15,7 +15,7 @@
 href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
 rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -33,27 +33,27 @@ rel="stylesheet">
 
 <nav class="sidebar-nav">
 
-<a href="dashboard.html">
+<a href="/dashboard">
 <span class="nav-icon">❧</span>
 My Garden
 </a>
 
-<a href="profile.html">
+<a href="/profile">
 <span class="nav-icon">✿</span>
 My Growth
 </a>
 
-<a href="projects.html" class="active">
+<a href="/projects" class="active">
 <span class="nav-icon">🌿</span>
 Projects in Bloom
 </a>
 
-<a href="team.html">
+<a href="/team">
 <span class="nav-icon">🌳</span>
 Garden Team
 </a>
 
-<a href="gaps.html">
+<a href="/gaps">
 <span class="nav-icon">🌾</span>
 What Needs Watering?
 </a>

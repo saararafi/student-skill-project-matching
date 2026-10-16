@@ -21,7 +21,7 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -31,12 +31,12 @@
 
     <div class="nav-container">
 
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <span class="logo-leaf">❧</span>
             Skill<span>Match</span>
         </a>
 
-        <a href="index.html" class="nav-login">
+        <a href="/" class="nav-login">
             ← Back Home
         </a>
 
@@ -169,7 +169,7 @@
 
 </main>
 
-<script src="js/main.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 </body>
 

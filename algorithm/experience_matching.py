@@ -38,81 +38,82 @@ def calculate_experience_match(student_experience, project_experience):
     return round(experience_score, 2)
 
 
-# ---------------------------------------------------------
-# SAMPLE STUDENT DATA
-# ---------------------------------------------------------
+if __name__ == "__main__":   # demo code only runs when executed directly
+    # ---------------------------------------------------------
+    # SAMPLE STUDENT DATA
+    # ---------------------------------------------------------
 
-student_experience = [
-    "Web Development",
-    "Python Projects",
-    "Database Projects"
-]
-
-
-# ---------------------------------------------------------
-# SAMPLE PROJECT DATA
-# ---------------------------------------------------------
-
-project_experience = [
-    "Web Development",
-    "Python Projects",
-    "Machine Learning"
-]
+    student_experience = [
+        "Web Development",
+        "Python Projects",
+        "Database Projects"
+    ]
 
 
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # SAMPLE PROJECT DATA
+    # ---------------------------------------------------------
 
-experience_score = calculate_experience_match(
-    student_experience,
-    project_experience
-)
-
-
-# Normalize for displaying matches
-student_normalized = {
-    experience.strip().lower()
-    for experience in student_experience
-}
+    project_experience = [
+        "Web Development",
+        "Python Projects",
+        "Machine Learning"
+    ]
 
 
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-print("\n" + "=" * 70)
-print("                 EXPERIENCE COMPATIBILITY")
-print("=" * 70)
-
-print(
-    f"{'Required Experience':<40}"
-    f"{'Match':<15}"
-    f"{'Status':<15}"
-)
-
-print("-" * 70)
-
-for experience in project_experience:
-
-    if experience.strip().lower() in student_normalized:
-        match = "Yes"
-        status = "Matched"
-    else:
-        match = "No"
-        status = "Not Matched"
-
-    print(
-        f"{experience:<40}"
-        f"{match:<15}"
-        f"{status:<15}"
+    experience_score = calculate_experience_match(
+        student_experience,
+        project_experience
     )
 
-print("-" * 70)
 
-print(
-    f"{'Experience Match Score':<55}"
-    f"{experience_score}%"
-)
+    # Normalize for displaying matches
+    student_normalized = {
+        experience.strip().lower()
+        for experience in student_experience
+    }
 
-print("=" * 70)
+
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
+
+    print("\n" + "=" * 70)
+    print("                 EXPERIENCE COMPATIBILITY")
+    print("=" * 70)
+
+    print(
+        f"{'Required Experience':<40}"
+        f"{'Match':<15}"
+        f"{'Status':<15}"
+    )
+
+    print("-" * 70)
+
+    for experience in project_experience:
+
+        if experience.strip().lower() in student_normalized:
+            match = "Yes"
+            status = "Matched"
+        else:
+            match = "No"
+            status = "Not Matched"
+
+        print(
+            f"{experience:<40}"
+            f"{match:<15}"
+            f"{status:<15}"
+        )
+
+    print("-" * 70)
+
+    print(
+        f"{'Experience Match Score':<55}"
+        f"{experience_score}%"
+    )
+
+    print("=" * 70)

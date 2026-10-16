@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Garden Team | SkillMatch</title>
+<title>Skill Growth | SkillMatch</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
 rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -33,27 +33,27 @@ rel="stylesheet">
 
 <nav class="sidebar-nav">
 
-<a href="dashboard.html">
+<a href="/dashboard">
 <span class="nav-icon">❧</span>
 My Garden
 </a>
 
-<a href="profile.html">
+<a href="/profile">
 <span class="nav-icon">✿</span>
 My Growth
 </a>
 
-<a href="projects.html">
+<a href="/projects">
 <span class="nav-icon">🌿</span>
 Projects in Bloom
 </a>
 
-<a href="team.html" class="active">
+<a href="/team">
 <span class="nav-icon">🌳</span>
 Garden Team
 </a>
 
-<a href="gaps.html">
+<a href="/gaps" class="active">
 <span class="nav-icon">🌾</span>
 What Needs Watering?
 </a>
@@ -69,11 +69,11 @@ What Needs Watering?
 
 <div class="app-welcome">
 
-<small>COLLABORATION</small>
+<small>SKILL GAP ANALYSIS</small>
 
 <h1>
-Your garden
-<em>team.</em>
+What needs
+<em>watering?</em>
 </h1>
 
 </div>
@@ -86,64 +86,107 @@ Your garden
 <div class="dashboard-card">
 
 <h3>
-Smart Campus Team
+Your team's growth
 </h3>
 
 <p>
-Different skills. One project. One growing garden.
+These are the skills your current project
+requires compared with your team's abilities.
 </p>
 
 
-<div class="team-tree">
-
-<div class="tree-trunk"></div>
-
-<div class="tree-branch-line"></div>
+<br>
 
 
-<div class="team-center">
+<div class="gap-list">
 
-<strong>Smart<br>Campus</strong>
 
-<small>PROJECT</small>
+<div class="gap-item">
+
+<div class="gap-header">
+
+<strong>
+Python
+</strong>
+
+<span class="gap-status">
+STRONG
+</span>
+
+</div>
+
+<div class="gap-bar">
+
+<div class="gap-current"
+style="width:90%">
+</div>
+
+</div>
+
+<div class="gap-required">
+Team level: 4.5 / 5
+</div>
 
 </div>
 
 
-<div class="member-node member-one">
+<div class="gap-item">
 
-<strong>Saara</strong>
+<div class="gap-header">
 
-<small>Python</small>
+<strong>
+UI / UX
+</strong>
+
+<span class="gap-status">
+NEEDS GROWTH
+</span>
+
+</div>
+
+<div class="gap-bar">
+
+<div class="gap-current"
+style="width:45%">
+</div>
+
+</div>
+
+<div class="gap-required">
+Team level: 2.2 / 5 • Required: 4 / 5
+</div>
 
 </div>
 
 
-<div class="member-node member-two">
+<div class="gap-item">
 
-<strong>Hana</strong>
+<div class="gap-header">
 
-<small>UI / UX</small>
+<strong>
+Flask
+</strong>
 
-</div>
-
-
-<div class="member-node member-three">
-
-<strong>Mohammed</strong>
-
-<small>Database</small>
+<span class="gap-status">
+GROWING
+</span>
 
 </div>
 
+<div class="gap-bar">
 
-<div class="member-node member-four">
-
-<strong>Swetha</strong>
-
-<small>Frontend</small>
+<div class="gap-current"
+style="width:65%">
+</div>
 
 </div>
+
+<div class="gap-required">
+Team level: 3.2 / 5 • Required: 4 / 5
+</div>
+
+</div>
+
 
 </div>
 
@@ -154,4 +197,5 @@ Different skills. One project. One growing garden.
 </div>
 
 </body>
+
 </html>

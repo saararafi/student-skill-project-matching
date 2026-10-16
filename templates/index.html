@@ -14,7 +14,7 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
 
     <div class="nav-container">
 
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <span class="logo-leaf">❧</span>
             Skill<span>Match</span>
         </a>
@@ -34,7 +34,7 @@
             <a href="#journey">Your Journey</a>
             <a href="#features">Explore</a>
 
-            <a href="login.html" class="nav-login">
+            <a href="/login" class="nav-login">
                 Enter Garden
             </a>
 
@@ -76,7 +76,7 @@
 
         <div class="hero-buttons">
 
-            <a href="login.html" class="gold-button">
+            <a href="/login" class="gold-button">
                 Enter Your Garden →
             </a>
 
@@ -383,7 +383,7 @@
                 skills, interests, projects and growth.
             </p>
 
-            <a href="dashboard.html">
+            <a href="/dashboard">
                 Visit →
             </a>
 
@@ -403,7 +403,7 @@
                 your abilities and interests.
             </p>
 
-            <a href="projects.html">
+            <a href="/projects">
                 Explore →
             </a>
 
@@ -423,7 +423,7 @@
                 complement your own.
             </p>
 
-            <a href="team.html">
+            <a href="/team">
                 Meet the team →
             </a>
 
@@ -443,7 +443,7 @@
                 still needs to develop.
             </p>
 
-            <a href="gaps.html">
+            <a href="/gaps">
                 See growth →
             </a>
 
@@ -472,7 +472,7 @@
             Meet people. Build something meaningful.
         </p>
 
-        <a href="login.html" class="gold-button">
+        <a href="/login" class="gold-button">
             Enter SkillMatch →
         </a>
 
@@ -501,10 +501,10 @@
 
         <div class="footer-links">
 
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">My Garden</a>
-            <a href="projects.html">Projects</a>
-            <a href="login.html">Login</a>
+            <a href="/">Home</a>
+            <a href="/dashboard">My Garden</a>
+            <a href="/projects">Projects</a>
+            <a href="/login">Login</a>
 
         </div>
 
@@ -517,7 +517,7 @@
 </footer>
 
 
-<script src="js/main.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 </body>
 

@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
              * to Flask for real authentication.
              */
 
-            window.location.href = "dashboard.html";
+            window.location.href = "/dashboard";
 
         });
 

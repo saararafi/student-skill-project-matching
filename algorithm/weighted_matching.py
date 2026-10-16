@@ -40,78 +40,79 @@ def calculate_weighted_match(
     return round(final_score, 2)
 
 
-# ---------------------------------------------------------
-# SAMPLE SCORES
-# ---------------------------------------------------------
+if __name__ == "__main__":   # demo code only runs when executed directly
+    # ---------------------------------------------------------
+    # SAMPLE SCORES
+    # ---------------------------------------------------------
 
-skill_score = 88.75
-interest_score = 50
-experience_score = 100
-availability_score = 100
-
-
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
-
-final_score = calculate_weighted_match(
-    skill_score,
-    interest_score,
-    experience_score,
-    availability_score
-)
+    skill_score = 88.75
+    interest_score = 50
+    experience_score = 100
+    availability_score = 100
 
 
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-print("\n" + "=" * 80)
-print("                     WEIGHTED MATCHING")
-print("=" * 80)
+    final_score = calculate_weighted_match(
+        skill_score,
+        interest_score,
+        experience_score,
+        availability_score
+    )
 
-print(
-    f"{'Attribute':<25}"
-    f"{'Score':<15}"
-    f"{'Weight':<15}"
-    f"{'Contribution':<20}"
-)
 
-print("-" * 80)
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
 
-print(
-    f"{'Skill Compatibility':<25}"
-    f"{skill_score:<15}%"
-    f"{'50%':<15}"
-    f"{skill_score * 0.50:<20.2f}"
-)
+    print("\n" + "=" * 80)
+    print("                     WEIGHTED MATCHING")
+    print("=" * 80)
 
-print(
-    f"{'Interest Compatibility':<25}"
-    f"{interest_score:<15}%"
-    f"{'20%':<15}"
-    f"{interest_score * 0.20:<20.2f}"
-)
+    print(
+        f"{'Attribute':<25}"
+        f"{'Score':<15}"
+        f"{'Weight':<15}"
+        f"{'Contribution':<20}"
+    )
 
-print(
-    f"{'Experience Compatibility':<25}"
-    f"{experience_score:<15}%"
-    f"{'20%':<15}"
-    f"{experience_score * 0.20:<20.2f}"
-)
+    print("-" * 80)
 
-print(
-    f"{'Availability':<25}"
-    f"{availability_score:<15}%"
-    f"{'10%':<15}"
-    f"{availability_score * 0.10:<20.2f}"
-)
+    print(
+        f"{'Skill Compatibility':<25}"
+        f"{skill_score:<15}%"
+        f"{'50%':<15}"
+        f"{skill_score * 0.50:<20.2f}"
+    )
 
-print("-" * 80)
+    print(
+        f"{'Interest Compatibility':<25}"
+        f"{interest_score:<15}%"
+        f"{'20%':<15}"
+        f"{interest_score * 0.20:<20.2f}"
+    )
 
-print(
-    f"{'FINAL MATCH SCORE':<60}"
-    f"{final_score}%"
-)
+    print(
+        f"{'Experience Compatibility':<25}"
+        f"{experience_score:<15}%"
+        f"{'20%':<15}"
+        f"{experience_score * 0.20:<20.2f}"
+    )
 
-print("=" * 80)
+    print(
+        f"{'Availability':<25}"
+        f"{availability_score:<15}%"
+        f"{'10%':<15}"
+        f"{availability_score * 0.10:<20.2f}"
+    )
+
+    print("-" * 80)
+
+    print(
+        f"{'FINAL MATCH SCORE':<60}"
+        f"{final_score}%"
+    )
+
+    print("=" * 80)

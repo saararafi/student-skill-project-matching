@@ -45,54 +45,55 @@ def calculate_availability_match(
     return 0
 
 
-# ---------------------------------------------------------
-# SAMPLE DATA
-# ---------------------------------------------------------
+if __name__ == "__main__":   # demo code only runs when executed directly
+    # ---------------------------------------------------------
+    # SAMPLE DATA
+    # ---------------------------------------------------------
 
-student_availability = "Full-time"
-project_requirement = "Part-time"
-
-
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
-
-availability_score = calculate_availability_match(
-    student_availability,
-    project_requirement
-)
+    student_availability = "Full-time"
+    project_requirement = "Part-time"
 
 
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-print("\n" + "=" * 65)
-print("                AVAILABILITY COMPATIBILITY")
-print("=" * 65)
+    availability_score = calculate_availability_match(
+        student_availability,
+        project_requirement
+    )
 
-print(
-    f"{'Category':<30}"
-    f"{'Value':<25}"
-)
 
-print("-" * 65)
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
 
-print(
-    f"{'Student Availability':<30}"
-    f"{student_availability:<25}"
-)
+    print("\n" + "=" * 65)
+    print("                AVAILABILITY COMPATIBILITY")
+    print("=" * 65)
 
-print(
-    f"{'Project Requirement':<30}"
-    f"{project_requirement:<25}"
-)
+    print(
+        f"{'Category':<30}"
+        f"{'Value':<25}"
+    )
 
-print("-" * 65)
+    print("-" * 65)
 
-print(
-    f"{'Compatibility Score':<50}"
-    f"{availability_score}%"
-)
+    print(
+        f"{'Student Availability':<30}"
+        f"{student_availability:<25}"
+    )
 
-print("=" * 65)
+    print(
+        f"{'Project Requirement':<30}"
+        f"{project_requirement:<25}"
+    )
+
+    print("-" * 65)
+
+    print(
+        f"{'Compatibility Score':<50}"
+        f"{availability_score}%"
+    )
+
+    print("=" * 65)

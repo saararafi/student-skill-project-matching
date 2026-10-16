@@ -43,42 +43,30 @@ def calculate_skill_match(student_skills, project_requirements):
     return round(overall_score, 2), skill_scores
 
 
-# Sample Student Data
-student_skills = {
-    "Python": 4,
-    "Java": 3,
-    "HTML": 5,
-    "MySQL": 3
-}
+# ---------------------------------------------------------
+# DEMO CODE — only runs when this file is executed directly
+# (python matching.py), not when it is imported by the app
+# ---------------------------------------------------------
+if __name__ == "__main__":
+    # Sample data — replace with real database values in later milestones
+    student_skills = {
+        "Python": 4,
+        "Java": 3,
+        "HTML": 5,
+        "MySQL": 3
+    }
 
+    project_requirements = {
+        "Python": 5,
+        "Java": 3,
+        "HTML": 4,
+        "MySQL": 4
+    }
 
-# Sample Project Requirements
-project_requirements = {
-    "Python": 5,
-    "Java": 3,
-    "HTML": 4,
-    "MySQL": 4
-}
+    overall_score, skill_scores = calculate_skill_match(
+        student_skills,
+        project_requirements
+    )
 
-
-# Running the Matching Algorithm
-overall_score, skill_scores = calculate_skill_match(
-    student_skills,
-    project_requirements
-)
-
-
-# Displaying Results
-print("======================================")
-print("   STUDENT-PROJECT SKILL MATCHING")
-print("======================================")
-
-print("\nIndividual Skill Scores:")
-print("--------------------------------------")
-
-for skill, score in skill_scores.items():
-    print(f"{skill:<10} : {score}%")
-
-print("--------------------------------------")
-print(f"Overall Match Score : {overall_score}%")
-print("======================================")
+    print("Overall match score:", overall_score)
+    print("Per-skill scores:", skill_scores)
