@@ -21,51 +21,50 @@ def recommend_projects(project_scores):
     return recommendations
 
 
-# ---------------------------------------------------------
-# SAMPLE PROJECT SCORES
-# ---------------------------------------------------------
+if __name__ == "__main__":
+    # ---------------------------------------------------------
+    # SAMPLE PROJECT SCORES
+    # ---------------------------------------------------------
 
-project_scores = {
-    "AI-Based Healthcare System": 84.38,
-    "Student Attendance System": 72.50,
-    "E-Commerce Website": 91.25,
-    "Cybersecurity Monitoring System": 65.75,
-    "Smart Campus Management": 80.00
-}
+    project_scores = {
+        "AI-Based Healthcare System": 84.38,
+        "Student Attendance System": 72.50,
+        "E-Commerce Website": 91.25,
+        "Cybersecurity Monitoring System": 65.75,
+        "Smart Campus Management": 80.00
+    }
 
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
+    recommendations = recommend_projects(project_scores)
 
-recommendations = recommend_projects(project_scores)
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
 
-
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
-
-print("\n" + "=" * 75)
-print("                   PROJECT RECOMMENDATIONS")
-print("=" * 75)
-
-print(
-    f"{'Rank':<10}"
-    f"{'Project':<45}"
-    f"{'Match Score':<15}"
-)
-
-print("-" * 75)
-
-for position, (project, score) in enumerate(
-    recommendations,
-    start=1
-):
+    print("\n" + "=" * 75)
+    print("                   PROJECT RECOMMENDATIONS")
+    print("=" * 75)
 
     print(
-        f"{position:<10}"
-        f"{project:<45}"
-        f"{score}%"
+        f"{'Rank':<10}"
+        f"{'Project':<45}"
+        f"{'Match Score':<15}"
     )
 
-print("=" * 75)
+    print("-" * 75)
+
+    for position, (project, score) in enumerate(
+        recommendations,
+        start=1
+    ):
+
+        print(
+            f"{position:<10}"
+            f"{project:<45}"
+            f"{score}%"
+        )
+
+    print("=" * 75)

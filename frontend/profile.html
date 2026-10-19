@@ -1,187 +1,989 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Growth | SkillMatch</title>
 
-<title>Projects in Bloom | SkillMatch</title>
+    <link rel="stylesheet" href="css/style.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
-rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
 </head>
 
-<body class="app-body">
+<body>
 
-<div class="app-layout">
+<div class="app-container">
 
-<aside class="sidebar">
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
-<div class="sidebar-logo">
-❧ Skill<span>Match</span>
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <div class="logo-symbol">❧</div>
+
+            <div>
+                <h2>SkillMatch</h2>
+                <span>Grow where you belong</span>
+            </div>
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span>🌿</span>
+                <span>My Garden</span>
+            </a>
+
+            <a href="profile.html" class="active">
+                <span>🌱</span>
+                <span>My Growth</span>
+            </a>
+
+            <a href="projects.html">
+                <span>🌸</span>
+                <span>Projects in Bloom</span>
+            </a>
+
+            <a href="team.html">
+                <span>🌳</span>
+                <span>Garden Team</span>
+            </a>
+
+            <a href="gaps.html">
+                <span>💧</span>
+                <span>What Needs Watering?</span>
+            </a>
+
+            <a href="applications.html">
+                <span>✉</span>
+                <span>Applications</span>
+            </a>
+
+            <a href="notifications.html">
+                <span>🔔</span>
+                <span>Notifications</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="profile.html" class="active">
+                <span>🌼</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="settings.html">
+                <span>⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <button
+            class="sidebar-logout"
+            data-logout
+            type="button"
+        >
+            <span>↗</span>
+            Leave Garden
+        </button>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main-content">
+
+        <!-- Mobile Header -->
+
+        <div class="mobile-header">
+
+            <button
+                class="mobile-menu-button"
+                type="button"
+                aria-label="Open menu"
+            >
+                ☰
+            </button>
+
+            <span>SkillMatch</span>
+
+        </div>
+
+
+        <!-- =================================================
+             PAGE HEADER
+             ================================================= -->
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    MY GROWTH
+                </span>
+
+                <h1>
+                    Your garden is growing.
+                </h1>
+
+                <p class="header-subtitle">
+                    Everything you've learned, explored and built
+                    becomes part of your professional garden.
+                </p>
+
+            </div>
+
+            <button
+                class="garden-button"
+                id="editProfileButton"
+                type="button"
+            >
+                ✿ Edit Profile
+            </button>
+
+        </header>
+
+
+        <!-- =================================================
+             PROFILE INTRO
+             ================================================= -->
+
+        <section class="garden-card profile-intro-card">
+
+            <div class="profile-intro">
+
+                <div class="profile-avatar">
+                    SR
+                </div>
+
+                <div class="profile-intro-content">
+
+                    <span class="botanical-badge">
+                        🌱 Growing Student
+                    </span>
+
+                    <h2 data-profile-display="name">
+                        Saara Rafi
+                    </h2>
+
+                    <p data-profile-display="department">
+                        Computer Science Engineering
+                    </p>
+
+                    <p class="muted-text">
+                        <span data-profile-display="year">
+                            2nd Year
+                        </span>
+                        ·
+                        <span data-profile-display="semester">
+                            5th Semester
+                        </span>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-completeness">
+
+                <div class="completeness-heading">
+
+                    <span>
+                        Profile Completeness
+                    </span>
+
+                    <strong>
+                        82%
+                    </strong>
+
+                </div>
+
+                <div class="match-component-track">
+
+                    <div
+                        class="match-component-fill"
+                        style="width: 82%;"
+                    ></div>
+
+                </div>
+
+                <p class="muted-text">
+                    Add more previous work and availability
+                    details to improve your project matching.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ABOUT
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>❧</span>
+
+                <div>
+                    <small>ABOUT THE GARDENER</small>
+                    <h2>About Me</h2>
+                </div>
+
+            </div>
+
+            <p
+                class="profile-bio"
+                data-profile-display="bio"
+            >
+                CSE student interested in algorithms, web
+                development, cybersecurity and artificial
+                intelligence. Currently working on building
+                practical technical skills through academic
+                projects and collaborative development.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             BASIC INFORMATION
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌿</span>
+
+                <div>
+                    <small>YOUR ROOTS</small>
+                    <h2>Basic Information</h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-form-grid">
+
+                <div class="settings-field">
+
+                    <label>
+                        Name
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="name"
+                    >
+                        Saara Rafi
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Department
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="department"
+                    >
+                        Computer Science Engineering
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Academic Year
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="year"
+                    >
+                        2nd Year
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Semester
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="semester"
+                    >
+                        5th Semester
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SKILL GARDEN
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌸</span>
+
+                <div>
+                    <small>YOUR SKILL GARDEN</small>
+                    <h2>Technical Skills</h2>
+                </div>
+
+            </div>
+
+
+            <div class="skill-plants" id="skillPlantsContainer">
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ✿
+                    </div>
+
+                    <div class="skill-plant-name">
+                        Python
+                    </div>
+
+                    <div class="skill-plant-level">
+                        4 / 5 · 80%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ❀
+                    </div>
+
+                    <div class="skill-plant-name">
+                        HTML/CSS
+                    </div>
+
+                    <div class="skill-plant-level">
+                        5 / 5 · 95%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ✾
+                    </div>
+
+                    <div class="skill-plant-name">
+                        Java
+                    </div>
+
+                    <div class="skill-plant-level">
+                        5 / 5 · 100%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ✿
+                    </div>
+
+                    <div class="skill-plant-name">
+                        MySQL
+                    </div>
+
+                    <div class="skill-plant-level">
+                        3 / 5 · 60%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ❀
+                    </div>
+
+                    <div class="skill-plant-name">
+                        Flask
+                    </div>
+
+                    <div class="skill-plant-level">
+                        2 / 5 · 48%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ✾
+                    </div>
+
+                    <div class="skill-plant-name">
+                        JavaScript
+                    </div>
+
+                    <div class="skill-plant-level">
+                        3 / 5 · 65%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ✿
+                    </div>
+
+                    <div class="skill-plant-name">
+                        C++
+                    </div>
+
+                    <div class="skill-plant-level">
+                        3 / 5 · 60%
+                    </div>
+
+                </div>
+
+
+                <div class="skill-plant">
+
+                    <div class="skill-plant-flower">
+                        ❀
+                    </div>
+
+                    <div class="skill-plant-name">
+                        Git
+                    </div>
+
+                    <div class="skill-plant-level">
+                        3 / 5 · 60%
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             INTERESTS
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌼</span>
+
+                <div>
+                    <small>WHAT DRAWS YOUR ATTENTION</small>
+                    <h2>Interests</h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-chip-group">
+
+                <div class="settings-chip selected">
+                    <span>Artificial Intelligence</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Web Development</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Cybersecurity</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Algorithms</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Data Science</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PREFERRED DOMAINS
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌱</span>
+
+                <div>
+                    <small>WHERE YOU WANT TO GROW</small>
+                    <h2>Preferred Domains</h2>
+                </div>
+
+            </div>
+
+
+            <div class="settings-chip-group">
+
+                <div class="settings-chip selected">
+                    <span>Artificial Intelligence</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Web Applications</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Cybersecurity</span>
+                </div>
+
+                <div class="settings-chip selected">
+                    <span>Education Technology</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PREVIOUS WORK
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌳</span>
+
+                <div>
+                    <small>WHAT YOU HAVE GROWN</small>
+                    <h2>Previous Work</h2>
+                </div>
+
+            </div>
+
+
+            <div class="growth-timeline">
+
+                <div class="growth-item">
+
+                    <div class="growth-year">
+                        2026
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Student Skill & Project Matching System
+                        </h3>
+
+                        <p>
+                            Algorithm Design & Integration
+                        </p>
+
+                        <span class="botanical-badge">
+                            In Progress
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="growth-item">
+
+                    <div class="growth-year">
+                        2025
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Academic Web Project
+                        </h3>
+
+                        <p>
+                            Developer
+                        </p>
+
+                        <span class="botanical-badge">
+                            Completed
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AVAILABILITY
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>💧</span>
+
+                <div>
+                    <small>HOW MUCH YOU CAN GROW</small>
+                    <h2>Availability</h2>
+                </div>
+
+            </div>
+
+
+            <div class="capacity-card">
+
+                <div>
+
+                    <span class="capacity-label">
+                        WEEKLY CAPACITY
+                    </span>
+
+                    <h3>
+                        20 hours
+                    </h3>
+
+                    <p class="muted-text">
+                        10 hours currently free
+                    </p>
+
+                </div>
+
+                <div class="capacity-ring">
+
+                    <div class="capacity-ring-inner">
+                        50%
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="availability-list">
+
+                <div class="availability-item">
+
+                    <span>
+                        Student Skill Matching
+                    </span>
+
+                    <strong>
+                        6h / week
+                    </strong>
+
+                </div>
+
+
+                <div class="availability-item">
+
+                    <span>
+                        Academic Work
+                    </span>
+
+                    <strong>
+                        4h / week
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MATCHING NOTE
+             ================================================= -->
+
+        <section class="garden-card watering-card">
+
+            <div class="watering-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <h3>
+                    Keep your garden growing
+                </h3>
+
+                <p>
+                    Your profile information helps the matching
+                    system understand your skills, interests,
+                    experience and availability. Keeping it
+                    updated will allow the system to recommend
+                    more relevant projects and teammates.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EDIT PROFILE PANEL
+             ================================================= -->
+
+        <section
+            class="garden-card profile-edit-panel"
+            id="profileEditPanel"
+        >
+
+            <div class="garden-section-title">
+
+                <span>✿</span>
+
+                <div>
+
+                    <small>
+                        TEND YOUR PROFILE
+                    </small>
+
+                    <h2>
+                        Edit Profile
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <form id="profileForm">
+
+                <div class="settings-form-grid">
+
+                    <!-- NAME -->
+
+                    <div class="settings-field">
+
+                        <label for="profileName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileName"
+                            data-profile-field="name"
+                            value="Saara Rafi"
+                        >
+
+                    </div>
+
+
+                    <!-- DEPARTMENT -->
+
+                    <div class="settings-field">
+
+                        <label for="profileDepartment">
+                            Department
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileDepartment"
+                            data-profile-field="department"
+                            value="Computer Science Engineering"
+                        >
+
+                    </div>
+
+
+                    <!-- YEAR -->
+
+                    <div class="settings-field">
+
+                        <label for="profileYear">
+                            Academic Year
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileYear"
+                            data-profile-field="year"
+                            value="2nd Year"
+                        >
+
+                    </div>
+
+
+                    <!-- SEMESTER -->
+
+                    <div class="settings-field">
+
+                        <label for="profileSemester">
+                            Semester
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileSemester"
+                            data-profile-field="semester"
+                            value="5th Semester"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- BIO -->
+
+                <div
+                    class="settings-field"
+                    style="margin-top: 20px;"
+                >
+
+                    <label for="profileBio">
+                        About You
+                    </label>
+
+                    <textarea
+                        id="profileBio"
+                        data-profile-field="bio"
+                        rows="5"
+                    >CSE student interested in algorithms, web development, cybersecurity and artificial intelligence. Currently working on building practical technical skills through academic projects and collaborative development.</textarea>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="settings-actions">
+
+                    <button
+                        type="submit"
+                        class="garden-button"
+                        id="saveProfileButton"
+                    >
+                        🌱 Save Changes
+                    </button>
+
+                    <button
+                        type="button"
+                        class="garden-button secondary"
+                        id="cancelProfileEdit"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             CERTIFICATE UPLOAD MODAL
+             ================================================= -->
+        <div class="cert-modal-overlay" id="certModalOverlay">
+            <div class="cert-modal">
+                <div class="cert-modal-header">
+                    <h3>📜 Skill Certificate Verification</h3>
+                    <button type="button" class="cert-close-btn" id="closeCertModal">&times;</button>
+                </div>
+                <form id="certUploadForm">
+                    <input type="hidden" id="certSkillId" name="skill_id">
+                    <input type="hidden" id="certSkillName" name="skill_name">
+                    <p style="margin: 0 0 10px; font-size: 0.95rem; color: #444;">
+                        Upload an official certificate or coursework proof for <strong id="certModalSkillTitle" style="color: #26351b;">Python</strong>:
+                    </p>
+                    <div class="cert-file-drop" id="certDropZone" onclick="document.getElementById('certFileInput').click()">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 6px;">📂</span>
+                        <span>Click or drag & drop certificate here</span>
+                        <small style="display: block; color: #777; margin-top: 4px;">PDF, PNG, JPG or JPEG (Max 16 MB)</small>
+                        <input type="file" id="certFileInput" name="certificate" accept=".pdf,.png,.jpg,.jpeg">
+                        <div class="cert-file-chosen-text" id="certChosenText">No file selected yet</div>
+                    </div>
+                    <div class="settings-actions" style="margin-top: 20px;">
+                        <button type="submit" class="garden-button" id="submitCertBtn">
+                            🌿 Upload & Request Verification
+                        </button>
+                        <button type="button" class="garden-button secondary" id="cancelCertBtn">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <footer class="app-footer">
+            SKILLMATCH · GROW WHERE YOU BELONG
+        </footer>
+
+    </main>
+
 </div>
 
-<div class="sidebar-caption">MY GARDEN</div>
 
-<nav class="sidebar-nav">
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
-<a href="dashboard.html">
-<span class="nav-icon">❧</span>
-My Garden
-</a>
-
-<a href="profile.html">
-<span class="nav-icon">✿</span>
-My Growth
-</a>
-
-<a href="projects.html" class="active">
-<span class="nav-icon">🌿</span>
-Projects in Bloom
-</a>
-
-<a href="team.html">
-<span class="nav-icon">🌳</span>
-Garden Team
-</a>
-
-<a href="gaps.html">
-<span class="nav-icon">🌾</span>
-What Needs Watering?
-</a>
-
-</nav>
-
-</aside>
-
-
-<main class="app-main">
-
-<header class="app-header">
-
-<div class="app-welcome">
-
-<small>DISCOVER</small>
-
-<h1>
-Projects in
-<em>bloom.</em>
-</h1>
-
-</div>
-
-<div class="user-avatar">S</div>
-
-</header>
-
-
-<div class="projects-grid">
-
-
-<article class="project-tile">
-
-<div class="project-flower">✿</div>
-
-<h2>
-Smart Campus
-</h2>
-
-<p>
-Improve the allocation and management
-of campus resources using technology.
-</p>
-
-<div class="skill-list">
-<span>Python</span>
-<span>Flask</span>
-<span>MySQL</span>
-</div>
-
-<div class="project-match">
-
-<span>Compatibility</span>
-
-<strong>88%</strong>
-
-</div>
-
-</article>
-
-
-<article class="project-tile">
-
-<div class="project-flower">❀</div>
-
-<h2>
-Intelligent Queue
-Management
-</h2>
-
-<p>
-Design a system that reduces waiting
-time and improves service efficiency.
-</p>
-
-<div class="skill-list">
-<span>Python</span>
-<span>JavaScript</span>
-</div>
-
-<div class="project-match">
-
-<span>Compatibility</span>
-
-<strong>82%</strong>
-
-</div>
-
-</article>
-
-
-<article class="project-tile">
-
-<div class="project-flower">❁</div>
-
-<h2>
-Student Skill
-Matching
-</h2>
-
-<p>
-Connect students with projects and
-teammates according to their skills.
-</p>
-
-<div class="skill-list">
-<span>Flask</span>
-<span>MySQL</span>
-<span>Web</span>
-</div>
-
-<div class="project-match">
-
-<span>Compatibility</span>
-
-<strong>79%</strong>
-
-</div>
-
-</article>
-
-
-</div>
-
-</main>
-
-</div>
+<script src="js/main.js"></script>
 
 </body>
 </html>

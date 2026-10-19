@@ -1,201 +1,760 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gaps | SkillMatch</title>
 
-<title>Skill Growth | SkillMatch</title>
+    <link rel="stylesheet" href="css/style.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
-rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 </head>
 
-<body class="app-body">
+<body>
 
-<div class="app-layout">
+<!-- =====================================================
+     MOBILE MENU
+===================================================== -->
+
+<button
+    class="mobile-menu-button"
+    aria-label="Open navigation"
+>
+    ☰
+</button>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
 <aside class="sidebar">
 
-<div class="sidebar-logo">
-❧ Skill<span>Match</span>
-</div>
+    <div class="sidebar-brand">
+        <span class="brand-leaf">❧</span>
 
-<div class="sidebar-caption">MY GARDEN</div>
+        <div>
+            <h1>SkillMatch</h1>
+            <p>GROW WHERE YOU BELONG</p>
+        </div>
+    </div>
 
-<nav class="sidebar-nav">
 
-<a href="dashboard.html">
-<span class="nav-icon">❧</span>
-My Garden
-</a>
+    <nav class="sidebar-nav">
 
-<a href="profile.html">
-<span class="nav-icon">✿</span>
-My Growth
-</a>
+        <p class="nav-label">MY GARDEN</p>
 
-<a href="projects.html">
-<span class="nav-icon">🌿</span>
-Projects in Bloom
-</a>
+        <a href="dashboard.html" class="nav-item">
+            <span>⌂</span>
+            Dashboard
+        </a>
 
-<a href="team.html">
-<span class="nav-icon">🌳</span>
-Garden Team
-</a>
+        <a href="profile.html" class="nav-item">
+            <span>♧</span>
+            My Profile
+        </a>
 
-<a href="gaps.html" class="active">
-<span class="nav-icon">🌾</span>
-What Needs Watering?
-</a>
+        <a href="profile.html#skills" class="nav-item">
+            <span>✿</span>
+            My Skills
+        </a>
 
-</nav>
+        <a href="profile.html#previous-work" class="nav-item">
+            <span>❧</span>
+            Previous Work
+        </a>
+
+
+        <p class="nav-label">DISCOVER</p>
+
+        <a href="projects.html" class="nav-item">
+            <span>🌱</span>
+            Project Matches
+        </a>
+
+        <a href="team.html" class="nav-item">
+            <span>♢</span>
+            Teamwork
+        </a>
+
+        <a href="gaps.html" class="nav-item active">
+            <span>⚘</span>
+            Skill Gaps
+        </a>
+
+
+        <p class="nav-label">ACTIVITY</p>
+
+        <a href="applications.html" class="nav-item">
+            <span>◌</span>
+            Applications
+        </a>
+
+        <a href="notifications.html" class="nav-item">
+            <span>♢</span>
+            Notifications
+        </a>
+
+
+        <p class="nav-label">ACCOUNT</p>
+
+        <a href="settings.html" class="nav-item">
+            <span>⚙</span>
+            Settings
+        </a>
+
+        <button
+            class="nav-item nav-logout"
+            data-logout
+            type="button"
+        >
+            <span>↪</span>
+            Leave Garden
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-footer">
+        <span>✿</span>
+        <p>Your skills are still growing.</p>
+    </div>
 
 </aside>
 
 
-<main class="app-main">
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
 
-<header class="app-header">
+<main class="main-content">
 
-<div class="app-welcome">
+    <header class="page-header reveal">
 
-<small>SKILL GAP ANALYSIS</small>
+        <div>
+            <p class="eyebrow">YOUR GROWTH MAP</p>
 
-<h1>
-What needs
-<em>watering?</em>
-</h1>
+            <h2>
+                What needs
+                <span class="accent-text">watering?</span>
+            </h2>
 
-</div>
+            <p class="page-description">
+                Skill gaps show where your current abilities
+                differ from what your projects require.
+                They are opportunities for growth, not failures.
+            </p>
+        </div>
 
-<div class="user-avatar">S</div>
-
-</header>
-
-
-<div class="dashboard-card">
-
-<h3>
-Your team's growth
-</h3>
-
-<p>
-These are the skills your current project
-requires compared with your team's abilities.
-</p>
+    </header>
 
 
-<br>
+    <!-- =================================================
+         PERSONAL OVERVIEW
+    ================================================= -->
+
+    <section class="garden-card gap-overview reveal">
+
+        <div class="section-heading">
+
+            <div>
+                <p class="eyebrow">PERSONAL GROWTH</p>
+
+                <h3>
+                    Your current skill landscape
+                </h3>
+            </div>
+
+            <span class="botanical-badge">
+                3 areas to grow
+            </span>
+
+        </div>
 
 
-<div class="gap-list">
+        <div class="gap-overview-grid">
+
+            <div class="gap-summary">
+
+                <div class="gap-summary-icon">
+                    🌱
+                </div>
+
+                <div>
+                    <strong>8</strong>
+                    <span>skills tracked</span>
+                </div>
+
+            </div>
 
 
-<div class="gap-item">
+            <div class="gap-summary">
 
-<div class="gap-header">
+                <div class="gap-summary-icon">
+                    ✿
+                </div>
 
-<strong>
-Python
-</strong>
+                <div>
+                    <strong>5</strong>
+                    <span>skills developing</span>
+                </div>
 
-<span class="gap-status">
-STRONG
-</span>
-
-</div>
-
-<div class="gap-bar">
-
-<div class="gap-current"
-style="width:90%">
-</div>
-
-</div>
-
-<div class="gap-required">
-Team level: 4.5 / 5
-</div>
-
-</div>
+            </div>
 
 
-<div class="gap-item">
+            <div class="gap-summary">
 
-<div class="gap-header">
+                <div class="gap-summary-icon">
+                    🌿
+                </div>
 
-<strong>
-UI / UX
-</strong>
+                <div>
+                    <strong>3</strong>
+                    <span>priority gaps</span>
+                </div>
 
-<span class="gap-status">
-NEEDS GROWTH
-</span>
+            </div>
 
-</div>
+        </div>
 
-<div class="gap-bar">
-
-<div class="gap-current"
-style="width:45%">
-</div>
-
-</div>
-
-<div class="gap-required">
-Team level: 2.2 / 5 • Required: 4 / 5
-</div>
-
-</div>
+    </section>
 
 
-<div class="gap-item">
+    <!-- =================================================
+         PRIORITY GAPS
+    ================================================= -->
 
-<div class="gap-header">
+    <section class="garden-section reveal">
 
-<strong>
-Flask
-</strong>
+        <div class="garden-section-title">
 
-<span class="gap-status">
-GROWING
-</span>
+            <div>
+                <p class="eyebrow">
+                    PRIORITY AREAS
+                </p>
 
-</div>
+                <h3>
+                    Skills that need attention
+                </h3>
+            </div>
 
-<div class="gap-bar">
+            <p>
+                Based on your current project matches
+            </p>
 
-<div class="gap-current"
-style="width:65%">
-</div>
-
-</div>
-
-<div class="gap-required">
-Team level: 3.2 / 5 • Required: 4 / 5
-</div>
-
-</div>
+        </div>
 
 
-</div>
+        <div class="gap-list">
 
-</div>
+
+            <!-- GAP 1 -->
+
+            <article class="gap-item garden-card">
+
+                <div class="gap-item-icon">
+                    🌿
+                </div>
+
+                <div class="gap-item-content">
+
+                    <div class="gap-item-heading">
+
+                        <div>
+                            <h4>Flask</h4>
+
+                            <p>
+                                Required by Smart Campus
+                                Resource Allocation
+                            </p>
+                        </div>
+
+                        <span class="gap-percentage">
+                            48%
+                        </span>
+
+                    </div>
+
+
+                    <div class="gap-progress">
+
+                        <div class="gap-progress-labels">
+                            <span>
+                                Your level: 2/5
+                            </span>
+
+                            <span>
+                                Required: 3/5
+                            </span>
+                        </div>
+
+                        <div class="gap-progress-track">
+
+                            <div
+                                class="gap-progress-fill"
+                                style="width: 48%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="gap-item-footer">
+
+                        <span>
+                            ◇ Backend Development
+                        </span>
+
+                        <span>
+                            ◷ Moderate priority
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- GAP 2 -->
+
+            <article class="gap-item garden-card">
+
+                <div class="gap-item-icon">
+                    ✿
+                </div>
+
+                <div class="gap-item-content">
+
+                    <div class="gap-item-heading">
+
+                        <div>
+                            <h4>
+                                Data Visualization
+                            </h4>
+
+                            <p>
+                                Useful for project analysis
+                                and reporting
+                            </p>
+                        </div>
+
+                        <span class="gap-percentage">
+                            35%
+                        </span>
+
+                    </div>
+
+
+                    <div class="gap-progress">
+
+                        <div class="gap-progress-labels">
+                            <span>
+                                Your level: 1/5
+                            </span>
+
+                            <span>
+                                Suggested: 3/5
+                            </span>
+                        </div>
+
+                        <div class="gap-progress-track">
+
+                            <div
+                                class="gap-progress-fill"
+                                style="width: 35%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="gap-item-footer">
+
+                        <span>
+                            ◇ Data Science
+                        </span>
+
+                        <span>
+                            ◷ Low priority
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- GAP 3 -->
+
+            <article class="gap-item garden-card">
+
+                <div class="gap-item-icon">
+                    🌳
+                </div>
+
+                <div class="gap-item-content">
+
+                    <div class="gap-item-heading">
+
+                        <div>
+                            <h4>
+                                Machine Learning
+                            </h4>
+
+                            <p>
+                                Needed for several
+                                AI-oriented projects
+                            </p>
+                        </div>
+
+                        <span class="gap-percentage">
+                            62%
+                        </span>
+
+                    </div>
+
+
+                    <div class="gap-progress">
+
+                        <div class="gap-progress-labels">
+                            <span>
+                                Your level: 2/5
+                            </span>
+
+                            <span>
+                                Suggested: 4/5
+                            </span>
+                        </div>
+
+                        <div class="gap-progress-track">
+
+                            <div
+                                class="gap-progress-fill"
+                                style="width: 62%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="gap-item-footer">
+
+                        <span>
+                            ◇ Artificial Intelligence
+                        </span>
+
+                        <span>
+                            ◷ High priority
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         GROWTH SUGGESTION
+    ================================================= -->
+
+    <section class="garden-card watering-card reveal">
+
+        <div class="watering-icon">
+            💧
+        </div>
+
+        <div class="watering-content">
+
+            <p class="eyebrow">
+                A LITTLE WATER GOES A LONG WAY
+            </p>
+
+            <h3>
+                Start with Flask
+            </h3>
+
+            <p>
+                Flask is directly connected to your current
+                project recommendation. Improving this skill
+                could strengthen your compatibility with
+                backend-oriented projects.
+            </p>
+
+            <a
+                href="project-details.html"
+                class="garden-button"
+            >
+                View Related Project
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         TEAM SKILL GAPS
+    ================================================= -->
+
+    <section class="garden-section reveal">
+
+        <div class="garden-section-title">
+
+            <div>
+                <p class="eyebrow">
+                    TEAM GROWTH
+                </p>
+
+                <h3>
+                    What your team is missing
+                </h3>
+            </div>
+
+            <a
+                href="team.html"
+                class="text-link"
+            >
+                View Team →
+            </a>
+
+        </div>
+
+
+        <div class="team-gap-grid">
+
+
+            <article class="team-gap-card garden-card">
+
+                <div class="team-gap-icon">
+                    📊
+                </div>
+
+                <div>
+
+                    <h4>
+                        Data Visualization
+                    </h4>
+
+                    <p>
+                        Current team coverage:
+                        <strong>45%</strong>
+                    </p>
+
+                    <div class="gap-progress-track">
+
+                        <div
+                            class="gap-progress-fill"
+                            style="width: 45%;"
+                        ></div>
+
+                    </div>
+
+                    <span>
+                        Consider adding a teammate
+                        with visualization experience.
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <article class="team-gap-card garden-card">
+
+                <div class="team-gap-icon">
+                    🧠
+                </div>
+
+                <div>
+
+                    <h4>
+                        Machine Learning
+                    </h4>
+
+                    <p>
+                        Current team coverage:
+                        <strong>38%</strong>
+                    </p>
+
+                    <div class="gap-progress-track">
+
+                        <div
+                            class="gap-progress-fill"
+                            style="width: 38%;"
+                        ></div>
+
+                    </div>
+
+                    <span>
+                        A student with ML skills could
+                        strengthen team coverage.
+                    </span>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         HOW IT WORKS
+    ================================================= -->
+
+    <section class="garden-card algorithm-explanation reveal">
+
+        <div class="section-heading">
+
+            <div>
+                <p class="eyebrow">
+                    BEHIND THE GARDEN
+                </p>
+
+                <h3>
+                    How skill-gap detection works
+                </h3>
+            </div>
+
+        </div>
+
+
+        <div class="gap-algorithm-flow">
+
+            <div class="gap-algorithm-step">
+
+                <span>01</span>
+
+                <h4>
+                    Read your skills
+                </h4>
+
+                <p>
+                    The system checks your recorded
+                    skills and proficiency levels.
+                </p>
+
+            </div>
+
+
+            <div class="gap-flow-line">
+                →
+            </div>
+
+
+            <div class="gap-algorithm-step">
+
+                <span>02</span>
+
+                <h4>
+                    Read requirements
+                </h4>
+
+                <p>
+                    Each project contains required
+                    skills and expected proficiency.
+                </p>
+
+            </div>
+
+
+            <div class="gap-flow-line">
+                →
+            </div>
+
+
+            <div class="gap-algorithm-step">
+
+                <span>03</span>
+
+                <h4>
+                    Compare
+                </h4>
+
+                <p>
+                    Your skill level is compared with
+                    the project's required level.
+                </p>
+
+            </div>
+
+
+            <div class="gap-flow-line">
+                →
+            </div>
+
+
+            <div class="gap-algorithm-step">
+
+                <span>04</span>
+
+                <h4>
+                    Detect the gap
+                </h4>
+
+                <p>
+                    Missing or weaker skills become
+                    opportunities for targeted growth.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="formula-box">
+
+            <span>
+                Skill Gap
+            </span>
+
+            <strong>
+                Required Proficiency − Current Proficiency
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================= -->
+
+    <footer class="page-footer">
+
+        <p>
+            SKILLMATCH
+        </p>
+
+        <span>
+            Grow where you belong · Build where you bloom
+        </span>
+
+    </footer>
 
 </main>
 
-</div>
+
+<script src="js/main.js"></script>
 
 </body>
-
 </html>

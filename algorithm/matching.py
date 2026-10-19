@@ -43,42 +43,43 @@ def calculate_skill_match(student_skills, project_requirements):
     return round(overall_score, 2), skill_scores
 
 
-# Sample Student Data
-student_skills = {
-    "Python": 4,
-    "Java": 3,
-    "HTML": 5,
-    "MySQL": 3
-}
+if __name__ == "__main__":
+    # Sample Student Data
+    student_skills = {
+        "Python": 4,
+        "Java": 3,
+        "HTML": 5,
+        "MySQL": 3
+    }
 
 
-# Sample Project Requirements
-project_requirements = {
-    "Python": 5,
-    "Java": 3,
-    "HTML": 4,
-    "MySQL": 4
-}
+    # Sample Project Requirements
+    project_requirements = {
+        "Python": 5,
+        "Java": 3,
+        "HTML": 4,
+        "MySQL": 4
+    }
 
 
-# Running the Matching Algorithm
-overall_score, skill_scores = calculate_skill_match(
-    student_skills,
-    project_requirements
-)
+    # Running the Matching Algorithm
+    overall_score, skill_scores = calculate_skill_match(
+        student_skills,
+        project_requirements
+    )
 
 
-# Displaying Results
-print("======================================")
-print("   STUDENT-PROJECT SKILL MATCHING")
-print("======================================")
+    # Displaying Results
+    print("======================================")
+    print("   STUDENT-PROJECT SKILL MATCHING")
+    print("======================================")
 
-print("\nIndividual Skill Scores:")
-print("--------------------------------------")
+    print("\nIndividual Skill Scores:")
+    print("--------------------------------------")
 
-for skill, score in skill_scores.items():
-    print(f"{skill:<10} : {score}%")
+    for skill, score in skill_scores.items():
+        print(f"{skill:<10} : {score}%")
 
-print("--------------------------------------")
-print(f"Overall Match Score : {overall_score}%")
-print("======================================")
+    print("--------------------------------------")
+    print(f"Overall Match Score : {overall_score}%")
+    print("======================================")

@@ -54,107 +54,104 @@ def recommend_teammates(
     return recommendations
 
 
-# ---------------------------------------------------------
-# SAMPLE STUDENT DATA
-# ---------------------------------------------------------
+if __name__ == "__main__":
+    # ---------------------------------------------------------
+    # SAMPLE STUDENT DATA
+    # ---------------------------------------------------------
 
-students = {
+    students = {
 
-    "Aisha": {
-        "Python": 4,
-        "JavaScript": 4,
-        "HTML": 5
-    },
+        "Aisha": {
+            "Python": 4,
+            "JavaScript": 4,
+            "HTML": 5
+        },
 
-    "Rahul": {
-        "Java": 4,
-        "Flask": 3,
-        "MySQL": 4
-    },
+        "Rahul": {
+            "Java": 4,
+            "Flask": 3,
+            "MySQL": 4
+        },
 
-    "Meera": {
-        "JavaScript": 5,
-        "React": 4,
-        "CSS": 5
-    },
+        "Meera": {
+            "JavaScript": 5,
+            "React": 4,
+            "CSS": 5
+        },
 
-    "Arjun": {
-        "C++": 5,
-        "Java": 4
+        "Arjun": {
+            "C++": 5,
+            "Java": 4
+        }
     }
-}
 
+    # ---------------------------------------------------------
+    # CURRENT TEAM
+    # ---------------------------------------------------------
 
-# ---------------------------------------------------------
-# CURRENT TEAM
-# ---------------------------------------------------------
+    current_team = [
+        "Arjun"
+    ]
 
-current_team = [
-    "Arjun"
-]
+    # ---------------------------------------------------------
+    # SAMPLE SKILL GAPS
+    # ---------------------------------------------------------
 
+    skill_gaps = {
 
-# ---------------------------------------------------------
-# SAMPLE SKILL GAPS
-# ---------------------------------------------------------
+        "JavaScript": {
+            "required_level": 3,
+            "available_level": 0,
+            "status": "Missing"
+        },
 
-skill_gaps = {
-
-    "JavaScript": {
-        "required_level": 3,
-        "available_level": 0,
-        "status": "Missing"
-    },
-
-    "Flask": {
-        "required_level": 3,
-        "available_level": 0,
-        "status": "Missing"
+        "Flask": {
+            "required_level": 3,
+            "available_level": 0,
+            "status": "Missing"
+        }
     }
-}
 
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
+    recommendations = recommend_teammates(
+        students,
+        current_team,
+        skill_gaps
+    )
 
-recommendations = recommend_teammates(
-    students,
-    current_team,
-    skill_gaps
-)
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
 
+    print("\n" + "=" * 75)
+    print("                  TEAMMATE RECOMMENDATIONS")
+    print("=" * 75)
 
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
+    print(
+        f"{'Student':<25}"
+        f"{'Matching Skills':<45}"
+    )
 
-print("\n" + "=" * 75)
-print("                  TEAMMATE RECOMMENDATIONS")
-print("=" * 75)
+    print("-" * 75)
 
-print(
-    f"{'Student':<25}"
-    f"{'Matching Skills':<45}"
-)
+    if recommendations:
 
-print("-" * 75)
+        for student in recommendations:
 
-if recommendations:
+            skills = ", ".join(
+                student["matching_skills"]
+            )
 
-    for student in recommendations:
+            print(
+                f"{student['name']:<25}"
+                f"{skills:<45}"
+            )
 
-        skills = ", ".join(
-            student["matching_skills"]
-        )
+    else:
 
-        print(
-            f"{student['name']:<25}"
-            f"{skills:<45}"
-        )
+        print("No suitable teammates found.")
 
-else:
-
-    print("No suitable teammates found.")
-
-print("=" * 75)
+    print("=" * 75)

@@ -1,524 +1,418 @@
-<!DOCTYPE html>
-<html lang="en">
+/* =========================================================
+   SKILL GAP PAGE
+========================================================= */
+
+.gap-overview {
+    padding: 2rem;
+}
+
+.gap-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.gap-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid rgba(139, 115, 64, 0.16);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.gap-summary-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(139, 115, 64, 0.1);
+    font-size: 1.35rem;
+}
+
+.gap-summary strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--olive-dark, #4f5b35);
+}
+
+.gap-summary span {
+    display: block;
+    font-size: 0.82rem;
+    opacity: 0.7;
+}
+
+
+/* Gap item */
+
+.gap-item {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.gap-item-icon {
+    flex-shrink: 0;
+
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(139, 115, 64, 0.1);
+
+    font-size: 1.3rem;
+}
+
+.gap-item-content {
+    flex: 1;
+}
+
+.gap-item-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.gap-item-heading h4 {
+    margin: 0 0 0.25rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.35rem;
+}
+
+.gap-item-heading p {
+    margin: 0;
+    font-size: 0.86rem;
+    opacity: 0.7;
+}
+
+.gap-percentage {
+    font-weight: 700;
+    color: var(--gold-dark, #92763a);
+    white-space: nowrap;
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+.gap-progress {
+    margin-top: 1rem;
+}
 
-    <title>SkillMatch | Learn • Work • Grow</title>
+.gap-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    font-size: 0.76rem;
+    opacity: 0.68;
+}
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
-        rel="stylesheet">
+.gap-progress-track {
+    width: 100%;
+    height: 7px;
 
-    <link rel="stylesheet" href="css/style.css">
-</head>
+    overflow: hidden;
 
-<body>
+    border-radius: 999px;
 
-<header class="navbar">
+    background:
+        rgba(83, 94, 52, 0.1);
+}
 
-    <div class="nav-container">
+.gap-progress-fill {
+    height: 100%;
 
-        <a href="index.html" class="logo">
-            <span class="logo-leaf">❧</span>
-            Skill<span>Match</span>
-        </a>
+    border-radius: inherit;
 
-        <nav class="nav-links">
+    background:
+        linear-gradient(
+            90deg,
+            #657044,
+            #a38a48
+        );
 
-            <a href="#about">The Garden</a>
-            <a href="#journey">Your Journey</a>
-            <a href="#features">Explore</a>
+    transition:
+        width 0.8s ease;
+}
 
-            <a href="login.html" class="nav-login">
-                Enter Garden
-            </a>
+.gap-item-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
 
-        </nav>
+    margin-top: 0.8rem;
 
-    </div>
+    font-size: 0.76rem;
+    opacity: 0.65;
+}
 
-</header>
 
+/* Watering recommendation */
 
-<main>
+.watering-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 
-<section class="hero">
+    margin-top: 2rem;
+    padding: 2rem;
+}
 
-    <div class="branch-decoration branch-left">❧</div>
-    <div class="branch-decoration branch-right">❧</div>
+.watering-icon {
+    width: 64px;
+    height: 64px;
 
-    <div class="flower-decoration flower-one">✿</div>
-    <div class="flower-decoration flower-two">❀</div>
+    flex-shrink: 0;
 
-    <div class="hero-content">
+    display: grid;
+    place-items: center;
 
-        <div class="hero-kicker">
-            <span>✦</span>
-            A STUDENT GARDEN
-            <span>✦</span>
-        </div>
+    border-radius: 50%;
 
-        <h1>
-            A place to
-            <span class="script">learn, work & grow.</span>
-        </h1>
+    background:
+        rgba(83, 94, 52, 0.1);
 
-        <p class="hero-description">
-            SkillMatch helps students discover projects that
-            fit their abilities, understand what they can grow,
-            and find people who complete their team.
-        </p>
+    font-size: 1.7rem;
+}
 
-        <div class="hero-buttons">
+.watering-content {
+    flex: 1;
+}
 
-            <a href="login.html" class="gold-button">
-                Enter Your Garden →
-            </a>
+.watering-content h3 {
+    margin: 0.25rem 0 0.5rem;
 
-            <a href="#about" class="outline-button">
-                Explore the Garden
-            </a>
+    font-family:
+        "Cormorant Garamond",
+        serif;
 
-        </div>
+    font-size: 1.8rem;
+}
 
-        <div class="hero-quote">
-            “Every skill is a seed. The right opportunity
-            gives it room to grow.”
-        </div>
+.watering-content p:not(.eyebrow) {
+    max-width: 720px;
 
-    </div>
+    line-height: 1.7;
+    opacity: 0.75;
+}
 
 
-    <div class="hero-visual">
+/* Team gaps */
 
-        <div class="gold-orbit"></div>
+.team-gap-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
 
-        <div class="match-card">
+.team-gap-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+}
 
-            <div class="card-top">
+.team-gap-icon {
+    width: 48px;
+    height: 48px;
 
-                <div>
-                    <span class="mini-label">
-                        A PROJECT IN BLOOM
-                    </span>
+    flex-shrink: 0;
 
-                    <h3>
-                        Smart Campus
-                    </h3>
-                </div>
+    display: grid;
+    place-items: center;
 
-                <span class="card-leaf">❧</span>
+    border-radius: 50%;
 
-            </div>
+    background:
+        rgba(139, 115, 64, 0.1);
 
-            <div class="score-container">
+    font-size: 1.25rem;
+}
 
-                <div class="score-circle">
-                    <span>88</span>
-                    <small>%</small>
-                </div>
+.team-gap-card h4 {
+    margin: 0 0 0.3rem;
 
-                <div>
-                    <strong>Golden Bloom</strong>
+    font-family:
+        "Cormorant Garamond",
+        serif;
 
-                    <p>
-                        A strong match based on
-                        your current garden.
-                    </p>
-                </div>
+    font-size: 1.3rem;
+}
 
-            </div>
+.team-gap-card p {
+    margin: 0 0 0.7rem;
+    font-size: 0.86rem;
+}
 
-            <div class="match-line"></div>
+.team-gap-card span {
+    display: block;
+    margin-top: 0.7rem;
 
-            <div class="skills-title">
-                YOUR MATCHING SKILLS
-            </div>
+    font-size: 0.78rem;
+    line-height: 1.5;
 
-            <div class="skill-list">
-                <span>Python</span>
-                <span>Flask</span>
-                <span>MySQL</span>
-                <span>Web Development</span>
-            </div>
+    opacity: 0.65;
+}
 
-            <div class="card-footer">
-                <span>✿ 3 compatible teammates</span>
-                <span>Explore →</span>
-            </div>
 
-        </div>
+/* Algorithm explanation */
 
+.algorithm-explanation {
+    margin-top: 2rem;
+    padding: 2rem;
+}
 
-        <div class="floating-info floating-one">
+.gap-algorithm-flow {
+    display: grid;
+    grid-template-columns:
+        1fr auto
+        1fr auto
+        1fr auto
+        1fr;
 
-            <span class="info-icon">✿</span>
+    align-items: center;
+    gap: 0.8rem;
 
-            <div>
-                <small>YOUR GARDEN</small>
-                <strong>8 Skills</strong>
-            </div>
+    margin-top: 1.5rem;
+}
 
-        </div>
+.gap-algorithm-step {
+    padding: 1.1rem;
 
+    border:
+        1px solid
+        rgba(139, 115, 64, 0.15);
 
-        <div class="floating-info floating-two">
+    border-radius: 14px;
 
-            <span class="info-icon">❧</span>
+    background:
+        rgba(255, 255, 255, 0.3);
+}
 
-            <div>
-                <small>TEAM GROWTH</small>
-                <strong>3 Students</strong>
-            </div>
+.gap-algorithm-step > span {
+    display: inline-flex;
 
-        </div>
+    width: 30px;
+    height: 30px;
 
-    </div>
+    align-items: center;
+    justify-content: center;
 
-</section>
+    border-radius: 50%;
 
+    background:
+        rgba(83, 94, 52, 0.1);
 
-<div class="botanical-divider">
-    ❧ ───── ✦ ───── ❧
-</div>
+    color:
+        var(--olive-dark, #4f5b35);
 
+    font-size: 0.72rem;
+    font-weight: 700;
+}
 
-<section class="section section-cream" id="about">
+.gap-algorithm-step h4 {
+    margin: 0.7rem 0 0.3rem;
 
-    <div class="flower-decoration flower-three">✿</div>
+    font-family:
+        "Cormorant Garamond",
+        serif;
 
-    <div class="section-heading">
+    font-size: 1.15rem;
+}
 
-        <span class="section-label">
-            THE IDEA
-        </span>
+.gap-algorithm-step p {
+    margin: 0;
 
-        <h2>
-            Your skills deserve
-            <em>a garden.</em>
-        </h2>
+    font-size: 0.78rem;
+    line-height: 1.55;
 
-        <p>
-            SkillMatch creates a space where students can
-            understand their abilities, discover meaningful
-            projects and grow alongside others.
-        </p>
+    opacity: 0.68;
+}
 
-    </div>
+.gap-flow-line {
+    font-size: 1.3rem;
+    opacity: 0.45;
+}
 
+.formula-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
 
-    <div class="growth-path">
+    margin-top: 1.5rem;
+    padding: 1rem;
 
-        <div class="growth-item">
+    border-radius: 12px;
 
-            <div class="growth-icon">01</div>
+    background:
+        rgba(83, 94, 52, 0.06);
 
-            <h3>Know Yourself</h3>
+    font-size: 0.82rem;
+}
 
-            <p>
-                Plant your first seeds by creating
-                your student profile.
-            </p>
+.formula-box span {
+    opacity: 0.65;
+}
 
-        </div>
+.formula-box strong {
+    color:
+        var(--olive-dark, #4f5b35);
+}
 
 
-        <div class="growth-line"></div>
+/* Responsive */
 
+@media (max-width: 900px) {
 
-        <div class="growth-item">
+    .gap-overview-grid {
+        grid-template-columns: 1fr;
+    }
 
-            <div class="growth-icon">02</div>
+    .team-gap-grid {
+        grid-template-columns: 1fr;
+    }
 
-            <h3>Find Your Place</h3>
+    .gap-algorithm-flow {
+        grid-template-columns: 1fr;
+    }
 
-            <p>
-                Discover projects where your
-                existing skills can take root.
-            </p>
+    .gap-flow-line {
+        transform: rotate(90deg);
+        text-align: center;
+    }
+}
 
-        </div>
 
+@media (max-width: 600px) {
 
-        <div class="growth-line"></div>
+    .gap-item {
+        flex-direction: column;
+    }
 
+    .gap-item-heading {
+        flex-direction: column;
+    }
 
-        <div class="growth-item">
+    .watering-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-            <div class="growth-icon">03</div>
+    .formula-box {
+        flex-direction: column;
+        text-align: center;
+    }
 
-            <h3>Grow Together</h3>
-
-            <p>
-                Find teammates and discover
-                the skills your team still needs.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="section section-dark" id="journey">
-
-    <div class="section-heading">
-
-        <span class="section-label">
-            YOUR JOURNEY
-        </span>
-
-        <h2>
-            From seed
-            <em>to bloom.</em>
-        </h2>
-
-        <p>
-            Every student starts somewhere.
-            SkillMatch helps you discover where
-            your next step can take you.
-        </p>
-
-    </div>
-
-
-    <div class="journey">
-
-        <div class="journey-card">
-
-            <div class="journey-number">I</div>
-
-            <div class="journey-symbol">❧</div>
-
-            <h3>Learn</h3>
-
-            <p>
-                Build your skills, interests
-                and experience.
-            </p>
-
-        </div>
-
-
-        <div class="journey-connector">
-            ─── ❧ ───
-        </div>
-
-
-        <div class="journey-card">
-
-            <div class="journey-number">II</div>
-
-            <div class="journey-symbol">✿</div>
-
-            <h3>Work</h3>
-
-            <p>
-                Find projects where your
-                abilities can flourish.
-            </p>
-
-        </div>
-
-
-        <div class="journey-connector">
-            ─── ❧ ───
-        </div>
-
-
-        <div class="journey-card">
-
-            <div class="journey-number">III</div>
-
-            <div class="journey-symbol">❀</div>
-
-            <h3>Grow</h3>
-
-            <p>
-                Build teams, discover gaps
-                and develop new strengths.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="section section-ivory" id="features">
-
-    <div class="section-heading">
-
-        <span class="section-label">
-            EXPLORE YOUR GARDEN
-        </span>
-
-        <h2>
-            Everything you need
-            to <em>grow.</em>
-        </h2>
-
-    </div>
-
-
-    <div class="feature-grid">
-
-        <article class="feature-card">
-
-            <div class="feature-flower">✿</div>
-
-            <span class="feature-number">01</span>
-
-            <h3>My Garden</h3>
-
-            <p>
-                Your personal space to see your
-                skills, interests, projects and growth.
-            </p>
-
-            <a href="dashboard.html">
-                Visit →
-            </a>
-
-        </article>
-
-
-        <article class="feature-card">
-
-            <div class="feature-flower">❀</div>
-
-            <span class="feature-number">02</span>
-
-            <h3>Projects in Bloom</h3>
-
-            <p>
-                Discover projects matched to
-                your abilities and interests.
-            </p>
-
-            <a href="projects.html">
-                Explore →
-            </a>
-
-        </article>
-
-
-        <article class="feature-card">
-
-            <div class="feature-flower">❧</div>
-
-            <span class="feature-number">03</span>
-
-            <h3>Garden Team</h3>
-
-            <p>
-                Discover students whose skills
-                complement your own.
-            </p>
-
-            <a href="team.html">
-                Meet the team →
-            </a>
-
-        </article>
-
-
-        <article class="feature-card">
-
-            <div class="feature-flower">✾</div>
-
-            <span class="feature-number">04</span>
-
-            <h3>What Needs Watering?</h3>
-
-            <p>
-                Discover the skills your team
-                still needs to develop.
-            </p>
-
-            <a href="gaps.html">
-                See growth →
-            </a>
-
-        </article>
-
-    </div>
-
-</section>
-
-
-<section class="final-section">
-
-    <div class="final-content">
-
-        <span class="section-label">
-            YOUR JOURNEY STARTS HERE
-        </span>
-
-        <h2>
-            Come grow
-            <em>with us.</em>
-        </h2>
-
-        <p>
-            Learn something new. Find somewhere to work.
-            Meet people. Build something meaningful.
-        </p>
-
-        <a href="login.html" class="gold-button">
-            Enter SkillMatch →
-        </a>
-
-    </div>
-
-</section>
-
-</main>
-
-
-<footer class="footer">
-
-    <div class="footer-branch">
-        ❧ ───────── ✿ ───────── ❧
-    </div>
-
-    <div class="footer-logo">
-        ❧ Skill<span>Match</span>
-    </div>
-
-    <div class="footer-content">
-
-        <p>
-            A garden to learn, work & grow.
-        </p>
-
-        <div class="footer-links">
-
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">My Garden</a>
-            <a href="projects.html">Projects</a>
-            <a href="login.html">Login</a>
-
-        </div>
-
-    </div>
-
-    <div class="copyright">
-        © 2026 SkillMatch • Student Skill & Project Matching System
-    </div>
-
-</footer>
-
-
-<script src="js/main.js"></script>
-
-</body>
-
-</html>
+    .gap-progress-labels {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+}

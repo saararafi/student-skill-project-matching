@@ -3,185 +3,1205 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Projects in Bloom | SkillMatch</title>
+    <title>Projects in Bloom | SkillMatch</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
-rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
+        rel="stylesheet"
+    >
 
-<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
+
 <body class="app-body">
+
 
 <div class="app-layout">
 
-<aside class="sidebar">
 
-<div class="sidebar-logo">
-❧ Skill<span>Match</span>
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            ❧ Skill<span>Match</span>
+        </div>
+
+        <div class="sidebar-caption">
+            MY GARDEN
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span class="nav-icon">❧</span>
+                My Garden
+            </a>
+
+            <a href="profile.html">
+                <span class="nav-icon">✿</span>
+                My Growth
+            </a>
+
+            <a href="projects.html" class="active">
+                <span class="nav-icon">🌿</span>
+                Projects in Bloom
+            </a>
+
+            <a href="team.html">
+                <span class="nav-icon">🌳</span>
+                Garden Team
+            </a>
+
+            <a href="gaps.html">
+                <span class="nav-icon">🌾</span>
+                What Needs Watering?
+            </a>
+
+            <a href="applications.html">
+                <span class="nav-icon">✉</span>
+                Applications
+            </a>
+
+            <a href="notifications.html">
+                <span class="nav-icon">♧</span>
+                Notifications
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-caption sidebar-caption-bottom">
+            ACCOUNT
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="profile.html">
+                <span class="nav-icon">◉</span>
+                Profile
+            </a>
+
+            <a href="settings.html">
+                <span class="nav-icon">⚙</span>
+                Settings
+            </a>
+
+            <a href="#" data-logout>
+                <span class="nav-icon">↪</span>
+                Leave Garden
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="app-main">
+
+
+        <!-- HEADER -->
+
+        <header class="app-header">
+
+            <div class="app-welcome">
+
+                <small>
+                    DISCOVER
+                </small>
+
+                <h1>
+                    Projects in
+                    <em>bloom.</em>
+                </h1>
+
+                <p class="header-subtitle">
+                    Find projects where your skills, interests and time
+                    can grow together.
+                </p>
+
+            </div>
+
+
+            <div class="user-avatar">
+                S
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================
+             INTRODUCTION
+        ========================== -->
+
+        <section class="garden-card project-discovery-intro">
+
+            <div>
+
+                <div class="botanical-badge">
+                    ✿ Personalised for you
+                </div>
+
+                <h2>
+                    A few projects are already
+                    <em>calling your name.</em>
+                </h2>
+
+                <p>
+                    These recommendations are based on your skills,
+                    interests, previous experience and current availability.
+                </p>
+
+            </div>
+
+
+            <div class="project-discovery-flower">
+                ❀
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             SEARCH + FILTERS
+        ========================== -->
+
+        <section class="garden-card">
+
+
+            <div class="garden-section-title">
+
+                <div>
+
+                    <span>
+                        EXPLORE
+                    </span>
+
+                    <h2>
+                        Find Your Project
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="garden-filter-bar">
+
+
+                <!-- SEARCH -->
+
+                <div class="garden-search">
+
+                    <span>
+                        ⌕
+                    </span>
+
+                    <input
+                        type="search"
+                        placeholder="Search projects, skills or domains..."
+                        data-search
+                    >
+
+                </div>
+
+
+                <!-- DOMAIN -->
+
+                <select
+                    class="garden-filter"
+                    data-filter="domain"
+                >
+
+                    <option value="">
+                        All Domains
+                    </option>
+
+                    <option value="ai">
+                        Artificial Intelligence
+                    </option>
+
+                    <option value="web">
+                        Web Development
+                    </option>
+
+                    <option value="iot">
+                        IoT
+                    </option>
+
+                    <option value="education">
+                        Education
+                    </option>
+
+                </select>
+
+
+                <!-- TEAM SIZE -->
+
+                <select
+                    class="garden-filter"
+                    data-filter="team"
+                >
+
+                    <option value="">
+                        Any Team Size
+                    </option>
+
+                    <option value="2">
+                        2 members
+                    </option>
+
+                    <option value="3">
+                        3 members
+                    </option>
+
+                    <option value="4">
+                        4 members
+                    </option>
+
+                    <option value="5">
+                        5 members
+                    </option>
+
+                </select>
+
+
+                <!-- AVAILABILITY -->
+
+                <select
+                    class="garden-filter"
+                    data-filter="availability"
+                >
+
+                    <option value="">
+                        Any Commitment
+                    </option>
+
+                    <option value="low">
+                        Low commitment
+                    </option>
+
+                    <option value="medium">
+                        Medium commitment
+                    </option>
+
+                    <option value="high">
+                        High commitment
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             RECOMMENDED PROJECTS
+        ========================== -->
+
+        <section>
+
+
+            <div class="garden-section-title">
+
+                <div>
+
+                    <span>
+                        RECOMMENDED
+                    </span>
+
+                    <h2>
+                        Projects That May Fit You
+                    </h2>
+
+                </div>
+
+                <span class="botanical-badge">
+                    03 Matches
+                </span>
+
+            </div>
+
+
+
+            <div class="project-match-grid">
+
+
+
+                <!-- =========================
+                     PROJECT 1
+                ========================== -->
+
+                <article
+                    class="project-match-card garden-card"
+                    data-search-item
+                    data-domain="education"
+                    data-team="5"
+                    data-availability="medium"
+                >
+
+                    <div class="project-card-top">
+
+                        <div class="project-flower">
+                            ✿
+                        </div>
+
+                        <span class="project-status">
+                            Open
+                        </span>
+
+                    </div>
+
+
+                    <h2>
+                        Smart Campus Resource Allocation
+                    </h2>
+
+
+                    <p class="project-description">
+
+                        Build an intelligent system that improves the
+                        allocation and management of campus resources.
+
+                    </p>
+
+
+                    <div class="project-meta">
+
+                        <span>
+                            🌿 Education
+                        </span>
+
+                        <span>
+                            👥 4–5 members
+                        </span>
+
+                        <span>
+                            ◷ Medium commitment
+                        </span>
+
+                    </div>
+
+
+                    <div class="skill-list">
+
+                        <span>
+                            Python
+                        </span>
+
+                        <span>
+                            Flask
+                        </span>
+
+                        <span>
+                            MySQL
+                        </span>
+
+                        <span>
+                            Algorithms
+                        </span>
+
+                    </div>
+
+
+                    <!-- MATCH -->
+
+                    <div class="project-match-score">
+
+                        <div>
+
+                            <small>
+                                YOUR COMPATIBILITY
+                            </small>
+
+                            <strong data-score="88">
+                                88%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="match-score-circle small">
+
+                            <span>
+                                88%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BREAKDOWN -->
+
+                    <div class="match-components">
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Skills
+                                </span>
+
+                                <strong>
+                                    94%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 94%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Interests
+                                </span>
+
+                                <strong>
+                                    90%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 90%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Experience
+                                </span>
+
+                                <strong>
+                                    86%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 86%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Availability
+                                </span>
+
+                                <strong>
+                                    92%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 92%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="project-card-actions">
+
+                        <a
+                            href="project-details.html"
+                            class="garden-button garden-button-secondary"
+                        >
+                            View Details
+                        </a>
+
+                        <button
+                            class="garden-button"
+                            type="button"
+                            data-apply
+                        >
+                            Apply ✿
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- =========================
+                     PROJECT 2
+                ========================== -->
+
+                <article
+                    class="project-match-card garden-card"
+                    data-search-item
+                    data-domain="iot"
+                    data-team="4"
+                    data-availability="medium"
+                >
+
+                    <div class="project-card-top">
+
+                        <div class="project-flower">
+                            ❀
+                        </div>
+
+                        <span class="project-status">
+                            Open
+                        </span>
+
+                    </div>
+
+
+                    <h2>
+                        Intelligent Queue Management
+                    </h2>
+
+
+                    <p class="project-description">
+
+                        Design a system that reduces waiting time
+                        and improves service efficiency through
+                        intelligent queue management.
+
+                    </p>
+
+
+                    <div class="project-meta">
+
+                        <span>
+                            🌿 Smart Systems
+                        </span>
+
+                        <span>
+                            👥 3–4 members
+                        </span>
+
+                        <span>
+                            ◷ Medium commitment
+                        </span>
+
+                    </div>
+
+
+                    <div class="skill-list">
+
+                        <span>
+                            Python
+                        </span>
+
+                        <span>
+                            JavaScript
+                        </span>
+
+                        <span>
+                            Flask
+                        </span>
+
+                    </div>
+
+
+                    <div class="project-match-score">
+
+                        <div>
+
+                            <small>
+                                YOUR COMPATIBILITY
+                            </small>
+
+                            <strong data-score="82">
+                                82%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="match-score-circle small">
+
+                            <span>
+                                82%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="match-components">
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Skills
+                                </span>
+
+                                <strong>
+                                    87%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 87%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Interests
+                                </span>
+
+                                <strong>
+                                    84%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 84%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Experience
+                                </span>
+
+                                <strong>
+                                    78%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 78%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Availability
+                                </span>
+
+                                <strong>
+                                    91%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 91%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="project-card-actions">
+
+                        <a
+                            href="project-details.html"
+                            class="garden-button garden-button-secondary"
+                        >
+                            View Details
+                        </a>
+
+                        <button
+                            class="garden-button"
+                            type="button"
+                            data-apply
+                        >
+                            Apply ✿
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- =========================
+                     PROJECT 3
+                ========================== -->
+
+                <article
+                    class="project-match-card garden-card"
+                    data-search-item
+                    data-domain="web"
+                    data-team="4"
+                    data-availability="low"
+                >
+
+                    <div class="project-card-top">
+
+                        <div class="project-flower">
+                            ❁
+                        </div>
+
+                        <span class="project-status">
+                            Open
+                        </span>
+
+                    </div>
+
+
+                    <h2>
+                        Student Skill Matching System
+                    </h2>
+
+
+                    <p class="project-description">
+
+                        Create a platform that connects students with
+                        projects and teammates based on skills,
+                        interests and availability.
+
+                    </p>
+
+
+                    <div class="project-meta">
+
+                        <span>
+                            🌿 Web Development
+                        </span>
+
+                        <span>
+                            👥 4 members
+                        </span>
+
+                        <span>
+                            ◷ Low commitment
+                        </span>
+
+                    </div>
+
+
+                    <div class="skill-list">
+
+                        <span>
+                            Flask
+                        </span>
+
+                        <span>
+                            MySQL
+                        </span>
+
+                        <span>
+                            HTML/CSS
+                        </span>
+
+                        <span>
+                            JavaScript
+                        </span>
+
+                    </div>
+
+
+                    <div class="project-match-score">
+
+                        <div>
+
+                            <small>
+                                YOUR COMPATIBILITY
+                            </small>
+
+                            <strong data-score="79">
+                                79%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="match-score-circle small">
+
+                            <span>
+                                79%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="match-components">
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Skills
+                                </span>
+
+                                <strong>
+                                    81%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 81%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Interests
+                                </span>
+
+                                <strong>
+                                    94%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 94%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Experience
+                                </span>
+
+                                <strong>
+                                    75%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 75%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="match-component">
+
+                            <div>
+
+                                <span>
+                                    Availability
+                                </span>
+
+                                <strong>
+                                    88%
+                                </strong>
+
+                            </div>
+
+                            <div class="match-component-track">
+
+                                <div
+                                    class="match-component-fill"
+                                    style="width: 88%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="project-card-actions">
+
+                        <a
+                            href="project-details.html"
+                            class="garden-button garden-button-secondary"
+                        >
+                            View Details
+                        </a>
+
+                        <button
+                            class="garden-button"
+                            type="button"
+                            data-apply
+                        >
+                            Apply ✿
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             MATCHING EXPLANATION
+        ========================== -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <div>
+
+                    <span>
+                        HOW IT WORKS
+                    </span>
+
+                    <h2>
+                        Why You See These Projects
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="matching-process-grid">
+
+
+                <div class="matching-process-item">
+
+                    <div class="matching-process-icon">
+                        🌱
+                    </div>
+
+                    <h3>
+                        Your Skills
+                    </h3>
+
+                    <p>
+                        We compare your proficiency levels with
+                        the skills required by each project.
+                    </p>
+
+                </div>
+
+
+                <div class="matching-process-item">
+
+                    <div class="matching-process-icon">
+                        ✿
+                    </div>
+
+                    <h3>
+                        Your Interests
+                    </h3>
+
+                    <p>
+                        Projects related to the areas you enjoy
+                        exploring receive stronger compatibility.
+                    </p>
+
+                </div>
+
+
+                <div class="matching-process-item">
+
+                    <div class="matching-process-icon">
+                        🌳
+                    </div>
+
+                    <h3>
+                        Your Experience
+                    </h3>
+
+                    <p>
+                        Previous projects help identify where
+                        you already have practical experience.
+                    </p>
+
+                </div>
+
+
+                <div class="matching-process-item">
+
+                    <div class="matching-process-icon">
+                        💧
+                    </div>
+
+                    <h3>
+                        Your Availability
+                    </h3>
+
+                    <p>
+                        Your current workload is considered so
+                        recommendations remain realistic.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             EMPTY STATE
+        ========================== -->
+
+        <section
+            class="garden-empty"
+            id="projectEmptyState"
+            style="display: none;"
+        >
+
+            <div class="garden-empty-icon">
+                🌱
+            </div>
+
+            <h2>
+                Nothing has bloomed here yet.
+            </h2>
+
+            <p>
+                Try changing your search or filters to discover
+                more projects.
+            </p>
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="app-footer">
+            SKILLMATCH · GROW WHERE YOU BELONG
+        </footer>
+
+
+    </main>
+
 </div>
 
-<div class="sidebar-caption">MY GARDEN</div>
 
-<nav class="sidebar-nav">
-
-<a href="dashboard.html">
-<span class="nav-icon">❧</span>
-My Garden
-</a>
-
-<a href="profile.html">
-<span class="nav-icon">✿</span>
-My Growth
-</a>
-
-<a href="projects.html" class="active">
-<span class="nav-icon">🌿</span>
-Projects in Bloom
-</a>
-
-<a href="team.html">
-<span class="nav-icon">🌳</span>
-Garden Team
-</a>
-
-<a href="gaps.html">
-<span class="nav-icon">🌾</span>
-What Needs Watering?
-</a>
-
-</nav>
-
-</aside>
-
-
-<main class="app-main">
-
-<header class="app-header">
-
-<div class="app-welcome">
-
-<small>DISCOVER</small>
-
-<h1>
-Projects in
-<em>bloom.</em>
-</h1>
-
-</div>
-
-<div class="user-avatar">S</div>
-
-</header>
-
-
-<div class="projects-grid">
-
-
-<article class="project-tile">
-
-<div class="project-flower">✿</div>
-
-<h2>
-Smart Campus
-</h2>
-
-<p>
-Improve the allocation and management
-of campus resources using technology.
-</p>
-
-<div class="skill-list">
-<span>Python</span>
-<span>Flask</span>
-<span>MySQL</span>
-</div>
-
-<div class="project-match">
-
-<span>Compatibility</span>
-
-<strong>88%</strong>
-
-</div>
-
-</article>
-
-
-<article class="project-tile">
-
-<div class="project-flower">❀</div>
-
-<h2>
-Intelligent Queue
-Management
-</h2>
-
-<p>
-Design a system that reduces waiting
-time and improves service efficiency.
-</p>
-
-<div class="skill-list">
-<span>Python</span>
-<span>JavaScript</span>
-</div>
-
-<div class="project-match">
-
-<span>Compatibility</span>
-
-<strong>82%</strong>
-
-</div>
-
-</article>
-
-
-<article class="project-tile">
-
-<div class="project-flower">❁</div>
-
-<h2>
-Student Skill
-Matching
-</h2>
-
-<p>
-Connect students with projects and
-teammates according to their skills.
-</p>
-
-<div class="skill-list">
-<span>Flask</span>
-<span>MySQL</span>
-<span>Web</span>
-</div>
-
-<div class="project-match">
-
-<span>Compatibility</span>
-
-<strong>79%</strong>
-
-</div>
-
-</article>
-
-
-</div>
-
-</main>
-
-</div>
+<script src="js/main.js"></script>
 
 </body>
+
 </html>

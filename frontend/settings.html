@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | SkillMatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body class="app-body">
+
+
+<div class="app-layout">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            ❧ Skill<span>Match</span>
+        </div>
+
+
+        <div class="sidebar-caption">
+            MY GARDEN
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span class="nav-icon">❧</span>
+                My Garden
+            </a>
+
+            <a href="profile.html">
+                <span class="nav-icon">✿</span>
+                My Growth
+            </a>
+
+            <a href="projects.html">
+                <span class="nav-icon">🌿</span>
+                Projects in Bloom
+            </a>
+
+            <a href="team.html">
+                <span class="nav-icon">🌳</span>
+                Garden Team
+            </a>
+
+            <a href="gaps.html">
+                <span class="nav-icon">🌾</span>
+                What Needs Watering?
+            </a>
+
+            <a href="applications.html">
+                <span class="nav-icon">✉</span>
+                Applications
+            </a>
+
+            <a href="notifications.html">
+                <span class="nav-icon">♧</span>
+                Notifications
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-caption sidebar-caption-bottom">
+            ACCOUNT
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="profile.html">
+                <span class="nav-icon">◉</span>
+                Profile
+            </a>
+
+            <a href="settings.html" class="active">
+                <span class="nav-icon">⚙</span>
+                Settings
+            </a>
+
+            <a href="#" data-logout>
+                <span class="nav-icon">↪</span>
+                Leave Garden
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="app-main">
+
+
+        <!-- HEADER -->
+
+        <header class="app-header">
+
+            <div class="app-welcome">
+
+                <small>
+                    YOUR GARDEN
+                </small>
+
+                <h1>
+                    Tend your
+                    <em>settings.</em>
+                </h1>
+
+                <p class="header-subtitle">
+                    Shape how SkillMatch understands and supports
+                    your project journey.
+                </p>
+
+            </div>
+
+
+            <div class="user-avatar">
+                S
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================
+             ACCOUNT
+        ========================== -->
+
+        <section class="garden-card settings-section">
+
+
+            <div class="settings-section-heading">
+
+                <div class="settings-icon">
+                    ◉
+                </div>
+
+                <div>
+
+                    <span>
+                        ACCOUNT
+                    </span>
+
+                    <h2>
+                        Account Information
+                    </h2>
+
+                    <p>
+                        Your basic account details.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-form-grid">
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        value="Saara Rafi"
+                        data-setting="name"
+                    >
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        value="saara@example.com"
+                        data-setting="email"
+                    >
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Department
+                    </label>
+
+                    <select data-setting="department">
+
+                        <option selected>
+                            Computer Science & Engineering
+                        </option>
+
+                        <option>
+                            Information Science
+                        </option>
+
+                        <option>
+                            Electronics & Communication
+                        </option>
+
+                        <option>
+                            Artificial Intelligence & Machine Learning
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Academic Year
+                    </label>
+
+                    <select data-setting="year">
+
+                        <option>
+                            1st Year
+                        </option>
+
+                        <option selected>
+                            2nd Year
+                        </option>
+
+                        <option>
+                            3rd Year
+                        </option>
+
+                        <option>
+                            4th Year
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-actions">
+
+                <button
+                    type="button"
+                    class="garden-button"
+                    data-garden-action="save-settings"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             MATCHING PREFERENCES
+        ========================== -->
+
+        <section class="garden-card settings-section">
+
+
+            <div class="settings-section-heading">
+
+                <div class="settings-icon">
+                    🌱
+                </div>
+
+                <div>
+
+                    <span>
+                        MATCHING
+                    </span>
+
+                    <h2>
+                        Matching Preferences
+                    </h2>
+
+                    <p>
+                        Help the matching system understand what
+                        kinds of projects interest you.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-preference-list">
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Prioritise Skill Compatibility
+                        </strong>
+
+                        <small>
+                            Give stronger consideration to projects
+                            matching your technical skills.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Consider My Interests
+                        </strong>
+
+                        <small>
+                            Include your preferred domains and
+                            interests when calculating matches.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Consider Previous Experience
+                        </strong>
+
+                        <small>
+                            Use your previous projects and experience
+                            when generating recommendations.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Consider Availability
+                        </strong>
+
+                        <small>
+                            Avoid recommending projects that exceed
+                            your available weekly capacity.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             PROJECT DOMAINS
+        ========================== -->
+
+        <section class="garden-card settings-section">
+
+
+            <div class="settings-section-heading">
+
+                <div class="settings-icon">
+                    🌿
+                </div>
+
+                <div>
+
+                    <span>
+                        PROJECT INTERESTS
+                    </span>
+
+                    <h2>
+                        Preferred Domains
+                    </h2>
+
+                    <p>
+                        Select the areas you would like to explore.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-chip-group">
+
+
+                <label class="settings-chip selected">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span>
+                        Artificial Intelligence
+                    </span>
+
+                </label>
+
+
+                <label class="settings-chip selected">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span>
+                        Web Applications
+                    </span>
+
+                </label>
+
+
+                <label class="settings-chip selected">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span>
+                        Cybersecurity
+                    </span>
+
+                </label>
+
+
+                <label class="settings-chip">
+
+                    <input
+                        type="checkbox"
+                    >
+
+                    <span>
+                        Data Science
+                    </span>
+
+                </label>
+
+
+                <label class="settings-chip">
+
+                    <input
+                        type="checkbox"
+                    >
+
+                    <span>
+                        Mobile Development
+                    </span>
+
+                </label>
+
+
+                <label class="settings-chip selected">
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                    <span>
+                        Education Technology
+                    </span>
+
+                </label>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             AVAILABILITY
+        ========================== -->
+
+        <section class="garden-card settings-section">
+
+
+            <div class="settings-section-heading">
+
+                <div class="settings-icon">
+                    ◷
+                </div>
+
+                <div>
+
+                    <span>
+                        CAPACITY
+                    </span>
+
+                    <h2>
+                        Weekly Availability
+                    </h2>
+
+                    <p>
+                        Keep your project recommendations realistic
+                        by maintaining your available capacity.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="availability-setting">
+
+
+                <div class="availability-number">
+
+                    <strong>
+                        20
+                    </strong>
+
+                    <span>
+                        hours / week
+                    </span>
+
+                </div>
+
+
+                <input
+                    type="range"
+                    min="0"
+                    max="40"
+                    value="20"
+                    class="availability-slider"
+                >
+
+
+                <div class="availability-range">
+
+                    <span>
+                        0 hrs
+                    </span>
+
+                    <span>
+                        40 hrs
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="capacity-note">
+
+                <span>
+                    🌱
+                </span>
+
+                <p>
+                    You currently have approximately
+                    <strong>10 hours</strong> of free capacity after
+                    existing commitments.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             NOTIFICATIONS
+        ========================== -->
+
+        <section class="garden-card settings-section">
+
+
+            <div class="settings-section-heading">
+
+                <div class="settings-icon">
+                    ♧
+                </div>
+
+                <div>
+
+                    <span>
+                        NOTIFICATIONS
+                    </span>
+
+                    <h2>
+                        Notification Preferences
+                    </h2>
+
+                    <p>
+                        Choose which garden updates you would like
+                        to receive.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-preference-list">
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Project Recommendations
+                        </strong>
+
+                        <small>
+                            Notify me when new projects match my profile.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Application Updates
+                        </strong>
+
+                        <small>
+                            Notify me when my application status changes.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Team Invitations
+                        </strong>
+
+                        <small>
+                            Notify me about invitations and team changes.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+
+                <label class="settings-toggle-row">
+
+                    <span>
+
+                        <strong>
+                            Skill Gap Suggestions
+                        </strong>
+
+                        <small>
+                            Notify me when the system identifies useful
+                            skills to develop.
+                        </small>
+
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        checked
+                    >
+
+                </label>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             SECURITY
+        ========================== -->
+
+        <section class="garden-card settings-section">
+
+
+            <div class="settings-section-heading">
+
+                <div class="settings-icon">
+                    ❧
+                </div>
+
+                <div>
+
+                    <span>
+                        SECURITY
+                    </span>
+
+                    <h2>
+                        Account Security
+                    </h2>
+
+                    <p>
+                        Manage your account access.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="security-row">
+
+                <div>
+
+                    <strong>
+                        Password
+                    </strong>
+
+                    <small>
+                        Last updated recently
+                    </small>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="garden-button secondary"
+                    data-garden-action="change-password"
+                >
+                    Change Password
+                </button>
+
+            </div>
+
+
+            <div class="security-row">
+
+                <div>
+
+                    <strong>
+                        Sign Out
+                    </strong>
+
+                    <small>
+                        Leave your SkillMatch session.
+                    </small>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="garden-button secondary"
+                    data-logout
+                >
+                    Leave Garden
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             RESET
+        ========================== -->
+
+        <section class="settings-danger-card">
+
+
+            <div>
+
+                <span>
+                    RESET PREFERENCES
+                </span>
+
+                <h3>
+                    Start with a clean garden
+                </h3>
+
+                <p>
+                    Reset your matching and notification preferences
+                    to their default values. Your profile and project
+                    history will not be deleted.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="garden-button secondary"
+                data-garden-action="reset-settings"
+            >
+                Reset Preferences
+            </button>
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="app-footer">
+            SKILLMATCH · GROW WHERE YOU BELONG
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<script src="js/main.js"></script>
+
+</body>
+
+</html>

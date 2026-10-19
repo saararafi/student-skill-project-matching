@@ -32,7 +32,9 @@
 <div class="app-layout">
 
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
     <aside class="sidebar">
 
@@ -77,6 +79,26 @@
 
 
         <div class="sidebar-caption">
+            ACTIVITY
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="applications.html">
+                <span class="nav-icon">✦</span>
+                Applications
+            </a>
+
+            <a href="notifications.html">
+                <span class="nav-icon">♧</span>
+                Notifications
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-caption">
             ACCOUNT
         </div>
 
@@ -88,7 +110,12 @@
                 Profile
             </a>
 
-            <a href="index.html">
+            <a href="settings.html">
+                <span class="nav-icon">⌘</span>
+                Settings
+            </a>
+
+            <a href="index.html" data-logout>
                 <span class="nav-icon">←</span>
                 Leave Garden
             </a>
@@ -98,23 +125,33 @@
     </aside>
 
 
-    <!-- MAIN -->
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
     <main class="app-main">
 
+
+        <!-- HEADER -->
 
         <header class="app-header">
 
             <div class="app-welcome">
 
                 <small>
-                    WELCOME BACK
+                    WELCOME BACK, SAARA
                 </small>
 
                 <h1>
                     Your garden is
                     <em>growing.</em>
                 </h1>
+
+                <p class="header-subtitle">
+                    Nurture your skills, discover meaningful
+                    projects and grow alongside the right team.
+                </p>
 
             </div>
 
@@ -126,10 +163,96 @@
         </header>
 
 
+
+        <!-- =================================================
+             PROFILE HEALTH
+             ================================================= -->
+
+        <section class="garden-card profile-health-card"
+                 style="padding: 22px; margin-bottom: 25px;">
+
+            <div style="
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:20px;
+                flex-wrap:wrap;
+            ">
+
+                <div>
+
+                    <div class="project-domain">
+                        ✿ YOUR GARDEN HEALTH
+                    </div>
+
+                    <h2 style="
+                        font-family:'Cormorant Garamond', serif;
+                        font-size:27px;
+                        color:var(--olive-deep, #26351b);
+                    ">
+                        Your profile is
+                        <em style="
+                            color:var(--gold-deep, #a37b35);
+                        ">
+                            82% complete.
+                        </em>
+                    </h2>
+
+                    <p style="
+                        margin-top:6px;
+                        font-size:10px;
+                        line-height:1.7;
+                        color:var(--muted, #7c8274);
+                    ">
+                        Add your previous work and availability
+                        to help SkillMatch understand your garden
+                        more completely.
+                    </p>
+
+                </div>
+
+
+                <a href="profile.html"
+                   class="garden-button primary">
+
+                    Complete Profile →
+
+                </a>
+
+            </div>
+
+
+            <div style="
+                margin-top:18px;
+                height:7px;
+                background:var(--sage, #e1e7d4);
+            ">
+
+                <div style="
+                    width:82%;
+                    height:100%;
+                    background:linear-gradient(
+                        90deg,
+                        var(--olive, #536b32),
+                        var(--gold, #c6a15b)
+                    );
+                ">
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STATISTICS
+             ================================================= -->
+
         <section class="dashboard-grid">
 
 
-            <div class="dashboard-card stat-card">
+            <div class="dashboard-card stat-card garden-card">
 
                 <h3>
                     Skills
@@ -150,7 +273,8 @@
             </div>
 
 
-            <div class="dashboard-card stat-card">
+
+            <div class="dashboard-card stat-card garden-card">
 
                 <h3>
                     Interests
@@ -171,7 +295,8 @@
             </div>
 
 
-            <div class="dashboard-card stat-card">
+
+            <div class="dashboard-card stat-card garden-card">
 
                 <h3>
                     Growth
@@ -192,49 +317,93 @@
             </div>
 
 
-            <!-- PROJECT -->
+        </section>
 
-            <div class="dashboard-card project-card">
 
-                <div class="project-card-header">
 
-                    <div>
+        <!-- =================================================
+             FEATURED PROJECT MATCH
+             ================================================= -->
 
-                        <div class="project-domain">
-                            ✿ PROJECT IN BLOOM
-                        </div>
+        <div class="garden-section-title">
 
-                        <h2>
-                            Smart Campus
-                            Resource Allocation
-                        </h2>
+            <small>
+                YOUR GARDEN'S RECOMMENDATION
+            </small>
 
-                    </div>
+            <h2>
+                A project ready to
+                <em>bloom.</em>
+            </h2>
 
-                    <div class="match-badge">
-                        88% MATCH
-                    </div>
+        </div>
+
+
+
+        <section class="project-match-card">
+
+
+            <div class="project-match-header">
+
+
+                <div>
+
+                    <span class="project-match-domain">
+                        ARTIFICIAL INTELLIGENCE · TEAM OF 5
+                    </span>
+
+                    <h2 class="project-match-title">
+                        Smart Campus Resource Allocation
+                    </h2>
 
                 </div>
 
-                <p>
-                    A project focused on improving the
-                    allocation and management of campus
-                    resources.
-                </p>
 
-                <div class="skill-list">
+                <div class="match-score-circle"
+                     style="--score:88;">
 
-                    <span>Python</span>
-                    <span>Flask</span>
-                    <span>MySQL</span>
+                    <strong data-score="88">
+                        0%
+                    </strong>
+
+                    <small>
+                        MATCH
+                    </small>
 
                 </div>
 
-                <br>
+
+            </div>
+
+
+            <p class="project-match-description">
+
+                A project focused on improving the allocation
+                and management of campus resources using
+                intelligent data-driven techniques.
+
+            </p>
+
+
+            <div class="project-tags">
+
+                <span>Python</span>
+                <span>Flask</span>
+                <span>MySQL</span>
+                <span>Machine Learning</span>
+
+            </div>
+
+
+            <div class="project-match-footer">
+
+                <span class="botanical-badge">
+                    Strong skill compatibility
+                </span>
+
 
                 <a href="projects.html"
-                   class="gold-button">
+                   class="garden-button primary">
 
                     View Project →
 
@@ -243,80 +412,870 @@
             </div>
 
 
-            <!-- GROWTH -->
-
-            <div class="dashboard-card growth-card">
-
-                <h3>
-                    Your Growth
-                </h3>
-
-                <p>
-                    A glimpse at the skills in your garden.
-                </p>
+        </section>
 
 
-                <div class="progress-row">
 
-                    <div class="progress-label">
+        <!-- =================================================
+             MATCH BREAKDOWN
+             ================================================= -->
 
-                        <span>Python</span>
-                        <span>80%</span>
+        <div class="garden-section-title">
 
-                    </div>
+            <small>
+                WHY THIS PROJECT?
+            </small>
 
-                    <div class="progress-bar">
-                        <div class="progress-fill"
-                             style="width:80%">
+            <h2>
+                Your match,
+                <em>explained.</em>
+            </h2>
+
+        </div>
+
+
+
+        <section class="garden-card"
+                 style="padding:25px;">
+
+
+            <div class="match-components">
+
+
+                <div class="match-component">
+
+                    <span class="match-component-label">
+                        Skill Compatibility
+                    </span>
+
+                    <div class="match-component-track">
+
+                        <div class="match-component-fill"
+                             style="width:94%;">
                         </div>
+
                     </div>
+
+                    <span class="match-component-value">
+                        94%
+                    </span>
 
                 </div>
 
 
-                <div class="progress-row">
 
-                    <div class="progress-label">
+                <div class="match-component">
 
-                        <span>HTML / CSS</span>
-                        <span>95%</span>
+                    <span class="match-component-label">
+                        Interest Compatibility
+                    </span>
 
-                    </div>
+                    <div class="match-component-track">
 
-                    <div class="progress-bar">
-                        <div class="progress-fill"
-                             style="width:95%">
+                        <div class="match-component-fill"
+                             style="width:90%;">
                         </div>
+
                     </div>
+
+                    <span class="match-component-value">
+                        90%
+                    </span>
 
                 </div>
 
 
-                <div class="progress-row">
 
-                    <div class="progress-label">
+                <div class="match-component">
 
-                        <span>MySQL</span>
-                        <span>60%</span>
+                    <span class="match-component-label">
+                        Previous Experience
+                    </span>
 
-                    </div>
+                    <div class="match-component-track">
 
-                    <div class="progress-bar">
-                        <div class="progress-fill"
-                             style="width:60%">
+                        <div class="match-component-fill"
+                             style="width:86%;">
                         </div>
+
                     </div>
+
+                    <span class="match-component-value">
+                        86%
+                    </span>
 
                 </div>
+
+
+
+                <div class="match-component">
+
+                    <span class="match-component-label">
+                        Availability
+                    </span>
+
+                    <div class="match-component-track">
+
+                        <div class="match-component-fill"
+                             style="width:92%;">
+                        </div>
+
+                    </div>
+
+                    <span class="match-component-value">
+                        92%
+                    </span>
+
+                </div>
+
 
             </div>
 
 
+            <p style="
+                margin-top:22px;
+                font-size:10px;
+                line-height:1.7;
+                color:var(--muted, #7c8274);
+            ">
+
+                Your overall compatibility is calculated from
+                multiple attributes rather than a single skill.
+                These components will later be generated by the
+                SkillMatch algorithms through the Flask backend.
+
+            </p>
+
+
         </section>
+
+
+
+        <!-- =================================================
+             TWO COLUMN AREA
+             ================================================= -->
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+                minmax(0, 1.4fr)
+                minmax(280px, .8fr);
+            gap:22px;
+            margin-top:25px;
+        ">
+
+
+            <!-- SKILL GARDEN -->
+
+            <section class="garden-card"
+                     style="padding:25px;">
+
+                <div class="project-domain">
+                    🌱 SKILL GARDEN
+                </div>
+
+                <h2 style="
+                    font-family:'Cormorant Garamond', serif;
+                    font-size:27px;
+                    color:var(--olive-deep, #26351b);
+                ">
+                    What is
+                    <em style="
+                        color:var(--gold-deep, #a37b35);
+                    ">
+                        growing?
+                    </em>
+                </h2>
+
+
+                <div class="skill-plants">
+
+
+                    <div class="skill-plant"
+                         data-skill="Python">
+
+                        <div class="skill-plant-flower">
+                            ✿
+                        </div>
+
+                        <div class="skill-plant-name">
+                            Python
+                        </div>
+
+                        <div class="skill-plant-level">
+                            80% · GROWING
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-plant"
+                         data-skill="HTML / CSS">
+
+                        <div class="skill-plant-flower">
+                            ✿
+                        </div>
+
+                        <div class="skill-plant-name">
+                            HTML / CSS
+                        </div>
+
+                        <div class="skill-plant-level">
+                            95% · BLOOMING
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-plant"
+                         data-skill="Java">
+
+                        <div class="skill-plant-flower">
+                            ✿
+                        </div>
+
+                        <div class="skill-plant-name">
+                            Java
+                        </div>
+
+                        <div class="skill-plant-level">
+                            100% · BLOOMING
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-plant"
+                         data-skill="MySQL">
+
+                        <div class="skill-plant-flower">
+                            ✿
+                        </div>
+
+                        <div class="skill-plant-name">
+                            MySQL
+                        </div>
+
+                        <div class="skill-plant-level">
+                            60% · GROWING
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <a href="profile.html"
+                   class="garden-button"
+                   style="margin-top:20px;">
+
+                    Tend My Skills →
+
+                </a>
+
+            </section>
+
+
+
+            <!-- AVAILABILITY -->
+
+            <section class="garden-card"
+                     style="padding:25px;">
+
+                <div class="project-domain">
+                    ❧ YOUR CAPACITY
+                </div>
+
+                <h2 style="
+                    font-family:'Cormorant Garamond', serif;
+                    font-size:27px;
+                    color:var(--olive-deep, #26351b);
+                ">
+                    Room to
+                    <em style="
+                        color:var(--gold-deep, #a37b35);
+                    ">
+                        grow.
+                    </em>
+                </h2>
+
+
+                <div class="capacity-card"
+                     style="margin-top:20px;">
+
+                    <div class="capacity-ring"
+                         style="--capacity:50;">
+
+                        <div class="capacity-ring-inner">
+
+                            <strong>
+                                10h
+                            </strong>
+
+                            <span>
+                                AVAILABLE
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <p style="
+                            font-family:'Cormorant Garamond', serif;
+                            font-size:20px;
+                            color:var(--olive-deep, #26351b);
+                        ">
+                            Weekly capacity
+                        </p>
+
+                        <p style="
+                            margin-top:5px;
+                            font-size:9px;
+                            line-height:1.7;
+                            color:var(--muted, #7c8274);
+                        ">
+                            20 hours available<br>
+                            10 hours currently committed
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <a href="profile.html"
+                   class="garden-button"
+                   style="margin-top:20px;">
+
+                    Manage Availability
+
+                </a>
+
+            </section>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             GROWTH + TEAM
+             ================================================= -->
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(0, 1fr);
+            gap:22px;
+            margin-top:25px;
+        ">
+
+
+            <!-- GROWTH TIMELINE -->
+
+            <section class="garden-card"
+                     style="padding:25px;">
+
+                <div class="project-domain">
+                    ✿ GROWTH TIMELINE
+                </div>
+
+                <h2 style="
+                    font-family:'Cormorant Garamond', serif;
+                    font-size:27px;
+                    color:var(--olive-deep, #26351b);
+                ">
+                    How your garden
+                    <em style="
+                        color:var(--gold-deep, #a37b35);
+                    ">
+                        grew.
+                    </em>
+                </h2>
+
+
+                <div class="growth-timeline">
+
+
+                    <div class="growth-item">
+
+                        <span class="growth-year">
+                            RECENT
+                        </span>
+
+                        <div class="growth-title">
+                            Flask added
+                        </div>
+
+                        <p class="growth-description">
+                            Added backend development to
+                            your growing technical garden.
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="growth-item">
+
+                        <span class="growth-year">
+                            EARLIER
+                        </span>
+
+                        <div class="growth-title">
+                            Web development
+                        </div>
+
+                        <p class="growth-description">
+                            HTML and CSS skills began
+                            taking shape.
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="growth-item">
+
+                        <span class="growth-year">
+                            BEGINNING
+                        </span>
+
+                        <div class="growth-title">
+                            First technical seeds
+                        </div>
+
+                        <p class="growth-description">
+                            Your first programming foundations
+                            were planted.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- TEAM COMPATIBILITY -->
+
+            <section class="garden-card"
+                     style="padding:25px;">
+
+                <div class="project-domain">
+                    🌳 GARDEN TEAM
+                </div>
+
+                <h2 style="
+                    font-family:'Cormorant Garamond', serif;
+                    font-size:27px;
+                    color:var(--olive-deep, #26351b);
+                ">
+                    Skills grow better
+                    <em style="
+                        color:var(--gold-deep, #a37b35);
+                    ">
+                        together.
+                    </em>
+                </h2>
+
+
+                <div class="team-branch"
+                     style="margin-top:20px;">
+
+
+                    <div class="team-member">
+
+                        <div class="team-member-avatar">
+                            S
+                        </div>
+
+                        <div>
+
+                            <div class="team-member-name">
+                                Saara
+                            </div>
+
+                            <div class="team-member-role">
+                                PYTHON · ALGORITHM
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="team-member">
+
+                        <div class="team-member-avatar">
+                            H
+                        </div>
+
+                        <div>
+
+                            <div class="team-member-name">
+                                H
+                            </div>
+
+                            <div class="team-member-role">
+                                DATABASE · MYSQL
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="team-member">
+
+                        <div class="team-member-avatar">
+                            SW
+                        </div>
+
+                        <div>
+
+                            <div class="team-member-name">
+                                SW
+                            </div>
+
+                            <div class="team-member-role">
+                                FRONTEND · UI
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div style="
+                    margin-top:18px;
+                    padding:12px;
+                    background:var(--sage, #e1e7d4);
+                ">
+
+                    <span style="
+                        font-size:8px;
+                        letter-spacing:1px;
+                        color:var(--olive-dark, #405128);
+                    ">
+                        TEAM SKILL COVERAGE
+                    </span>
+
+                    <strong style="
+                        display:block;
+                        margin-top:4px;
+                        font-family:'Cormorant Garamond', serif;
+                        font-size:22px;
+                        color:var(--olive-deep, #26351b);
+                    ">
+                        87%
+                    </strong>
+
+                </div>
+
+
+                <a href="team.html"
+                   class="garden-button"
+                   style="margin-top:18px;">
+
+                    Explore Team →
+
+                </a>
+
+            </section>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             WHAT NEEDS WATERING
+             ================================================= -->
+
+        <div class="garden-section-title">
+
+            <small>
+                SKILL DEVELOPMENT
+            </small>
+
+            <h2>
+                What needs
+                <em>watering?</em>
+            </h2>
+
+        </div>
+
+
+
+        <section class="watering-card">
+
+
+            <div class="watering-title">
+                Your garden has room to grow.
+            </div>
+
+
+            <p class="watering-description">
+
+                Based on the requirements of projects that
+                interest you, these areas could strengthen
+                your future matches.
+
+            </p>
+
+
+            <div class="gap-list">
+
+
+                <div class="gap-item">
+
+                    <span class="gap-item-name">
+                        ✦ Machine Learning
+                    </span>
+
+                    <span class="gap-item-score">
+                        62%
+                    </span>
+
+                </div>
+
+
+
+                <div class="gap-item">
+
+                    <span class="gap-item-name">
+                        ✦ Flask
+                    </span>
+
+                    <span class="gap-item-score">
+                        48%
+                    </span>
+
+                </div>
+
+
+
+                <div class="gap-item">
+
+                    <span class="gap-item-name">
+                        ✦ Data Visualization
+                    </span>
+
+                    <span class="gap-item-score">
+                        35%
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <a href="gaps.html"
+               class="garden-button"
+               style="margin-top:18px;">
+
+                Explore Skill Gaps →
+
+            </a>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             RECENT ACTIVITY
+             ================================================= -->
+
+        <div class="garden-section-title">
+
+            <small>
+                RECENT ACTIVITY
+            </small>
+
+            <h2>
+                Little signs of
+                <em>growth.</em>
+            </h2>
+
+        </div>
+
+
+
+        <section class="garden-card"
+                 style="padding:22px;">
+
+
+            <div style="
+                display:grid;
+                gap:14px;
+            ">
+
+
+                <div style="
+                    display:flex;
+                    gap:13px;
+                    align-items:flex-start;
+                ">
+
+                    <span style="
+                        color:var(--gold);
+                        font-size:18px;
+                    ">
+                        ✿
+                    </span>
+
+                    <div>
+
+                        <strong style="
+                            font-family:'Cormorant Garamond', serif;
+                            font-size:17px;
+                            color:var(--olive-deep);
+                        ">
+                            Profile updated
+                        </strong>
+
+                        <p style="
+                            margin-top:3px;
+                            font-size:9px;
+                            color:var(--muted);
+                        ">
+                            Your skill garden was recently
+                            updated.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div style="
+                    display:flex;
+                    gap:13px;
+                    align-items:flex-start;
+                ">
+
+                    <span style="
+                        color:var(--gold);
+                        font-size:18px;
+                    ">
+                        ❧
+                    </span>
+
+                    <div>
+
+                        <strong style="
+                            font-family:'Cormorant Garamond', serif;
+                            font-size:17px;
+                            color:var(--olive-deep);
+                        ">
+                            New project match
+                        </strong>
+
+                        <p style="
+                            margin-top:3px;
+                            font-size:9px;
+                            color:var(--muted);
+                        ">
+                            Smart Campus Resource Allocation
+                            reached an 88% compatibility score.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div style="
+                    display:flex;
+                    gap:13px;
+                    align-items:flex-start;
+                ">
+
+                    <span style="
+                        color:var(--gold);
+                        font-size:18px;
+                    ">
+                        🌱
+                    </span>
+
+                    <div>
+
+                        <strong style="
+                            font-family:'Cormorant Garamond', serif;
+                            font-size:17px;
+                            color:var(--olive-deep);
+                        ">
+                            Skill growth recorded
+                        </strong>
+
+                        <p style="
+                            margin-top:3px;
+                            font-size:9px;
+                            color:var(--muted);
+                        ">
+                            Your Python proficiency has been
+                            recorded at 80%.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <a href="notifications.html"
+               class="garden-button"
+               style="margin-top:20px;">
+
+                View Notifications →
+
+            </a>
+
+
+        </section>
+
+
+        <footer style="
+            margin-top:45px;
+            padding:25px 0;
+            text-align:center;
+            font-size:8px;
+            letter-spacing:1.5px;
+            color:var(--muted, #7c8274);
+        ">
+
+            ❧ SKILLMATCH · GROW WHERE YOU BELONG ❧
+
+        </footer>
+
 
     </main>
 
 </div>
 
+
 </body>
+
 </html>

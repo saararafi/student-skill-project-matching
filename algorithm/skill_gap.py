@@ -40,74 +40,72 @@ def detect_skill_gaps(team_skills, project_requirements):
     return skill_gaps
 
 
-# ---------------------------------------------------------
-# SAMPLE TEAM DATA
-# ---------------------------------------------------------
+if __name__ == "__main__":
+    # ---------------------------------------------------------
+    # SAMPLE TEAM DATA
+    # ---------------------------------------------------------
 
-team_skills = {
-    "Python": 5,
-    "HTML": 5,
-    "CSS": 4,
-    "MySQL": 2
-}
+    team_skills = {
+        "Python": 5,
+        "HTML": 5,
+        "CSS": 4,
+        "MySQL": 2
+    }
 
+    # ---------------------------------------------------------
+    # SAMPLE PROJECT REQUIREMENTS
+    # ---------------------------------------------------------
 
-# ---------------------------------------------------------
-# SAMPLE PROJECT REQUIREMENTS
-# ---------------------------------------------------------
+    project_requirements = {
+        "Python": 5,
+        "HTML": 4,
+        "CSS": 4,
+        "MySQL": 4,
+        "JavaScript": 3,
+        "Flask": 3
+    }
 
-project_requirements = {
-    "Python": 5,
-    "HTML": 4,
-    "CSS": 4,
-    "MySQL": 4,
-    "JavaScript": 3,
-    "Flask": 3
-}
+    # ---------------------------------------------------------
+    # RUNNING THE ALGORITHM
+    # ---------------------------------------------------------
 
-
-# ---------------------------------------------------------
-# RUNNING THE ALGORITHM
-# ---------------------------------------------------------
-
-gaps = detect_skill_gaps(
-    team_skills,
-    project_requirements
-)
-
-
-# ---------------------------------------------------------
-# DISPLAYING RESULTS
-# ---------------------------------------------------------
-
-print("\n" + "=" * 80)
-print("                    PROJECT SKILL GAP ANALYSIS")
-print("=" * 80)
-
-print(
-    f"{'Skill':<25}"
-    f"{'Required':<15}"
-    f"{'Available':<15}"
-    f"{'Status':<20}"
-)
-
-print("-" * 80)
-
-if gaps:
-
-    for skill, details in gaps.items():
-
-        print(
-            f"{skill:<25}"
-            f"{details['required_level']:<15}"
-            f"{details['available_level']:<15}"
-            f"{details['status']:<20}"
-        )
-
-else:
-
-    print(
-        f"{'No skill gaps detected.':<80}"
+    gaps = detect_skill_gaps(
+        team_skills,
+        project_requirements
     )
 
-print("=" * 80)
+    # ---------------------------------------------------------
+    # DISPLAYING RESULTS
+    # ---------------------------------------------------------
+
+    print("\n" + "=" * 80)
+    print("                    PROJECT SKILL GAP ANALYSIS")
+    print("=" * 80)
+
+    print(
+        f"{'Skill':<25}"
+        f"{'Required':<15}"
+        f"{'Available':<15}"
+        f"{'Status':<20}"
+    )
+
+    print("-" * 80)
+
+    if gaps:
+
+        for skill, details in gaps.items():
+
+            print(
+                f"{skill:<25}"
+                f"{details['required_level']:<15}"
+                f"{details['available_level']:<15}"
+                f"{details['status']:<20}"
+            )
+
+    else:
+
+        print(
+            f"{'No skill gaps detected.':<80}"
+        )
+
+    print("=" * 80)
