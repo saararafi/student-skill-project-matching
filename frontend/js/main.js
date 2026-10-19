@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeLiveProfile();
     setupCertificateModal();
     initializeLiveProjects();
+    initializeLiveProjectDetails();
     initializeLiveGaps();
     initializeLiveTeammates();
     initializeLiveApplications();
@@ -435,6 +436,45 @@ window.applyToProjectLive = async function(projectId, buttonElement) {
         }
     }
 };
+
+async function initializeLiveProjectDetails() {
+    const heroTitle = document.querySelector(".project-detail-heading h2");
+    if (!heroTitle) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id') || '1';
+
+    try {
+        const res = await fetch(`${API_BASE}/projects/${projectId}`);
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success || !json.project) return;
+        const p = json.project;
+
+        heroTitle.textContent = p.title;
+        const heroDesc = document.querySelector(".project-detail-heading p");
+        if (heroDesc) heroDesc.textContent = p.description;
+
+        const matchCircle = document.querySelector(".project-detail-match .match-score-circle span");
+        if (matchCircle && p.match) {
+            matchCircle.textContent = `${Math.round(p.match.final_score)}%`;
+        }
+
+        const applyBtn = document.querySelector(".project-detail-actions button, button[data-apply]");
+        if (applyBtn) {
+            const isApplied = p.application !== null;
+            if (isApplied) {
+                applyBtn.disabled = true;
+                applyBtn.textContent = p.application.status === 'Accepted' ? 'Accepted ✓' : 'Applied ✓';
+                applyBtn.classList.add('applied');
+            } else {
+                applyBtn.onclick = () => applyToProjectLive(p.id, applyBtn);
+            }
+        }
+    } catch (e) {
+        console.log("[Notice] Live project details sync skipped.");
+    }
+}
 
 
 /* =========================================================
