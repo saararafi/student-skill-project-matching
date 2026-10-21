@@ -62,6 +62,28 @@ def create_app():
             "version": "1.0.0"
         })
 
+    @app.after_request
+    def keep_pages_fresh(response):
+        """
+        HTML pages must always be the current version.
+
+        The stylesheets and scripts carry a version in their file name, so
+        they can be cached. The pages themselves cannot: a browser that
+        kept an old page would be looking for elements the current
+        JavaScript no longer finds.
+        """
+        if response.mimetype == 'text/html':
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+        elif response.mimetype in ('text/css', 'application/javascript',
+                                    'text/javascript'):
+            # The stylesheets and scripts carry a version in their file
+            # name, so the browser can keep them until a new version
+            # ships.
+            response.headers['Cache-Control'] = 'public, max-age=3600'
+        return response
+
     # Frontend serving routes
     @app.route('/', methods=['GET'])
     def serve_index():

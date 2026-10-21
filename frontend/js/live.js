@@ -73,6 +73,13 @@ async function renderDashboard() {
 
     const d = data.dashboard;
 
+    // Greet the signed-in student by name.
+    const welcome = $("[data-dashboard-welcome]");
+    if (welcome) {
+        const name = (d.profile && d.profile.name) || "";
+        welcome.textContent = name ? name.split(" ")[0].toUpperCase() : "THERE";
+    }
+
     // Statistic cards
     const statMap = {
         skills: d.stats.skills,
@@ -491,6 +498,20 @@ async function renderTeam() {
                     </div>`;
             }).join("");
 
+            // Name the skills the team is still weak in.
+            const note = $("[data-team-gap-note]");
+            if (note) {
+                const weak = breakdown
+                    .filter(i => i.status !== "Covered")
+                    .map(i => i.skill);
+                note.textContent = weak.length
+                    ? `The current team has weaker coverage in ` +
+                      `${weak.join(", ")}. ` +
+                      `Finding a teammate with these skills could improve ` +
+                      `the team's overall coverage.`
+                    : `The team covers every skill this project needs.`;
+            }
+
             const covered = breakdown.filter(i => i.status === "Covered").length;
             const total = breakdown.length;
             const pct = Math.round((covered / total) * 100);
@@ -836,9 +857,23 @@ async function renderProfileManagement() {
             slider.value = hours;
             const readout = $("[data-weekly-hours]");
             if (readout) readout.textContent = hours;
+            updateCapacityRing(hours);
         }
     }
 }
+
+/** Shows the weekly capacity as a ring and a percentage. */
+function updateCapacityRing(hours) {
+    const value = Number(hours) || 0;
+    const percent = Math.min(100, Math.round((value / 40) * 100));
+
+    const ring = $("[data-capacity-ring]");
+    if (ring) ring.style.setProperty("--capacity", percent);
+
+    const label = $("[data-capacity-value]");
+    if (label) label.textContent = `${percent}%`;
+}
+
 
 /** Renders the interest chips and wires their remove buttons. */
 function renderInterestChips(list) {
@@ -1127,9 +1162,11 @@ function wireRegistration() {
     const toggle = $("[data-register-toggle]");
     const form = $("#registerForm");
     const login = $("#loginForm");
-    if (!toggle || !form) return;
+    if (!form) return;
 
-    toggle.addEventListener("click", () => {
+    // On the standalone registration page there is no toggle: the form is
+    // simply on screen, so only the submit handler is wired up.
+    if (toggle) toggle.addEventListener("click", () => {
         const showing = form.style.display !== "none";
         form.style.display = showing ? "none" : "";
         if (login) login.style.display = showing ? "" : "none";

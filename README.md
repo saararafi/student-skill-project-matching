@@ -468,6 +468,8 @@ python -m unittest discover -s tests -v
 | Page | What it does |
 | :--- | :--- |
 | `index.html` | Landing page explaining the system |
+| `login.html` | Sign in to your garden |
+| `register.html` | Create a new student profile |
 | `dashboard.html` | Profile health, statistics, your best project match with the full score breakdown, skill garden and recent activity |
 | `projects.html` | Every project ranked by your compatibility, with search and filters |
 | `project-details.html` | Requirements, your skill-by-skill fit, the gaps to close and the current team |

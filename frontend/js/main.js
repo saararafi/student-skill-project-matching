@@ -1216,9 +1216,17 @@ async function initializeStudentDashboard() {
         const recommendations = projectData.recommendations || [];
 
         // Welcome name and avatar
-        const welcome = $(".app-welcome small");
-        if (welcome) {
-            welcome.textContent = `WELCOME BACK, ${(profile.name || "STUDENT").toUpperCase()}`;
+        // Greet the student by their first name. When the page provides a
+        // dedicated element for it, fill that instead of the whole block.
+        const welcomeSlot = $("[data-dashboard-welcome]");
+        if (welcomeSlot) {
+            const firstName = (profile.name || "").trim().split(/\s+/)[0];
+            welcomeSlot.textContent = (firstName || "there").toUpperCase();
+        } else {
+            const welcome = $(".app-welcome small");
+            if (welcome) {
+                welcome.textContent = `WELCOME BACK, ${(profile.name || "STUDENT").toUpperCase()}`;
+            }
         }
 
         const avatar = $(".user-avatar");

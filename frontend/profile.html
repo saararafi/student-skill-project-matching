@@ -6,9 +6,9 @@
 
     <title>My Growth | SkillMatch</title>
 
-    <link rel="stylesheet" href="css/style.css?v=2">
-    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=2">
-    <link rel="stylesheet" href="css/design-system.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
+    <link rel="stylesheet" href="css/design-system.css?v=3">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -181,9 +181,7 @@
                         🌱 Growing Student
                     </span>
 
-                    <h2 data-profile-display="name">
-                        Saara Rafi
-                    </h2>
+                    <h2 data-profile-display="name"></h2>
 
                     <p data-profile-display="department">
                         Computer Science Engineering
@@ -298,7 +296,7 @@
                         class="profile-info-value"
                         data-profile-display="name"
                     >
-                        Saara Rafi
+                        
                     </p>
 
                 </div>
@@ -546,8 +544,8 @@
                     <h3><span data-weekly-hours>20</span> hours / week</h3>
                     <p class="muted-text">How much time you can offer each week.</p>
                 </div>
-                <div class="capacity-ring" style="--capacity:50;">
-                    <div class="capacity-ring-inner">50%</div>
+                <div class="capacity-ring" data-capacity-ring style="--capacity:50;">
+                    <div class="capacity-ring-inner" data-capacity-value>50%</div>
                 </div>
             </div>
 
@@ -644,12 +642,7 @@
                             Name
                         </label>
 
-                        <input
-                            type="text"
-                            id="profileName"
-                            data-profile-field="name"
-                            value="Saara Rafi"
-                        >
+                        <input type="text" id="profileName" data-profile-field="name" placeholder="Your full name">
 
                     </div>
 
@@ -770,7 +763,7 @@
                     <input type="hidden" id="certSkillId" name="skill_id">
                     <input type="hidden" id="certSkillName" name="skill_name">
                     <p style="margin: 0 0 10px; font-size: 0.95rem; color: #444;">
-                        Upload an official certificate or coursework proof for <strong id="certModalSkillTitle" style="color: #26351b;">Python</strong>:
+                        Upload an official certificate or coursework proof for <strong id="certModalSkillTitle" style="color: #26351b;"></strong>:
                     </p>
                     <div class="cert-file-drop" id="certDropZone" onclick="document.getElementById('certFileInput').click()">
                         <span style="font-size: 2rem; display: block; margin-bottom: 6px;">📂</span>
@@ -810,8 +803,8 @@
      JAVASCRIPT
      ===================================================== -->
 
-<script src="js/main.js?v=2"></script>
-<script src="js/live.js?v=2"></script>
+<script src="js/main.js?v=3"></script>
+<script src="js/live.js?v=3"></script>
 
 </body>
 </html>
