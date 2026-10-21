@@ -692,3 +692,220 @@ button:focus-visible {
 .sidebar-logout:hover {
     background: #e8ecdf;
 }
+
+
+/* =========================================================
+   OLIVE & GOLD IDENTITY
+   ------------------------------------------------------
+   The layout fixes above flattened every surface to near-white,
+   which pulled the site away from the botanical theme. The
+   original palette in style.css is the deep olive sidebar with
+   gold accents; these rules put it back.
+   ========================================================= */
+
+:root {
+    --olive-deep: #26351b;
+    --olive-dark: #34451f;
+    --olive: #536b32;
+    --olive-soft: #778653;
+    --gold-deep: #987536;
+    --gold: #c6a15b;
+    --gold-light: #dfc98e;
+    --ivory: #f7f2e5;
+    --cream: #fcf9f0;
+    --paper: #fffdf8;
+    --sage: #e1e7d4;
+    --line: rgba(83, 107, 50, 0.18);
+    --gold-line: rgba(198, 161, 91, 0.38);
+}
+
+/* -------------------------------------------------------
+   The sidebar is the deep olive anchor of the whole theme
+   ------------------------------------------------------- */
+
+.sidebar,
+.sidebar.is-open {
+    background:
+        radial-gradient(circle at 12% 6%, rgba(198, 161, 91, 0.14), transparent 42%),
+        linear-gradient(180deg, #2f4026 0%, #26351b 48%, #1e2a17 100%);
+    color: var(--ivory);
+    border-right: 1px solid rgba(198, 161, 91, 0.30);
+    box-shadow: 6px 0 26px rgba(31, 44, 23, 0.12);
+}
+
+.sidebar .sidebar-logo,
+.sidebar .sidebar-brand,
+.sidebar .sidebar-logo h2,
+.sidebar .sidebar-brand h2,
+.sidebar .sidebar-logo > div:last-child,
+.sidebar .sidebar-brand > div:last-child {
+    color: var(--ivory);
+}
+
+.sidebar .sidebar-logo span,
+.sidebar .sidebar-brand span,
+.sidebar .sidebar-logo > div:last-child > span,
+.sidebar .sidebar-brand > div:last-child > span,
+.sidebar .sidebar-logo .logo-symbol,
+.sidebar .sidebar-brand .logo-symbol {
+    color: var(--gold);
+}
+
+.sidebar .sidebar-caption {
+    color: rgba(223, 201, 142, 0.72);
+    letter-spacing: 0.18em;
+}
+
+.sidebar .sidebar-divider {
+    background: rgba(198, 161, 91, 0.24);
+}
+
+.sidebar .sidebar-nav a,
+.sidebar .sidebar-brand + .sidebar-nav a {
+    color: rgba(247, 242, 229, 0.84);
+}
+
+.sidebar .sidebar-nav a:hover,
+.sidebar .sidebar-brand + .sidebar-nav a:hover {
+    color: var(--ivory);
+    background: rgba(198, 161, 91, 0.14);
+}
+
+.sidebar .sidebar-nav a.active,
+.sidebar .sidebar-brand + .sidebar-nav a.active {
+    color: #21301a;
+    background: linear-gradient(90deg, var(--gold-light), var(--gold));
+    border-color: rgba(198, 161, 91, 0.55);
+    font-weight: 600;
+}
+
+.sidebar .sidebar-nav a.active .nav-icon,
+.sidebar .sidebar-nav .nav-icon,
+.sidebar .sidebar-brand + .sidebar-nav .nav-icon {
+    color: var(--gold);
+}
+
+.sidebar .sidebar-nav a.active .nav-icon {
+    color: #21301a;
+}
+
+.sidebar .sidebar-logout {
+    color: rgba(247, 242, 229, 0.86);
+    border-color: rgba(198, 161, 91, 0.38);
+    background: transparent;
+}
+
+.sidebar .sidebar-logout:hover {
+    color: var(--ivory);
+    background: rgba(198, 161, 91, 0.16);
+}
+
+.sidebar .sidebar-footer {
+    color: rgba(247, 242, 229, 0.6);
+    border-top-color: rgba(198, 161, 91, 0.22);
+}
+
+/* -------------------------------------------------------
+   The garden ground the cards sit on
+   ------------------------------------------------------- */
+
+body {
+    background: var(--cream);
+    color: #3b3023;
+}
+
+.app-main,
+.main-content {
+    background: var(--cream);
+}
+
+/* -------------------------------------------------------
+   Botanical paper cards: warm ivory with an olive edge
+   ------------------------------------------------------- */
+
+.garden-card,
+.dashboard-card,
+.stat-card,
+.application-card,
+.application-summary-card,
+.application-flow-card,
+.project-match-card,
+.notification-item,
+.team-member-card,
+.recommended-teammate,
+.gap-item,
+.required-skill,
+.coverage-item,
+.skill-plant,
+.match-component,
+.settings-panel,
+.profile-card {
+    background: var(--paper);
+    border-color: rgba(83, 107, 50, 0.20);
+    box-shadow: 0 8px 26px rgba(38, 53, 27, 0.07);
+}
+
+/* -------------------------------------------------------
+   Gold accents on the actions
+   ------------------------------------------------------- */
+
+.garden-button {
+    border-color: var(--gold);
+    color: var(--olive-deep);
+    background: linear-gradient(180deg, #fffdf8, #f7f1e0);
+}
+
+.garden-button:hover {
+    background: linear-gradient(180deg, #fff8e8, var(--gold-light));
+    border-color: var(--gold-deep);
+}
+
+.botanical-badge {
+    color: var(--olive);
+    border-color: rgba(198, 161, 91, 0.45);
+    background: rgba(225, 231, 212, 0.55);
+}
+
+/* -------------------------------------------------------
+   Soft olive chips
+   ------------------------------------------------------- */
+
+.settings-chip,
+.settings-chip.selected {
+    color: var(--olive-dark);
+    border-color: rgba(83, 107, 50, 0.28);
+    background: rgba(225, 231, 212, 0.55);
+}
+
+.settings-chip.selected {
+    background: linear-gradient(180deg, #eef1e4, #dde4cd);
+    border-color: rgba(198, 161, 91, 0.5);
+}
+
+/* -------------------------------------------------------
+   Section labels and small caps
+   ------------------------------------------------------- */
+
+.eyebrow,
+.section-label,
+.garden-section-title span {
+    color: var(--gold-deep);
+}
+
+/* -------------------------------------------------------
+   Inputs pick up the olive edge
+   ------------------------------------------------------- */
+
+input,
+select,
+textarea {
+    border-color: rgba(83, 107, 50, 0.26);
+    background: #fffefb;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.16);
+}

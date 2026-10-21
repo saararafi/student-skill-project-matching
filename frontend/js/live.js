@@ -1070,12 +1070,12 @@ async function renderSettings() {
             const active = stored.includes(name);
             chip.checked = active;
             chip.parentElement.classList.toggle("selected", active);
-            chip.addEventListener("change", saveInterestChips);
+            chip.addEventListener("change", () => saveInterestChips(true));
         });
     }
 }
 
-async function saveInterestChips() {
+async function saveInterestChips(notify = true) {
     const chips = $$("[data-interest-chip]");
     const interests = chips
         .filter(c => c.checked)
@@ -1089,7 +1089,9 @@ async function saveInterestChips() {
         method: "PUT",
         body: JSON.stringify({ interests })
     });
-    if (ok && data.success) toast("Interests updated — your matches have been recalculated 🌿");
+    if (ok && data.success && notify) {
+        toast("Interests updated — your matches have been recalculated 🌿");
+    }
 }
 
 function wireSettings() {
@@ -1109,8 +1111,8 @@ function wireSettings() {
             body: JSON.stringify(values)
         });
         if (ok && data.success) {
+            await saveInterestChips(false);
             toast("Settings saved successfully 🌿");
-            await saveInterestChips();
         } else {
             toast(data.message || "Could not save your settings.");
         }
@@ -1155,8 +1157,10 @@ function wireRegistration() {
             body: JSON.stringify({
                 name, email, password,
                 role: "student",
-                department: $("#registerDepartment") ? $("#registerDepartment").value : "Computer Science Engineering",
-                year: $("#registerYear") ? $("#registerYear").value : "3rd Year"
+                // Leave a blank field to the server default rather
+                // than sending an empty string.
+                department: ($("#registerDepartment") && $("#registerDepartment").value.trim()) || undefined,
+                year: ($("#registerYear") && $("#registerYear").value.trim()) || undefined
             })
         });
         if (ok && data.success) {

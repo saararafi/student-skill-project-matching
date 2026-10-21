@@ -6,12 +6,33 @@ from backend.config import Config
 from backend.database import fetch_one, fetch_all, execute_query
 from backend.services.matching_service import get_student_profile_data
 from backend.auth_utils import (
+    is_logged_in,
     get_current_student_id,
     login_required,
     faculty_required,
 )
 
 student_bp = Blueprint('student', __name__)
+
+
+@student_bp.before_request
+def require_signed_in_user():
+    """
+    The student endpoints hold personal data, so they need a signed-in user.
+
+    Returning 401 (rather than 404) lets the browser tell the difference
+    between "not signed in" and "no such record", so a page can send the
+    visitor to the sign-in screen instead of showing an error.
+
+    Faculty are allowed through as well: verifying a student's certificate
+    lives on this blueprint but is a guide's action.
+    """
+    if not is_logged_in():
+        return jsonify({
+            "success": False,
+            "message": "Please log in to continue."
+        }), 401
+
 
 
 @student_bp.route('/profile', methods=['GET'])

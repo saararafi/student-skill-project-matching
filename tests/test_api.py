@@ -436,6 +436,7 @@ class TestSettingsAndInterests(ApiTestCase):
             self.assertAlmostEqual(rec['match_score'], expected, places=1)
 
     def test_interests_readable(self):
+        self.login()
         res = self.client.get('/api/student/interests')
         self.assertEqual(res.status_code, 200)
         self.assertIn('interests', res.get_json())
@@ -588,6 +589,7 @@ class TestFacultyConsole(ApiTestCase):
 class TestExperiences(ApiTestCase):
 
     def test_experiences_readable(self):
+        self.login()
         res = self.client.get('/api/student/experiences')
         self.assertEqual(res.status_code, 200)
         self.assertIn('experiences', res.get_json())

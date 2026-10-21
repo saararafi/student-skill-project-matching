@@ -1,8 +1,19 @@
 from flask import Blueprint, jsonify
 from backend.database import fetch_all, execute_query
-from backend.auth_utils import get_current_user_id, login_required
+from backend.auth_utils import get_current_user_id, is_logged_in, login_required
 
 notification_bp = Blueprint('notification', __name__)
+
+
+@notification_bp.before_request
+def require_notification_session():
+    """Notifications belong to a signed-in user."""
+    if not is_logged_in():
+        return jsonify({
+            "success": False,
+            "message": "Please log in to see your notifications."
+        }), 401
+
 
 @notification_bp.route('', methods=['GET'])
 def get_notifications():
