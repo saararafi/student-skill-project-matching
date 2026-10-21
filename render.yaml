@@ -1,6 +1,6 @@
 services:
   # ------------------------------------------------------------------
-  # SkillMatch — Student Skill & Project Matching System
+  # SkillMatch - Student Skill & Project Matching System
   # Deploy with:  render blueprint launch
   # (or "New > Blueprint" and point it at this repository)
   # ------------------------------------------------------------------
