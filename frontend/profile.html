@@ -6,7 +6,9 @@
 
     <title>My Growth | SkillMatch</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1">
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=1">
+    <link rel="stylesheet" href="css/design-system.css?v=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +19,9 @@
     >
 </head>
 
-<body>
+<body class="app-body">
+
+<div class="app-layout">
 
 <div class="app-container">
 
@@ -25,78 +29,79 @@
          SIDEBAR
          ===================================================== -->
 
-    <aside class="sidebar">
+        <aside class="sidebar">
 
         <div class="sidebar-logo">
-            <div class="logo-symbol">❧</div>
-
-            <div>
-                <h2>SkillMatch</h2>
-                <span>Grow where you belong</span>
-            </div>
+            ❧ Skill<span>Match</span>
         </div>
 
+        <div class="sidebar-caption">
+            MY GARDEN
+        </div>
 
         <nav class="sidebar-nav">
 
             <a href="dashboard.html">
-                <span>🌿</span>
-                <span>My Garden</span>
+                <span class="nav-icon">❧</span>
+                My Garden
             </a>
 
             <a href="profile.html" class="active">
-                <span>🌱</span>
-                <span>My Growth</span>
+                <span class="nav-icon">✳</span>
+                My Growth
             </a>
 
             <a href="projects.html">
-                <span>🌸</span>
-                <span>Projects in Bloom</span>
+                <span class="nav-icon">🌿</span>
+                Projects in Bloom
             </a>
 
             <a href="team.html">
-                <span>🌳</span>
-                <span>Garden Team</span>
+                <span class="nav-icon">🌳</span>
+                Garden Team
             </a>
 
             <a href="gaps.html">
-                <span>💧</span>
-                <span>What Needs Watering?</span>
+                <span class="nav-icon">🌾</span>
+                What Needs Watering?
             </a>
 
             <a href="applications.html">
-                <span>✉</span>
-                <span>Applications</span>
+                <span class="nav-icon">✉</span>
+                Applications
             </a>
 
             <a href="notifications.html">
-                <span>🔔</span>
-                <span>Notifications</span>
-            </a>
-
-            <div class="sidebar-divider"></div>
-
-            <a href="profile.html" class="active">
-                <span>🌼</span>
-                <span>Profile</span>
-            </a>
-
-            <a href="settings.html">
-                <span>⚙</span>
-                <span>Settings</span>
+                <span class="nav-icon">♣</span>
+                Notifications
             </a>
 
         </nav>
 
 
-        <button
-            class="sidebar-logout"
-            data-logout
-            type="button"
-        >
-            <span>↗</span>
-            Leave Garden
-        </button>
+        <div class="sidebar-caption sidebar-caption-bottom">
+            ACCOUNT
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="profile.html">
+                <span class="nav-icon">◉</span>
+                Profile
+            </a>
+
+            <a href="settings.html">
+                <span class="nav-icon">⚙</span>
+                Settings
+            </a>
+
+            <a href="#" data-logout>
+                <span class="nav-icon">↪</span>
+                Leave Garden
+            </a>
+
+        </nav>
 
     </aside>
 
@@ -105,7 +110,7 @@
          MAIN CONTENT
          ===================================================== -->
 
-    <main class="main-content">
+    <main class="app-main">
 
         <!-- Mobile Header -->
 
@@ -369,144 +374,34 @@
             </div>
 
 
-            <div class="skill-plants" id="skillPlantsContainer">
+            
 
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ✿
-                    </div>
-
-                    <div class="skill-plant-name">
-                        Python
-                    </div>
-
-                    <div class="skill-plant-level">
-                        4 / 5 · 80%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ❀
-                    </div>
-
-                    <div class="skill-plant-name">
-                        HTML/CSS
-                    </div>
-
-                    <div class="skill-plant-level">
-                        5 / 5 · 95%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ✾
-                    </div>
-
-                    <div class="skill-plant-name">
-                        Java
-                    </div>
-
-                    <div class="skill-plant-level">
-                        5 / 5 · 100%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ✿
-                    </div>
-
-                    <div class="skill-plant-name">
-                        MySQL
-                    </div>
-
-                    <div class="skill-plant-level">
-                        3 / 5 · 60%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ❀
-                    </div>
-
-                    <div class="skill-plant-name">
-                        Flask
-                    </div>
-
-                    <div class="skill-plant-level">
-                        2 / 5 · 48%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ✾
-                    </div>
-
-                    <div class="skill-plant-name">
-                        JavaScript
-                    </div>
-
-                    <div class="skill-plant-level">
-                        3 / 5 · 65%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ✿
-                    </div>
-
-                    <div class="skill-plant-name">
-                        C++
-                    </div>
-
-                    <div class="skill-plant-level">
-                        3 / 5 · 60%
-                    </div>
-
-                </div>
-
-
-                <div class="skill-plant">
-
-                    <div class="skill-plant-flower">
-                        ❀
-                    </div>
-
-                    <div class="skill-plant-name">
-                        Git
-                    </div>
-
-                    <div class="skill-plant-level">
-                        3 / 5 · 60%
-                    </div>
-
-                </div>
-
+                    <div class="skill-plants" id="skillPlantsContainer">
             </div>
+
+            <form class="inline-add-form" id="addSkillForm">
+                <div class="input-group">
+                    <label>Add a skill</label>
+                    <div class="input-wrapper">
+                        <span>🌱</span>
+                        <input type="text" id="newSkillName" placeholder="e.g. React" maxlength="100" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Proficiency</label>
+                    <div class="input-wrapper">
+                        <span>✦</span>
+                        <select id="newSkillLevel">
+                            <option value="1">1 - Beginner</option>
+                            <option value="2">2 - Basic</option>
+                            <option value="3" selected>3 - Intermediate</option>
+                            <option value="4">4 - Advanced</option>
+                            <option value="5">5 - Expert</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Add Skill ✿</button>
+            </form>
 
         </section>
 
@@ -529,29 +424,21 @@
             </div>
 
 
-            <div class="settings-chip-group">
+            
 
-                <div class="settings-chip selected">
-                    <span>Artificial Intelligence</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Web Development</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Cybersecurity</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Algorithms</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Data Science</span>
-                </div>
-
+                    <div class="settings-chip-group" id="profileInterests">
             </div>
+
+            <form class="inline-add-form" id="addInterestForm">
+                <div class="input-group">
+                    <label>Add an interest</label>
+                    <div class="input-wrapper">
+                        <span>🌼</span>
+                        <input type="text" id="newInterestName" placeholder="e.g. Artificial Intelligence" maxlength="100" required>
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Add Interest ✿</button>
+            </form>
 
         </section>
 
@@ -615,58 +502,21 @@
             </div>
 
 
-            <div class="growth-timeline">
+            
 
-                <div class="growth-item">
-
-                    <div class="growth-year">
-                        2026
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Student Skill & Project Matching System
-                        </h3>
-
-                        <p>
-                            Algorithm Design & Integration
-                        </p>
-
-                        <span class="botanical-badge">
-                            In Progress
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="growth-item">
-
-                    <div class="growth-year">
-                        2025
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Academic Web Project
-                        </h3>
-
-                        <p>
-                            Developer
-                        </p>
-
-                        <span class="botanical-badge">
-                            Completed
-                        </span>
-
-                    </div>
-
-                </div>
-
+                    <div class="growth-timeline" id="profileExperiences">
             </div>
+
+            <form class="inline-add-form" id="addExperienceForm">
+                <div class="input-group">
+                    <label>Add previous work</label>
+                    <div class="input-wrapper">
+                        <span>🌳</span>
+                        <input type="text" id="newExperienceTitle" placeholder="e.g. Web Development" maxlength="150" required>
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Add Experience ✿</button>
+            </form>
 
         </section>
 
@@ -689,63 +539,38 @@
             </div>
 
 
-            <div class="capacity-card">
 
+                    <div class="capacity-card">
                 <div>
-
-                    <span class="capacity-label">
-                        WEEKLY CAPACITY
-                    </span>
-
-                    <h3>
-                        20 hours
-                    </h3>
-
-                    <p class="muted-text">
-                        10 hours currently free
-                    </p>
-
+                    <span class="capacity-label">WEEKLY CAPACITY</span>
+                    <h3><span data-weekly-hours>20</span> hours / week</h3>
+                    <p class="muted-text">How much time you can offer each week.</p>
                 </div>
+                <div class="capacity-ring" style="--capacity:50;">
+                    <div class="capacity-ring-inner">50%</div>
+                </div>
+            </div>
 
-                <div class="capacity-ring">
-
-                    <div class="capacity-ring-inner">
-                        50%
+            <form class="inline-add-form" id="availabilityForm">
+                <div class="input-group">
+                    <label>Availability</label>
+                    <div class="input-wrapper">
+                        <span>◷</span>
+                        <select id="availabilitySelect">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                        </select>
                     </div>
-
                 </div>
-
-            </div>
-
-
-            <div class="availability-list">
-
-                <div class="availability-item">
-
-                    <span>
-                        Student Skill Matching
-                    </span>
-
-                    <strong>
-                        6h / week
-                    </strong>
-
+                <div class="input-group">
+                    <label>Weekly hours</label>
+                    <div class="input-wrapper">
+                        <span>◷</span>
+                        <input type="range" id="weeklyHoursSlider" min="0" max="40" value="20" class="availability-slider">
+                    </div>
                 </div>
-
-
-                <div class="availability-item">
-
-                    <span>
-                        Academic Work
-                    </span>
-
-                    <strong>
-                        4h / week
-                    </strong>
-
-                </div>
-
-            </div>
+                <button type="submit" class="garden-button">Update ✿</button>
+            </form>
 
         </section>
 
@@ -974,7 +799,9 @@
             SKILLMATCH · GROW WHERE YOU BELONG
         </footer>
 
-    </main>
+        </main>
+
+</div>
 
 </div>
 
@@ -983,7 +810,8 @@
      JAVASCRIPT
      ===================================================== -->
 
-<script src="js/main.js"></script>
+<script src="js/main.js?v=1"></script>
+<script src="js/live.js?v=1"></script>
 
 </body>
 </html>

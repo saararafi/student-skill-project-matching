@@ -722,7 +722,7 @@ button {
     color: var(--gold-deep);
 }
 
-.section-heading p {
+.section-heading p:not(.eyebrow) {
     max-width: 600px;
     margin: 20px auto 0;
 
@@ -5005,4 +5005,2011 @@ body {
     font-size: 0.8rem;
     color: var(--olive-deep, #26351b);
     font-weight: 500;
-}
+}
+/* =========================================================
+   DASHBOARD SKILL PLANT CERTIFICATE BADGE
+   ========================================================= */
+
+.skill-plant-cert {
+    margin-top: 6px;
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    text-align: center;
+    padding: 3px 6px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+.skill-plant-cert.verified {
+    color: #3f6b32;
+    background: rgba(120, 170, 100, 0.16);
+    border-color: rgba(120, 170, 100, 0.4);
+}
+
+.skill-plant-cert.pending {
+    color: #9a7420;
+    background: rgba(198, 161, 91, 0.18);
+    border-color: rgba(198, 161, 91, 0.45);
+}
+
+/* =========================================================
+   FACULTY CONSOLE / SHARED LIST LAYOUTS
+   ========================================================= */
+
+.applications-list,
+.certificates-list,
+.projects-list {
+    display: grid;
+    gap: 16px;
+}
+
+.empty-state {
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--muted, #7c8274);
+    font-size: 0.9rem;
+}
+
+.empty-state p {
+    margin: 0 0 14px;
+}
+
+.empty-state .garden-button {
+    display: inline-flex;
+}
+
+/* The faculty "publish a project" form reuses the login page controls. */
+#facultyProjectForm .input-group {
+    margin-bottom: 18px;
+}
+
+#facultyProjectForm textarea {
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--olive-deep, #26351b);
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+#facultyProjectForm select {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--olive-deep, #26351b);
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+#facultyProjectForm code {
+    background: rgba(120, 170, 100, 0.14);
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+.application-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.application-actions .garden-button {
+    white-space: nowrap;
+}
+
+/* =========================================================
+   EDITABLE PROFILE SECTIONS
+   ========================================================= */
+
+.inline-add-form {
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px dashed var(--line, #cfdcc0);
+    border-radius: 16px;
+    background: rgba(248, 247, 239, 0.6);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+}
+
+.inline-add-form .input-group {
+    flex: 1 1 220px;
+    margin-bottom: 0;
+}
+
+.inline-add-form .input-group label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted, #7c8274);
+    margin-bottom: 6px;
+}
+
+.inline-add-form .input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--line, #cfdcc0);
+    border-radius: 10px;
+    background: #fff;
+}
+
+.inline-add-form .input-wrapper input,
+.inline-add-form .input-wrapper select {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: var(--olive-deep, #26351b);
+    min-width: 0;
+}
+
+.inline-add-form .garden-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* Small round remove button used on chips and skill plants. */
+.chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(38, 53, 27, 0.25);
+    background: transparent;
+    color: var(--olive-deep, #26351b);
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.chip-remove:hover:not(:disabled) {
+    background: #b4453c;
+    border-color: #b4453c;
+    color: #fff;
+}
+
+.chip-remove:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.settings-chip.selected {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.skill-plant {
+    position: relative;
+}
+
+.skill-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.growth-item {
+    position: relative;
+}
+
+.growth-item .chip-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+/* =========================================================
+   MISSING LAYOUT RULES
+   Classes used across the pages that had no stylesheet rule.
+   They follow the existing botanical-garden design tokens.
+   ========================================================= */
+
+/* ---------- Projects page ---------- */
+
+.project-match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+    align-items: stretch;
+}
+
+.project-match-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+}
+
+.project-match-card .project-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.project-match-card .project-status {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--olive-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+}
+
+.project-match-card .project-description {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--muted);
+}
+
+.project-match-card .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 0.76rem;
+    color: var(--muted);
+}
+
+.project-match-card .project-match-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(247, 242, 229, 0.55);
+}
+
+.project-match-card .project-match-score small {
+    display: block;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+}
+
+.project-match-card .project-match-score strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.7rem;
+    color: var(--olive-deep);
+}
+
+.project-match-card .project-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.project-match-card .project-card-actions > * {
+    flex: 1;
+}
+
+.garden-button-secondary {
+    background: transparent;
+    color: var(--olive-deep);
+    border: 1px solid var(--line);
+}
+
+.garden-button-secondary:hover {
+    background: rgba(225, 231, 212, 0.5);
+}
+
+.match-score-circle.small {
+    width: 64px;
+    height: 64px;
+    font-size: 0.95rem;
+}
+
+.project-discovery-flower {
+    font-size: 2.4rem;
+    text-align: center;
+    opacity: 0.5;
+}
+
+.project-discovery-intro {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 28px;
+}
+
+.matching-process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+}
+
+.matching-process-item {
+    text-align: center;
+    padding: 20px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 253, 248, 0.6);
+}
+
+.matching-process-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.small {
+    font-size: 0.78rem;
+}
+
+/* ---------- Project details page ---------- */
+
+.project-detail-hero {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 22px;
+    align-items: center;
+    padding: 26px;
+    margin-bottom: 24px;
+}
+
+.project-detail-flower {
+    font-size: 2.6rem;
+    line-height: 1;
+    opacity: 0.6;
+}
+
+.project-detail-heading h2 {
+    margin: 4px 0 6px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.9rem;
+    color: var(--olive-deep);
+}
+
+.project-detail-heading p {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.project-detail-match {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+.project-long-description {
+    font-size: 0.92rem;
+    line-height: 1.8;
+    color: var(--brown);
+}
+
+.project-objectives {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.objective-item {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(247, 242, 229, 0.45);
+}
+
+.objective-item > span {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.4rem;
+    color: var(--gold-deep);
+}
+
+.objective-item h3 {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    color: var(--olive-deep);
+}
+
+.objective-item p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.required-skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+}
+
+.required-skill {
+    display: grid;
+    gap: 10px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 253, 248, 0.7);
+}
+
+.required-skill strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--olive-deep);
+}
+
+.required-skill span {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+}
+
+.skill-level-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--sage);
+    overflow: hidden;
+}
+
+.skill-level-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--olive, #536b32), var(--gold, #c6a15b));
+}
+
+.match-analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.analysis-card {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(247, 242, 229, 0.45);
+}
+
+.analysis-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.analysis-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(225, 231, 212, 0.7);
+    font-size: 1.1rem;
+}
+
+.analysis-card-header h3 {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.analysis-card-header strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.6rem;
+    color: var(--olive-deep);
+}
+
+.analysis-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.analysis-card small {
+    font-size: 0.7rem;
+    color: var(--muted);
+}
+
+.skill-gap-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.skill-gap-detail {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 253, 248, 0.7);
+}
+
+.gap-detail-flower {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.skill-gap-detail h3 {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    color: var(--olive-deep);
+}
+
+.skill-gap-detail p {
+    margin: 0 0 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.team-requirement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.team-requirement {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(247, 242, 229, 0.45);
+    text-align: center;
+}
+
+.team-requirement span {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.team-requirement strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.25rem;
+    color: var(--olive-deep);
+}
+
+.team-needs-note {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+    padding: 16px 18px;
+    border: 1px dashed var(--gold-line);
+    border-radius: 14px;
+    background: rgba(198, 161, 91, 0.07);
+}
+
+.team-needs-note p {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.project-apply-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 24px;
+    border: 1px solid var(--gold-line);
+    border-radius: var(--radius);
+    background: rgba(198, 161, 91, 0.09);
+}
+
+.project-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: var(--olive-soft);
+    text-decoration: none;
+}
+
+.project-back-link:hover {
+    color: var(--olive-deep);
+}
+
+/* ---------- Applications page ---------- */
+
+.application-flow-card {
+    padding: 24px;
+}
+
+.application-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.application-flow-step {
+    flex: 1 1 150px;
+    text-align: center;
+    padding: 14px 10px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+.application-flow-step.active {
+    border-color: var(--olive-soft);
+    background: rgba(225, 231, 212, 0.5);
+    color: var(--olive-deep);
+}
+
+.application-flow-line {
+    width: 26px;
+    height: 1px;
+    background: var(--line);
+}
+
+.accepted-application {
+    border-left: 3px solid var(--olive-soft);
+}
+
+.closed-application {
+    opacity: 0.85;
+}
+
+/* ---------- Profile page ---------- */
+
+.profile-completeness {
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(247, 242, 229, 0.5);
+}
+
+.completeness-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.completeness-heading strong {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.3rem;
+    color: var(--olive-deep);
+}
+
+.capacity-label {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.13em;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.profile-intro-card {
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+.profile-intro-content {
+    display: grid;
+    gap: 6px;
+}
+
+.profile-bio {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--muted);
+}
+
+.profile-info-value {
+    font-size: 0.92rem;
+    color: var(--olive-deep);
+}
+
+
+
+
+.page-footer {
+    margin-top: 34px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 0.76rem;
+    color: var(--muted);
+}
+
+
+
+
+
+
+/* ---------- Gaps page (legacy shell) ---------- */
+
+
+
+
+
+.nav-logout {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+
+
+
+
+
+.text-link {
+    color: var(--olive-soft);
+    text-decoration: none;
+}
+
+.text-link:hover {
+    color: var(--olive-deep);
+    text-decoration: underline;
+}
+
+
+/* ---------- Mobile navigation ---------- */
+
+.mobile-menu-button {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 60;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: var(--olive-deep);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+}
+
+.mobile-menu-button.active {
+    background: var(--sage);
+}
+
+/* ---------- Sidebar captions ---------- */
+
+.sidebar-caption-bottom {
+    margin-top: 26px;
+}
+
+/* ---------- Notifications page ---------- */
+
+.application,
+.growth,
+.project,
+.skill,
+.team {
+    display: block;
+}
+
+/* ---------- Team page ---------- */
+
+.watering-card-icon {
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+/* ---------- Faculty page ---------- */
+
+.app-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ---------- Reveal animation ---------- */
+
+/* Elements fade up into place on load. The animation-delay is staggered
+   from JavaScript, so this never depends on a scroll observer to fire. */
+.reveal {
+    animation: revealUp 0.7s ease both;
+}
+
+@keyframes revealUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .project-detail-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
+    }
+
+    .project-match-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   REMAINING LAYOUT RULES
+   ========================================================= */
+
+/* A titled block of content, used between page sections. */
+.garden-section {
+    margin-bottom: 34px;
+}
+
+/* The formula panel on the project details page. */
+.matching-formula {
+    margin-top: 20px;
+    padding: 20px 22px;
+    border: 1px dashed var(--gold-line);
+    border-radius: 16px;
+    background: rgba(198, 161, 91, 0.07);
+}
+
+.matching-formula span {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.matching-formula strong {
+    display: block;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.25rem;
+    color: var(--olive-deep);
+}
+
+.matching-formula p {
+    margin: 10px 0 0;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--muted);
+}
+
+/* The bar that carries the page title on small screens. */
+.mobile-header {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.2rem;
+    color: var(--olive-deep);
+}
+
+.mobile-header .mobile-menu-button {
+    position: static;
+    width: 38px;
+    height: 38px;
+}
+
+/* Profile page intro block. */
+.profile-intro {
+    display: grid;
+    gap: 10px;
+}
+
+.profile-health-card {
+    padding: 22px;
+    margin-bottom: 25px;
+}
+
+/* Notification icon colour variants. */
+.notification-icon.profile {
+    background: rgba(198, 161, 91, 0.16);
+}
+
+/* Unread state for a notification row. */
+.notification-item.unread {
+    border-color: var(--gold-line);
+    background: rgba(255, 253, 248, 0.95);
+}
+
+.notification-item.unread .notification-content h3 {
+    color: var(--olive-deep);
+}
+
+@media (max-width: 760px) {
+    .mobile-header {
+        display: flex;
+    }
+}
+/* ===== SkillMatch layout improvements ===== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.app-layout {
+    min-height: 100vh;
+    grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.app-main,
+.main-content {
+    min-width: 0;
+    width: 100%;
+    padding: clamp(20px, 3vw, 42px);
+}
+
+.app-header,
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.garden-card {
+    max-width: 100%;
+    min-width: 0;
+}
+
+img,
+canvas,
+svg {
+    max-width: 100%;
+}
+
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .app-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        max-height: none;
+    }
+
+    .app-main,
+    .main-content {
+        grid-column: 1;
+        padding: 20px 16px;
+    }
+
+    .app-header,
+    .page-header {
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+}
+
+/* =====================================================
+   SKILLMATCH — GLOBAL LAYOUT & ALIGNMENT FIX
+   Append this to the bottom of frontend/css/style.css
+   Preserves the original olive, cream and gold theme
+   ===================================================== */
+
+:root {
+    --layout-sidebar-width: 250px;
+    --layout-page-padding: clamp(22px, 3vw, 46px);
+    --layout-card-radius: 18px;
+    --layout-card-border: rgba(83, 107, 50, 0.16);
+    --layout-card-shadow: 0 10px 28px rgba(38, 53, 27, 0.055);
+}
+
+/* Consistent sizing */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: clip;
+}
+
+/* Main application layout */
+.app-layout,
+.app-container {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 0 0 var(--layout-sidebar-width);
+    width: var(--layout-sidebar-width);
+    min-width: 0;
+    min-height: 100vh;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+}
+
+.sidebar-logo,
+.sidebar-brand {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.sidebar-nav {
+    width: 100%;
+}
+
+.sidebar-nav a,
+.sidebar-nav button,
+.sidebar-nav .nav-item {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Main content — supports both existing page wrappers */
+.app-main,
+.main-content {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    max-width: 100%;
+    margin-left: 0;
+    padding: var(--layout-page-padding);
+    overflow-x: clip;
+}
+
+/* Keep content from becoming excessively wide */
+.app-main > *,
+.main-content > * {
+    width: 100%;
+    max-width: 1440px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* Page headings */
+.app-header,
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 0 auto 28px;
+    padding: 0 0 22px;
+    border-bottom: 1px solid var(--line, rgba(83, 107, 50, 0.18));
+}
+
+.app-welcome,
+.page-header > div:first-child {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.app-header h1,
+.page-header h1,
+.page-header h2,
+.app-welcome h1 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    line-height: 1.15;
+}
+
+.header-subtitle,
+.page-description {
+    max-width: 680px;
+    line-height: 1.75;
+}
+
+/* Consistent cards */
+.garden-card,
+.dashboard-card,
+.profile-intro-card,
+.profile-health-card,
+.settings-section,
+.notification-item {
+    min-width: 0;
+    max-width: 100%;
+    border-radius: var(--layout-card-radius);
+    border: 1px solid var(--layout-card-border);
+    box-shadow: var(--layout-card-shadow);
+}
+
+/* Consistent spacing between sections */
+.app-main > section,
+.main-content > section,
+.app-main > .garden-section,
+.main-content > .garden-section {
+    margin-bottom: 26px;
+}
+
+/* Card contents must stay inside their containers */
+.garden-card > *,
+.dashboard-card > *,
+.settings-section > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.garden-card p,
+.garden-card h2,
+.garden-card h3,
+.dashboard-card p,
+.dashboard-card h2,
+.dashboard-card h3 {
+    overflow-wrap: anywhere;
+}
+
+/* Profile layout */
+.profile-intro-card {
+    padding: clamp(20px, 3vw, 34px);
+    margin-bottom: 26px;
+}
+
+.profile-intro {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.profile-intro-content {
+    flex: 1 1 240px;
+    min-width: 0;
+}
+
+.profile-avatar {
+    flex: 0 0 auto;
+    width: 96px;
+    height: 96px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    margin: 0;
+}
+
+.profile-completeness {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 24px;
+    padding: 20px;
+    border-radius: 15px;
+    background: var(--surface-sunken, rgba(247, 242, 229, 0.55));
+    border: 1px solid var(--layout-card-border);
+}
+
+.completeness-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.profile-completeness [role="progressbar"],
+.profile-completeness progress {
+    max-width: 100%;
+}
+
+/* Grids: prevent stretched, uneven columns */
+.dashboard-grid,
+.application-summary-grid,
+.gap-overview-grid,
+.settings-form-grid,
+.project-grid,
+.projects-grid,
+.team-grid {
+    min-width: 0;
+    align-items: stretch;
+}
+
+.dashboard-grid > *,
+.application-summary-grid > *,
+.gap-overview-grid > *,
+.settings-form-grid > *,
+.project-grid > *,
+.projects-grid > *,
+.team-grid > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Form controls */
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
+
+input,
+select,
+textarea {
+    min-width: 0;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    width: 100%;
+}
+
+button,
+.garden-button {
+    min-height: 40px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid rgba(198, 161, 91, 0.65);
+    outline-offset: 3px;
+}
+
+/* Tables and long content */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container,
+.table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+img,
+svg,
+video {
+    max-width: 100%;
+}
+
+/* Mobile header is hidden on desktop unless already shown by page styles */
+.mobile-header {
+    min-width: 0;
+}
+
+/* Medium screens */
+@media (max-width: 1100px) {
+    :root {
+        --layout-sidebar-width: 225px;
+        --layout-page-padding: 24px;
+    }
+
+    .dashboard-grid,
+    .application-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Tablets and phones */
+@media (max-width: 760px) {
+    :root {
+        --layout-sidebar-width: 0px;
+        --layout-page-padding: 18px;
+    }
+
+    .app-layout,
+    .app-container {
+        display: block;
+        width: 100%;
+    }
+
+    .sidebar {
+        width: min(290px, 86vw);
+        height: 100dvh;
+        min-height: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-105%);
+        transition: transform 240ms ease;
+        z-index: 1000;
+    }
+
+    /* Add/remove this class through your existing menu JavaScript */
+    .sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    .app-main,
+    .main-content {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin: 0;
+        padding: var(--layout-page-padding);
+        padding-top: 18px;
+    }
+
+    .app-header,
+    .page-header {
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .profile-intro {
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .profile-avatar {
+        width: 76px;
+        height: 76px;
+    }
+
+    .dashboard-grid,
+    .application-summary-grid,
+    .gap-overview-grid,
+    .settings-form-grid,
+    .project-grid,
+    .projects-grid,
+    .team-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .profile-completeness {
+        padding: 16px;
+    }
+
+    .garden-card {
+        padding: 20px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+    :root {
+        --layout-page-padding: 14px;
+    }
+
+    .app-main,
+    .main-content {
+        padding: 14px;
+    }
+
+    .app-header h1,
+    .page-header h1,
+    .page-header h2,
+    .app-welcome h1 {
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+    }
+
+    .profile-intro {
+        flex-direction: column;
+    }
+
+    .garden-button {
+        max-width: 100%;
+        white-space: normal;
+    }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================
+   SKILLMATCH — GLOBAL LAYOUT & CARD ALIGNMENT
+   Keeps sidebar and content consistent
+   ========================================== */
+
+:root {
+    --layout-sidebar-width: 250px;
+    --layout-page-padding: 32px;
+    --layout-card-radius: 16px;
+    --layout-card-border: #e7e4d8;
+    --layout-card-shadow: 0 4px 16px rgba(49, 59, 35, 0.06);
+}
+
+/* Consistent page layout */
+.app-layout,
+.app-container {
+    display: grid;
+    grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr);
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Consistent sidebar */
+.app-layout > .sidebar,
+.app-container > .sidebar,
+body.app-body > .sidebar {
+    width: var(--layout-sidebar-width);
+    min-width: var(--layout-sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+/* Main content alignment */
+.app-layout > .app-main,
+.app-container > .app-main,
+.app-layout > .main-content,
+.app-container > .main-content {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    padding: var(--layout-page-padding);
+    box-sizing: border-box;
+}
+
+/* Prevent content from overlapping the sidebar */
+body.app-body > .app-main,
+body.app-body > .main-content {
+    margin-left: var(--layout-sidebar-width);
+    width: calc(100% - var(--layout-sidebar-width));
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Consistent page headings */
+.page-header,
+.page-heading,
+.content-header {
+    width: 100%;
+    margin: 0 0 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+/* Consistent cards */
+.stat-card,
+.project-card,
+.application-card,
+.profile-card,
+.settings-card,
+.notification-card,
+.gap-card,
+.growth-card,
+.dashboard-card,
+.content-card {
+    min-width: 0;
+    box-sizing: border-box;
+    border-radius: var(--layout-card-radius);
+    border: 1px solid var(--layout-card-border);
+    box-shadow: var(--layout-card-shadow);
+}
+
+/* Align cards in common grids */
+.projects-grid,
+.project-grid,
+.recommendation-grid,
+.team-grid,
+.application-summary-grid,
+.gap-overview-grid,
+.settings-form-grid,
+.notification-preference-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* Make grid cards equal height */
+.projects-grid > *,
+.project-grid > *,
+.recommendation-grid > *,
+.team-grid > *,
+.application-summary-grid > *,
+.gap-overview-grid > *,
+.settings-form-grid > *,
+.notification-preference-grid > * {
+    min-width: 0;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Dashboard layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.dashboard-grid > * {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.dashboard-grid .stat-card {
+    grid-column: span 3;
+}
+
+.dashboard-grid .project-card,
+.dashboard-grid .growth-card {
+    grid-column: span 6;
+}
+
+/* Profile layout */
+.profile-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 24px;
+    width: 100%;
+    align-items: start;
+}
+
+.profile-grid > * {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Consistent form controls */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group,
+.form-field {
+    min-width: 0;
+    width: 100%;
+}
+
+/* Prevent tables and images from overflowing */
+table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+    :root {
+        --layout-page-padding: 24px;
+    }
+
+    .projects-grid,
+    .project-grid,
+    .recommendation-grid,
+    .team-grid,
+    .application-summary-grid,
+    .gap-overview-grid,
+    .settings-form-grid,
+    .notification-preference-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-grid .stat-card {
+        grid-column: span 6;
+    }
+
+    .dashboard-grid .project-card,
+    .dashboard-grid .growth-card {
+        grid-column: span 12;
+    }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    :root {
+        --layout-page-padding: 16px;
+    }
+
+    .app-layout,
+    .app-container {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app-layout > .app-main,
+    .app-container > .app-main,
+    .app-layout > .main-content,
+    .app-container > .main-content {
+        grid-column: 1;
+        padding: var(--layout-page-padding);
+        width: 100%;
+    }
+
+    body.app-body > .app-main,
+    body.app-body > .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .projects-grid,
+    .project-grid,
+    .recommendation-grid,
+    .team-grid,
+    .application-summary-grid,
+    .gap-overview-grid,
+    .settings-form-grid,
+    .notification-preference-grid,
+    .profile-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .dashboard-grid .stat-card,
+    .dashboard-grid .project-card,
+    .dashboard-grid .growth-card {
+        grid-column: span 2;
+    }
+
+    .page-header,
+    .page-heading,
+    .content-header {
+        align-items: flex-start;
+    }
+}
+
+/* Prevent unwanted transitions during layout changes */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   SKILLMATCH — FINAL SHARED LAYOUT OVERRIDE
+   Keep this block at the VERY BOTTOM of style.css
+   ============================================ */
+
+:root {
+    --layout-sidebar-width: 240px;
+    --layout-page-padding: 32px;
+}
+
+/* Consistent desktop layout across every app page */
+.app-layout,
+.app-container {
+    display: grid !important;
+    grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr) !important;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    gap: 0;
+}
+
+/* One fixed sidebar, with one consistent width */
+.app-layout > .sidebar,
+.app-container > .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    width: var(--layout-sidebar-width) !important;
+    min-width: var(--layout-sidebar-width) !important;
+    max-width: var(--layout-sidebar-width) !important;
+    height: 100vh;
+    min-height: 0;
+    padding: 28px 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Fix SkillMatch logo and tagline */
+.sidebar-logo {
+    display: flex !important;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    padding: 0 8px 24px;
+    overflow: visible;
+}
+
+.sidebar-logo .logo-symbol {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.sidebar-logo > div:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.sidebar-logo h2 {
+    width: 100%;
+    margin: 0;
+    font-size: 27px;
+    line-height: 1.15;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+.sidebar-logo > div:last-child > span {
+    display: block;
+    margin-top: 8px;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: normal;
+}
+
+/* Navigation stays inside the sidebar */
+.sidebar-nav {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+.sidebar-nav a,
+.sidebar-nav button {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Main content starts directly beside the sidebar */
+.app-layout > .app-main,
+.app-container > .app-main,
+.app-layout > .main-content,
+.app-container > .main-content {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: var(--layout-page-padding);
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+}
+
+/* Keep headings and cards from overflowing */
+.app-header,
+.page-header {
+    width: 100%;
+    min-width: 0;
+    gap: 20px;
+}
+
+.page-header > div,
+.app-header > div {
+    min-width: 0;
+}
+
+.garden-card,
+.dashboard-card,
+.profile-intro-card,
+.notification-item {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Profile introduction */
+.profile-intro,
+.profile-intro-content {
+    min-width: 0;
+}
+
+.profile-intro-content {
+    flex: 1 1 240px;
+}
+
+.profile-completeness {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Do not force every form grid into three columns */
+.settings-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settings-form-grid > * {
+    min-width: 0;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    :root {
+        --layout-sidebar-width: 220px;
+        --layout-page-padding: 24px;
+    }
+
+    .app-layout,
+    .app-container {
+        grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr) !important;
+    }
+
+    .sidebar-logo h2 {
+        font-size: 24px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+    :root {
+        --layout-page-padding: 16px;
+    }
+
+    .app-layout,
+    .app-container {
+        display: block !important;
+    }
+
+    .app-layout > .sidebar,
+    .app-container > .sidebar {
+        position: relative !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: auto;
+        max-height: none;
+    }
+
+    .app-layout > .app-main,
+    .app-container > .app-main,
+    .app-layout > .main-content,
+    .app-container > .main-content {
+        width: 100%;
+        padding: var(--layout-page-padding);
+    }
+
+    .settings-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Skill gaps page: ensure its content remains visible */
+body:has(.gap-list) .main-content {
+    display: block;
+    min-height: 100vh;
+}
+
+body:has(.gap-list) .main-content .reveal {
+    opacity: 1;
+    visibility: visible;
+    animation: none;
+}
+
+body:has(.gap-list) .gap-overview-grid,
+body:has(.gap-list) .gap-list,
+body:has(.gap-list) .team-gap-grid {
+    display: grid;
+    gap: 16px;
+}
+
+body:has(.gap-list) .gap-overview-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body:has(.gap-list) .gap-list {
+    grid-template-columns: 1fr;
+}
+
+body:has(.gap-list) .team-gap-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+    body:has(.gap-list) .gap-overview-grid,
+    body:has(.gap-list) .team-gap-grid {
+        grid-template-columns: 1fr;
+    }
+}

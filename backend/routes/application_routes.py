@@ -1,19 +1,21 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from backend.database import fetch_one, fetch_all, execute_query
+from backend.auth_utils import (
+    get_current_student_id,
+    get_current_user_id,
+    get_current_role,
+    login_required,
+    faculty_required,
+)
 
 application_bp = Blueprint('application', __name__)
 
-def get_current_student_id():
-    user_id = session.get('user_id', 1)
-    student = fetch_one("SELECT id FROM students WHERE user_id = %s", (user_id,))
-    return student['id'] if student else 1
-
 
 @application_bp.route('', methods=['GET'])
+@login_required
 def list_applications():
-    user_id = session.get('user_id', 1)
-    user = fetch_one("SELECT role FROM users WHERE id = %s", (user_id,))
-    role = user['role'] if user else 'student'
+    user_id = get_current_user_id()
+    role = get_current_role()
 
     if role in ('faculty', 'admin'):
         # Faculty sees applications to their projects
@@ -43,6 +45,7 @@ def list_applications():
 
 
 @application_bp.route('/<int:app_id>/status', methods=['PUT'])
+@faculty_required
 def update_status(app_id):
     data = request.get_json() or {}
     new_status = data.get('status') # 'Accepted' or 'Rejected'
@@ -58,7 +61,6 @@ def update_status(app_id):
         "UPDATE applications SET status = %s, reviewed_at = CURRENT_TIMESTAMP WHERE id = %s",
         (new_status, app_id)
     )
-
     # If accepted, add student to team
     if new_status == 'Accepted':
         team = fetch_one("SELECT id FROM teams WHERE project_id = %s", (app['project_id'],))
@@ -94,3 +96,50 @@ def update_status(app_id):
         """, (stu['user_id'], f"Application {new_status}", msg, t))
 
     return jsonify({"success": True, "message": f"Application marked as {new_status}."})
+
+
+@application_bp.route('/<int:app_id>/withdraw', methods=['POST'])
+@login_required
+def withdraw_application(app_id):
+    """Lets a student withdraw their own application."""
+    student_id = get_current_student_id()
+
+    app = fetch_one(
+        "SELECT * FROM applications WHERE id = %s",
+        (app_id,)
+    )
+    if not app:
+        return jsonify({"success": False, "message": "Application not found."}), 404
+
+    if app['student_id'] != student_id:
+        return jsonify({
+            "success": False,
+            "message": "You can only withdraw your own applications."
+        }), 403
+
+    if app['status'] == 'Accepted':
+        return jsonify({
+            "success": False,
+            "message": "This application was already accepted. Contact the project guide."
+        }), 400
+
+    execute_query(
+        "DELETE FROM applications WHERE id = %s",
+        (app_id,)
+    )
+
+    proj = fetch_one("SELECT title FROM projects WHERE id = %s", (app['project_id'],))
+    if proj:
+        execute_query("""
+            INSERT INTO notifications (user_id, title, message, type, link)
+            VALUES (%s, %s, %s, 'info', 'applications.html')
+        """, (
+            get_current_user_id(),
+            'Application Withdrawn',
+            f"Your application for {proj['title']} was withdrawn."
+        ))
+
+    return jsonify({
+        "success": True,
+        "message": "Application withdrawn."
+    })

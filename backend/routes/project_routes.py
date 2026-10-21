@@ -1,13 +1,14 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from backend.database import fetch_one, fetch_all, execute_query
 from backend.services.matching_service import compute_match, get_ranked_project_recommendations
+from backend.auth_utils import (
+    get_current_student_id,
+    get_current_user_id,
+    login_required,
+    faculty_required,
+)
 
 project_bp = Blueprint('project', __name__)
-
-def get_current_student_id():
-    user_id = session.get('user_id', 1)
-    student = fetch_one("SELECT id FROM students WHERE user_id = %s", (user_id,))
-    return student['id'] if student else 1
 
 
 @project_bp.route('', methods=['GET'])
@@ -72,12 +73,24 @@ def get_project_details(project_id):
     team_members = []
     if team:
         team_members = fetch_all("""
-            SELECT tm.role, u.name, u.email, s.department
+            SELECT tm.role, u.name, u.email, s.department, s.id as student_id
             FROM team_members tm
             JOIN students s ON tm.student_id = s.id
             JOIN users u ON s.user_id = u.id
             WHERE tm.team_id = %s
         """, (team['id'],))
+
+        # Attach each member's strongest skills.
+        for member in team_members:
+            member_skills = fetch_all("""
+                SELECT sk.name, ss.proficiency_level
+                FROM student_skills ss
+                JOIN skills sk ON ss.skill_id = sk.id
+                WHERE ss.student_id = %s
+                ORDER BY ss.proficiency_level DESC
+                LIMIT 3
+            """, (member['student_id'],))
+            member['skills'] = member_skills
 
     # Match breakdown for this student
     match_data = compute_match(student_id, project_id)
@@ -86,6 +99,12 @@ def get_project_details(project_id):
     app = fetch_one(
         "SELECT id, status, message, applied_at FROM applications WHERE project_id = %s AND student_id = %s",
         (project_id, student_id)
+    )
+
+    # Total number of applications received for this project
+    app_count = fetch_one(
+        "SELECT COUNT(*) AS total FROM applications WHERE project_id = %s",
+        (project_id,)
     )
 
     return jsonify({
@@ -99,12 +118,14 @@ def get_project_details(project_id):
             "team": team,
             "team_members": team_members,
             "match": match_data,
-            "application": app
+            "application": app,
+            "application_count": app_count['total'] if app_count else 0
         }
     })
 
 
 @project_bp.route('/<int:project_id>/apply', methods=['POST'])
+@login_required
 def apply_to_project(project_id):
     student_id = get_current_student_id()
     data = request.get_json() or {}
@@ -149,20 +170,33 @@ def apply_to_project(project_id):
 
 
 @project_bp.route('', methods=['POST'])
+@faculty_required
 def create_project():
     """Allows Faculty/Admin to create a new project listing."""
     data = request.get_json() or {}
-    user_id = session.get('user_id', 6) # Default to faculty Priya Sharma
-    
+    user_id = get_current_user_id()
+
     title = data.get('title', '').strip()
     description = data.get('description', '').strip()
-    domain = data.get('domain', 'General').strip()
+    domain = data.get('domain', 'General').strip() or 'General'
     availability = data.get('required_availability', 'Part-time')
-    team_size = int(data.get('team_size', 4))
-    skills = data.get('skills', []) # List of {name, required_level}
+    skills = data.get('skills', [])  # List of {name, required_level}
 
     if not title or not description:
         return jsonify({"success": False, "message": "Title and description are required."}), 400
+
+    if availability not in ('Full-time', 'Part-time'):
+        return jsonify({
+            "success": False,
+            "message": "Availability must be 'Full-time' or 'Part-time'."
+        }), 400
+
+    try:
+        team_size = int(data.get('team_size', 4) or 4)
+    except (TypeError, ValueError):
+        team_size = 4
+    if not 1 <= team_size <= 20:
+        return jsonify({"success": False, "message": "Team size must be between 1 and 20."}), 400
 
     proj_id = execute_query("""
         INSERT INTO projects (faculty_id, title, description, domain, required_availability, team_size, status)
@@ -171,18 +205,24 @@ def create_project():
 
     # Add required skills
     for sk in skills:
-        sk_name = sk.get('name', '').strip()
-        lvl = int(sk.get('required_level', 3))
-        if sk_name:
-            # Check or create master skill
-            master = fetch_one("SELECT id FROM skills WHERE LOWER(name) = %s", (sk_name.lower(),))
-            if not master:
-                m_id = execute_query("INSERT INTO skills (name, category) VALUES (%s, %s)", (sk_name, domain))
-            else:
-                m_id = master['id']
-            execute_query("""
-                INSERT INTO project_skills (project_id, skill_id, required_level)
-                VALUES (%s, %s, %s)
-            """, (proj_id, m_id, lvl))
+        sk_name = (sk.get('name') or '').strip()
+        if not sk_name:
+            continue
+        try:
+            lvl = int(sk.get('required_level', 3))
+        except (TypeError, ValueError):
+            lvl = 3
+        lvl = max(1, min(5, lvl))
+
+        # Check or create master skill
+        master = fetch_one("SELECT id FROM skills WHERE LOWER(name) = %s", (sk_name.lower(),))
+        if not master:
+            m_id = execute_query("INSERT INTO skills (name, category) VALUES (%s, %s)", (sk_name, domain))
+        else:
+            m_id = master['id']
+        execute_query("""
+            INSERT INTO project_skills (project_id, skill_id, required_level)
+            VALUES (%s, %s, %s)
+        """, (proj_id, m_id, lvl))
 
     return jsonify({"success": True, "message": "Project created successfully!", "project_id": proj_id}), 201

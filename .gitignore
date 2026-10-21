@@ -1,29 +1,43 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Environment variables & local configuration
-.env
-.env.local
-
-# Virtual environments
+*.egg-info/
+.venv/
 venv/
 env/
-ENV/
+
+# Local configuration and secrets
+.env
+*.env
+!.env.example
 
 # Database files
 database/*.db
 database/*.sqlite
 database/*.sqlite3
 
+# Student-uploaded skill certificates (the seeded demo ones stay tracked)
+backend/uploads/certificates/cert_stu*
+
 # Temporary files and OS files
 .DS_Store
 Thumbs.db
 *.log
 
-# IDE and Editor files
+# Editors and IDEs
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Build artefacts
+build/
+dist/
+node_modules/
+
+# Local archives, screenshots and backup stylesheets
+*.zip
+*.JPG
+*.jpg
+style_fixed.css

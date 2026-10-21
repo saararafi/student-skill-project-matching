@@ -1,0 +1,683 @@
+/* =========================================================
+   SKILLMATCH — DESIGN SYSTEM
+   -------------------------------------------------------
+   Enhances the original olive-and-gold botanical theme.
+   It deliberately does NOT redefine components that already
+   have a considered treatment (the deep-olive sidebar, the
+   gold-bordered buttons, the score rings, the skill plants).
+   It adds what was missing: tokens, accessible focus states,
+   reduced-motion support, and loading/empty states.
+   ========================================================= */
+
+/* ------------------------------------------------------------
+   1. DESIGN TOKENS
+   ------------------------------------------------------------ */
+
+:root {
+    /* Spacing scale (4px base) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 22px;
+    --space-6: 30px;
+    --space-7: 42px;
+    --space-8: 60px;
+
+    /* Radius scale - matches the original's soft botanical shapes */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 26px;
+    --radius-pill: 999px;
+
+    /* Elevation - warm olive-tinted, never pure black */
+    --shadow-xs: 0 1px 2px rgba(38, 53, 27, 0.04);
+    --shadow-sm: 0 6px 18px rgba(38, 53, 27, 0.05);
+    --shadow-md: 0 12px 30px rgba(38, 53, 27, 0.075);
+    --shadow-lg: 0 20px 46px rgba(38, 53, 27, 0.10);
+    --shadow-xl: 0 30px 70px rgba(38, 53, 27, 0.13);
+    --shadow-gold: 0 12px 30px rgba(152, 117, 54, 0.16);
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+    --dur-fast: 140ms;
+    --dur-base: 260ms;
+    --dur-slow: 520ms;
+
+    /* Type scale */
+    --text-2xs: 0.625rem;    /* 10px - the original's smallest label */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.8125rem;    /* 13px */
+    --text-base: 0.9375rem;  /* 15px */
+    --text-md: 1.0625rem;    /* 17px */
+    --text-lg: 1.375rem;     /* 22px */
+    --text-xl: clamp(1.6rem, 1.2rem + 1.4vw, 2.1rem);
+    --text-2xl: clamp(1.9rem, 1.4rem + 1.8vw, 2.6rem);
+
+    /* Surfaces */
+    --surface-raised: var(--paper, #FFFDF8);
+    --surface-sunken: rgba(247, 242, 229, 0.55);
+    --surface-tint: rgba(225, 231, 212, 0.42);
+    --hairline: rgba(83, 107, 50, 0.14);
+    --hairline-strong: rgba(83, 107, 50, 0.24);
+
+    --focus-ring: 0 0 0 3px rgba(198, 161, 91, 0.5);
+}
+
+
+/* ------------------------------------------------------------
+   2. BASE & ACCESSIBILITY
+   ------------------------------------------------------------ */
+
+::selection {
+    background: var(--gold-light, #DFC98E);
+    color: var(--olive-deep, #26351B);
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* A calm, on-theme scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sage-dark, #C8D1B3) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--sage-dark, #C8D1B3);
+    border: 3px solid var(--cream, #FCF9F0);
+    border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--olive-soft, #778653);
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--gold, #C6A15B);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm, 8px);
+}
+
+/* The deep-olive sidebar keeps the gold focus ring legible */
+.sidebar :focus-visible {
+    outline-color: var(--gold-light, #DFC98E);
+}
+
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .garden-card:hover,
+    .garden-button:hover,
+    .skill-plant:hover .skill-plant-flower {
+        transform: none !important;
+    }
+}
+
+
+/* ------------------------------------------------------------
+   3. TYPOGRAPHY
+   Only the display headings become fluid. The delicate small
+   gold labels keep their original letterspaced treatment.
+   ------------------------------------------------------------ */
+
+.garden-section-title h2,
+.garden-section-title h3 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--olive-deep, #26351B);
+}
+
+.garden-section-title h2 {
+    font-size: var(--text-xl, 2rem);
+}
+
+.garden-section-title h3 {
+    font-size: var(--text-lg, 1.375rem);
+}
+
+.app-welcome h1,
+.app-header h1 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--olive-deep, #26351B);
+    font-size: var(--text-2xl, 2.4rem);
+}
+
+/* The handwritten calligraphic accent - kept exactly as the original */
+.garden-section-title h2 em,
+.app-welcome h1 em,
+.app-header h1 em {
+    font-family: "Italianno", cursive;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--gold-deep, #987536);
+    padding-right: 0.08em;
+}
+
+/* The gold label that introduces a section - matches .section-label */
+.eyebrow,
+.section-label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 9px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gold-deep, #987536);
+}
+
+/* A fine gold rule trailing the section label */
+.garden-section-title > div > small {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 6px;
+}
+
+.garden-section-title > div > small::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold, #C6A15B), transparent);
+}
+
+.app-welcome p,
+.header-subtitle {
+    font-size: var(--text-base, 15px);
+    line-height: 1.75;
+    color: var(--muted, #766B5B);
+    max-width: 58ch;
+    margin: 0;
+}
+
+
+/* ------------------------------------------------------------
+   4. DEPTH
+   Warm shadows that suit the paper surface. The botanical
+   glyph watermark already in .garden-card::after is left alone.
+   ------------------------------------------------------------ */
+
+.garden-card {
+    transition:
+        transform var(--dur-base) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out);
+}
+
+.garden-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--gold-line, rgba(198, 161, 91, 0.35));
+}
+
+
+/* ------------------------------------------------------------
+   5. BUTTONS
+   The original gold-bordered button is kept; it gains a
+   pressed state, a disabled state and a soft gold glow.
+   ------------------------------------------------------------ */
+
+.garden-button {
+    position: relative;
+    overflow: hidden;
+    transition:
+        background var(--dur-base) var(--ease-out),
+        color var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out);
+}
+
+.garden-button:hover {
+    box-shadow: var(--shadow-gold);
+}
+
+.garden-button:active {
+    transform: translateY(0);
+}
+
+.garden-button:disabled,
+.garden-button.applied {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
+}
+
+/* A gold sheen that sweeps across on hover */
+.garden-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        120deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 80%
+    );
+    transform: translateX(-120%);
+    transition: transform var(--dur-slow) var(--ease-out);
+    pointer-events: none;
+}
+
+.garden-button:hover::after {
+    transform: translateX(120%);
+}
+
+
+/* ------------------------------------------------------------
+   6. INPUTS
+   ------------------------------------------------------------ */
+
+.input-wrapper {
+    transition:
+        border-color var(--dur-base) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out),
+        background var(--dur-base) var(--ease-out);
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--gold, #C6A15B);
+    box-shadow: var(--focus-ring);
+}
+
+.input-wrapper input::placeholder,
+.input-wrapper textarea::placeholder {
+    color: rgba(118, 107, 91, 0.6);
+}
+
+select {
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--olive, #536B32);
+    cursor: pointer;
+}
+
+
+/* ------------------------------------------------------------
+   7. SKILL GARDEN
+   The plant keeps growing from a stem: a sage gradient rising
+   from the bottom with an olive base line and a swaying gold
+   flower. Only the hover response is added.
+   ------------------------------------------------------------ */
+
+.skill-plant {
+    transition:
+        transform var(--dur-base) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out);
+}
+
+.skill-plant:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.skill-plant:hover .skill-plant-flower {
+    animation: gentleSway 2.4s ease-in-out infinite;
+}
+
+.skill-plant-name {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 17px;
+    color: var(--olive-deep, #26351B);
+}
+
+.skill-plant-cert {
+    display: inline-block;
+    margin-top: 6px;
+    border-radius: var(--radius-pill, 999px);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border: 1px solid transparent;
+}
+
+.skill-plant-cert.verified {
+    background: rgba(120, 170, 100, 0.16);
+    border-color: rgba(120, 170, 100, 0.4);
+    color: #3f6b32;
+}
+
+.skill-plant-cert.pending {
+    background: rgba(198, 161, 91, 0.18);
+    border-color: rgba(198, 161, 91, 0.45);
+    color: var(--gold-deep, #987536);
+}
+
+
+/* ------------------------------------------------------------
+   8. SCORE RINGS
+   The original gold ring and its soft halo are preserved;
+   only the number inside is set in the display serif.
+   ------------------------------------------------------------ */
+
+.match-score-circle {
+    transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.match-score-circle:hover {
+    transform: scale(1.04);
+}
+
+.match-score-circle strong {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    color: var(--olive-deep, #26351B);
+}
+
+.coverage-item strong,
+.application-match strong,
+.teammate-match strong {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    color: var(--olive-deep, #26351B);
+}
+
+
+/* ------------------------------------------------------------
+   9. SMALL CONTROLS
+   The small round remove button used on skills and interests.
+   ------------------------------------------------------------ */
+
+.chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(38, 53, 27, 0.22);
+    background: transparent;
+    color: var(--olive-deep, #26351B);
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        color var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+}
+
+.chip-remove:hover:not(:disabled) {
+    background: var(--gold-deep, #987536);
+    border-color: var(--gold-deep, #987536);
+    color: var(--paper, #FFFDF8);
+}
+
+.chip-remove:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.skill-plant {
+    position: relative;
+}
+
+.skill-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    font-size: 0.75rem;
+    background: rgba(255, 253, 248, 0.85);
+}
+
+.growth-item {
+    position: relative;
+}
+
+.growth-item .chip-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+
+/* ------------------------------------------------------------
+   10. EMPTY & LOADING STATES
+   ------------------------------------------------------------ */
+
+.empty-state {
+    border-radius: var(--radius-lg, 18px);
+    border: 1px dashed var(--hairline-strong);
+    background: rgba(247, 242, 229, 0.5);
+    color: var(--muted, #766B5B);
+    font-size: var(--text-sm, 13px);
+    padding: var(--space-6, 30px) var(--space-5, 22px);
+    text-align: center;
+}
+
+.empty-state p {
+    margin: 0 0 var(--space-3, 12px);
+    line-height: 1.6;
+}
+
+/* A shimmering placeholder while data loads */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md, 12px);
+    background: var(--sage, #E1E7D4);
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 253, 248, 0.7),
+        transparent
+    );
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* A pulsing leaf for live status */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--olive, #536B32);
+    box-shadow: 0 0 0 0 rgba(83, 107, 50, 0.5);
+    animation: pulse 2.2s infinite;
+}
+
+@keyframes pulse {
+    70% {
+        box-shadow: 0 0 0 8px rgba(83, 107, 50, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(83, 107, 50, 0);
+    }
+}
+
+
+/* ------------------------------------------------------------
+   11. BOTANICAL DIVIDER
+   A thin gold vine rule that separates major sections.
+   ------------------------------------------------------------ */
+
+.garden-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 12px);
+    margin: var(--space-7, 42px) 0 var(--space-5, 22px);
+    color: var(--gold, #C6A15B);
+    opacity: 0.6;
+}
+
+.garden-divider::before,
+.garden-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold-line, rgba(198, 161, 91, 0.4)),
+        transparent
+    );
+}
+
+
+/* ------------------------------------------------------------
+   12. MODALS & TOASTS
+   ------------------------------------------------------------ */
+
+.garden-toast {
+    border-radius: var(--radius-md, 12px);
+    border: 1px solid rgba(198, 161, 91, 0.4);
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-sm, 13px);
+    z-index: 90;
+}
+
+.cert-modal-overlay {
+    background: rgba(38, 53, 27, 0.42);
+    backdrop-filter: blur(4px);
+}
+
+.cert-modal {
+    border-radius: var(--radius-xl, 26px);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--gold-line, rgba(198, 161, 91, 0.3));
+    animation: modalIn var(--dur-base) var(--ease-spring) both;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.cert-file-drop {
+    transition:
+        border-color var(--dur-base) var(--ease-out),
+        background var(--dur-base) var(--ease-out);
+}
+
+
+/* ------------------------------------------------------------
+   13. FOOTER
+   ------------------------------------------------------------ */
+
+.app-footer {
+    border-top: 1px solid var(--hairline);
+    padding-top: var(--space-5, 22px);
+    margin-top: var(--space-7, 42px);
+}
+
+/* =========================================================
+   APPLICATION MESSAGE
+   ========================================================= */
+
+.apply-message {
+    margin-top: 16px;
+    max-width: 560px;
+}
+
+.apply-message label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--gold-deep, #987536);
+    margin-bottom: 8px;
+}
+
+.apply-message textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line, rgba(83, 107, 50, 0.18));
+    border-radius: 12px;
+    background: rgba(255, 253, 248, 0.8);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--olive-deep, #26351B);
+    resize: vertical;
+    transition:
+        border-color 0.26s cubic-bezier(0.22, 0.61, 0.36, 1),
+        box-shadow 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.apply-message textarea:focus {
+    outline: none;
+    border-color: var(--gold, #C6A15B);
+    box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.5);
+}
+
+.apply-message textarea::placeholder {
+    color: rgba(118, 107, 91, 0.6);
+}
+
+/* A gold accent word inside a sentence. */
+.accent-text {
+    color: var(--gold-deep, #987536);
+    font-style: italic;
+}

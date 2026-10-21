@@ -21,7 +21,7 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1">
 
 </head>
 
@@ -58,7 +58,7 @@
 
     <div class="login-card">
 
-        <div class="login-heading">
+        <div class="login-heading" data-auth-heading>
 
             <small>
                 WELCOME BACK
@@ -128,7 +128,7 @@
                     Remember me
                 </label>
 
-                <a href="#">
+                <a href="#" data-register-toggle>
                     Forgot password?
                 </a>
 
@@ -141,6 +141,55 @@
 
                 Enter SkillMatch →
 
+            </button>
+
+        </form>
+
+
+        <form id="registerForm" style="display: none;">
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <div class="input-wrapper">
+                    <span>✿</span>
+                    <input type="text" id="registerName" placeholder="Your full name" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <span>✉</span>
+                    <input type="email" id="registerEmail" placeholder="yourname@example.com" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <span>✦</span>
+                    <input type="password" id="registerPassword" placeholder="At least 6 characters" minlength="6" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Department</label>
+                <div class="input-wrapper">
+                    <span>🌿</span>
+                    <input type="text" id="registerDepartment" placeholder="Computer Science Engineering">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Year of Study</label>
+                <div class="input-wrapper">
+                    <span>◷</span>
+                    <input type="text" id="registerYear" placeholder="3rd Year">
+                </div>
+            </div>
+
+            <button type="submit" class="login-button">
+                Create My Profile 🌱
             </button>
 
         </form>
@@ -169,7 +218,8 @@
 
 </main>
 
-<script src="js/main.js"></script>
+<script src="js/main.js?v=1"></script>
+<script src="js/live.js?v=1"></script>
 
 </body>
 

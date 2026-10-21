@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeRevealAnimations();
     initializeMobileNavigation();
 
+    // Faculty and admins work from the project guide console; the garden
+    // pages are for students, so send them to the right place.
+    if (document.body.dataset.page === "faculty") {
+        initializeLogout();
+        initializeGardenButtons();
+        return;
+    }
+
     // Live API Initializers
     initializeLiveProfile();
     setupCertificateModal();
@@ -74,7 +82,8 @@ function initializeLogin() {
                 sessionStorage.setItem("user", JSON.stringify(data.user));
                 showGardenToast(`Welcome back, ${data.user.name} 🌿`);
                 setTimeout(() => {
-                    window.location.href = "dashboard.html";
+                    const isFaculty = data.user && (data.user.role === "faculty" || data.user.role === "admin");
+                window.location.href = isFaculty ? "faculty.html" : "dashboard.html";
                 }, 600);
             } else {
                 showGardenToast(data.message || "Invalid credentials.");
@@ -476,62 +485,142 @@ async function initializeLiveProjectDetails() {
     }
 }
 
-
 /* =========================================================
-   LIVE SKILL GAPS
+   LIVE SKILL GAPS — FIXED FOR gaps.html
+   Keeps the existing page visible if the API is unavailable.
 ========================================================= */
 
 async function initializeLiveGaps() {
-    const gapList = document.querySelector(".gap-item-list") || document.querySelector(".skill-gap-list");
+    // Match the actual container used in gaps.html.
+    const gapList = document.querySelector(
+        ".gap-list, .gap-item-list, .skill-gap-list"
+    );
+
+    // This function should only run on the skill-gap page.
     if (!gapList) return;
 
     try {
-        const res = await fetch(`${API_BASE}/matching/projects/1/gaps`);
-        if (!res.ok) return;
-        const json = await res.json();
-        if (!json.success || !json.data) return;
+        const response = await fetch(
+            `${API_BASE}/matching/projects/1/gaps`
+        );
+
+        if (!response.ok) {
+            console.warn(
+                "Skill gaps API unavailable:",
+                response.status
+            );
+            return; // Keep the existing HTML cards visible.
+        }
+
+        const json = await response.json();
+
+        if (!json.success || !json.data) {
+            console.warn("Skill gaps response has no data.");
+            return; // Keep the existing HTML cards visible.
+        }
 
         const breakdown = json.data.skill_breakdown;
-        if (breakdown && breakdown.length > 0) {
-            gapList.innerHTML = "";
-            breakdown.forEach(item => {
-                const el = document.createElement("div");
-                el.className = "gap-item";
-                
-                let statusClass = "covered";
-                let statusBadge = "Covered ✓";
-                if (item.status === "Missing") {
-                    statusClass = "missing";
-                    statusBadge = "Missing 💧";
-                } else if (item.status === "Insufficient") {
-                    statusClass = "insufficient";
-                    statusBadge = "Insufficient ⚠️";
-                }
 
-                const pct = Math.round((item.available_level / item.required_level) * 100);
-
-                el.innerHTML = `
-                    <div class="gap-item-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <strong>${item.skill}</strong>
-                        <span class="botanical-badge ${statusClass}" style="padding: 3px 10px; border-radius: 12px; font-size: 0.75rem;">
-                            ${statusBadge}
-                        </span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 6px;">
-                        Required: ${item.required_level}/5 | Available in Team: ${item.available_level}/5
-                    </div>
-                    <div class="match-component-track">
-                        <div class="match-component-fill" style="width: ${Math.min(pct, 100)}%;"></div>
-                    </div>
-                `;
-                gapList.appendChild(el);
-            });
+        if (!Array.isArray(breakdown)) {
+            console.warn("No skill breakdown was returned.");
+            return;
         }
-    } catch (e) {
-        console.log("[Notice] Live gaps sync skipped.");
+
+        if (breakdown.length === 0) {
+            gapList.innerHTML = `
+                <div class="garden-card" style="padding:24px;">
+                    <h4>Your skills are growing well 🌱</h4>
+                    <p>
+                        No skill gaps were returned for this project.
+                        Check other project requirements to find
+                        new areas for growth.
+                    </p>
+                </div>
+            `;
+            return;
+        }
+
+        // Build the updated list safely.
+        gapList.replaceChildren();
+
+        breakdown.forEach((item) => {
+            const skillName = item.skill || "Unnamed skill";
+            const required = Math.max(
+                1,
+                Math.min(5, Number(item.required_level) || 1)
+            );
+            const available = Math.max(
+                0,
+                Math.min(5, Number(item.available_level) || 0)
+            );
+
+            const percentage = Math.round(
+                (available / required) * 100
+            );
+
+            let statusClass = "covered";
+            let statusText = "Covered ✓";
+
+            if (
+                item.status === "Missing" ||
+                available === 0
+            ) {
+                statusClass = "missing";
+                statusText = "Needs attention 💧";
+            } else if (
+                item.status === "Insufficient" ||
+                available < required
+            ) {
+                statusClass = "insufficient";
+                statusText = "Still growing 🌱";
+            }
+
+            const card = document.createElement("article");
+            card.className = "gap-item garden-card";
+
+            const heading = document.createElement("div");
+            heading.className = "gap-item-heading";
+            heading.style.display = "flex";
+            heading.style.justifyContent = "space-between";
+            heading.style.alignItems = "center";
+            heading.style.gap = "12px";
+            heading.style.marginBottom = "8px";
+
+            const name = document.createElement("strong");
+            name.textContent = skillName;
+
+            const badge = document.createElement("span");
+            badge.className = `botanical-badge ${statusClass}`;
+            badge.textContent = statusText;
+
+            heading.append(name, badge);
+
+            const levels = document.createElement("p");
+            levels.textContent =
+                `Your level: ${available}/5 · Required: ${required}/5`;
+            levels.style.margin = "0 0 10px";
+
+            const track = document.createElement("div");
+            track.className = "gap-progress-track";
+            track.setAttribute(
+                "aria-label",
+                `${skillName}: ${percentage}% of required proficiency`
+            );
+
+            const fill = document.createElement("div");
+            fill.className = "gap-progress-fill";
+            fill.style.width = `${Math.min(percentage, 100)}%`;
+
+            track.appendChild(fill);
+            card.append(heading, levels, track);
+            gapList.appendChild(card);
+        });
+
+    } catch (error) {
+        // Do not erase the HTML fallback if the server is offline.
+        console.error("Could not load live skill gaps:", error);
     }
 }
-
 
 /* =========================================================
    LIVE TEAMMATE RECOMMENDATIONS
@@ -1079,3 +1168,184 @@ function showGardenToast(message) {
         toast.classList.remove("show");
     }, 2800);
 }
+
+/* =========================================================
+   SKILLMATCH — LIVE STUDENT DASHBOARD
+   Uses the existing Flask API and botanical HTML.
+========================================================= */
+
+async function initializeStudentDashboard() {
+    if (!document.querySelector(".app-layout")) return;
+
+    // The faculty console has its own dashboard; this one is for students.
+    if (document.body.dataset.page === "faculty") return;
+
+    const $ = (selector) => document.querySelector(selector);
+
+    try {
+        const [profileResponse, projectsResponse] = await Promise.all([
+            fetch(`${API_BASE}/student/profile`, {
+                credentials: "same-origin"
+            }),
+            fetch(`${API_BASE}/matching/recommendations`, {
+                credentials: "same-origin"
+            })
+        ]);
+
+        if (profileResponse.status === 401) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (!profileResponse.ok) {
+            throw new Error("Could not load your student profile.");
+        }
+
+        if (!projectsResponse.ok) {
+            throw new Error("Could not load project recommendations.");
+        }
+
+        const profileData = await profileResponse.json();
+        const projectData = await projectsResponse.json();
+
+        if (!profileData.success) {
+            throw new Error(profileData.message || "Profile unavailable.");
+        }
+
+        const profile = profileData.profile;
+        const recommendations = projectData.recommendations || [];
+
+        // Welcome name and avatar
+        const welcome = $(".app-welcome small");
+        if (welcome) {
+            welcome.textContent = `WELCOME BACK, ${(profile.name || "STUDENT").toUpperCase()}`;
+        }
+
+        const avatar = $(".user-avatar");
+        if (avatar) {
+            avatar.textContent = (profile.name || "S").trim().charAt(0).toUpperCase();
+        }
+
+        // Real profile completion
+        const completeness = Math.max(
+            0,
+            Math.min(100, Number(profile.completeness) || 0)
+        );
+
+        const healthHeading = $(".profile-health-card h2");
+        if (healthHeading) {
+            healthHeading.replaceChildren(
+                document.createTextNode("Your profile is "),
+                Object.assign(document.createElement("em"), {
+                    textContent: `${completeness}% complete.`
+                })
+            );
+        }
+
+        const healthBar = $(".profile-health-card [style*='width:82%']");
+        if (healthBar) {
+            healthBar.style.width = `${completeness}%`;
+        }
+
+        // Actual profile statistics
+        const statCards = document.querySelectorAll(".stat-card");
+
+        const stats = [
+            (profile.skills || []).length,
+            (profile.interests || []).length,
+            (profile.experiences || []).length
+        ];
+
+        statCards.forEach((card, index) => {
+            const number = card.querySelector(".stat-number");
+            if (number && stats[index] !== undefined) {
+                number.textContent = String(stats[index]).padStart(2, "0");
+            }
+        });
+
+        // Display the highest-ranked project from Flask
+        const project = recommendations[0];
+        if (project) {
+            const title = $(".project-match-title");
+            if (title) title.textContent = project.title;
+
+            const domain = $(".project-match-domain");
+            if (domain) {
+                domain.textContent =
+                    `${project.domain || "ACADEMIC PROJECT"} · TEAM OF ${project.team_size || "—"}`;
+            }
+
+            const description = $(".project-match-description");
+            if (description) description.textContent = project.description || "";
+
+            const score = Math.round(Number(project.match_score) || 0);
+            const scoreCircle = $(".project-match-card .match-score-circle");
+
+            if (scoreCircle) {
+                scoreCircle.style.setProperty("--score", score);
+                const scoreText = scoreCircle.querySelector("[data-score]");
+                if (scoreText) {
+                    scoreText.dataset.score = score;
+                    scoreText.textContent = `${score}%`;
+                }
+            }
+
+            const tags = $(".project-match-card .project-tags");
+            if (tags) {
+                tags.replaceChildren();
+
+                (project.skill_details || []).forEach(skill => {
+                    const tag = document.createElement("span");
+                    tag.textContent = skill.skill;
+                    tags.appendChild(tag);
+                });
+            }
+
+            const projectLink = $(".project-match-card .project-match-footer a");
+            if (projectLink) {
+                projectLink.href = `project-details.html?id=${encodeURIComponent(project.id)}`;
+            }
+
+            // Actual weighted match breakdown
+            const scoreValues = [
+                project.skill_score,
+                project.interest_score,
+                project.experience_score,
+                project.availability_score
+            ];
+
+            document.querySelectorAll(".match-components .match-component")
+                .forEach((component, index) => {
+                    const value = Math.max(
+                        0,
+                        Math.min(100, Number(scoreValues[index]) || 0)
+                    );
+
+                    const fill = component.querySelector(".match-component-fill");
+                    const label = component.querySelector(".match-component-value");
+
+                    if (fill) fill.style.width = `${value}%`;
+                    if (label) label.textContent = `${Math.round(value)}%`;
+                });
+        } else {
+            const title = $(".project-match-title");
+            if (title) title.textContent = "Your next project is waiting";
+
+            const description = $(".project-match-description");
+            if (description) {
+                description.textContent =
+                    "No recommendations are available yet. Add skills and interests to your profile, or check back when projects are available.";
+            }
+        }
+
+    } catch (error) {
+        console.error("Dashboard loading error:", error);
+
+        if (typeof showGardenToast === "function") {
+            showGardenToast("Some garden details could not load. Please refresh.");
+        }
+    }
+}
+
+// Run after the page is ready
+document.addEventListener("DOMContentLoaded", initializeStudentDashboard);

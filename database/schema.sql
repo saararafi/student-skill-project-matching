@@ -27,6 +27,18 @@ CREATE TABLE IF NOT EXISTS students (
     bio TEXT,
     github_url VARCHAR(255) DEFAULT '',
     linkedin_url VARCHAR(255) DEFAULT '',
+    email_notifications TINYINT DEFAULT 1,
+    match_alerts TINYINT DEFAULT 1,
+    weekly_digest TINYINT DEFAULT 0,
+    profile_visibility VARCHAR(20) DEFAULT 'team',
+    prioritise_skills TINYINT DEFAULT 1,
+    consider_interests TINYINT DEFAULT 1,
+    consider_experience TINYINT DEFAULT 1,
+    consider_availability TINYINT DEFAULT 1,
+    application_alerts TINYINT DEFAULT 1,
+    team_alerts TINYINT DEFAULT 1,
+    gap_alerts TINYINT DEFAULT 1,
+    weekly_hours INT DEFAULT 20,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

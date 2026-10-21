@@ -1,57 +1,150 @@
-from flask import Blueprint, request, jsonify, session
-from backend.database import fetch_one, fetch_all
+
+from flask import Blueprint, jsonify
+
+from backend.database import fetch_all
+from backend.auth_utils import get_current_student_id
 from backend.services.matching_service import (
     get_ranked_project_recommendations,
     get_project_skill_gaps,
     get_teammate_recommendations_for_project
 )
-
-matching_bp = Blueprint('matching', __name__)
-
-def get_current_student_id():
-    user_id = session.get('user_id', 1)
-    student = fetch_one("SELECT id FROM students WHERE user_id = %s", (user_id,))
-    return student['id'] if student else 1
+from backend.services.dashboard_service import get_dashboard
 
 
-@matching_bp.route('/recommendations', methods=['GET'])
-def get_recommendations():
+matching_bp = Blueprint("matching", __name__)
+
+
+def student_login_required():
+    """Return the student ID or an authentication error response."""
     student_id = get_current_student_id()
+
+    if student_id is None:
+        return None, (
+            jsonify({
+                "success": False,
+                "message": "Please log in with a student account."
+            }),
+            401
+        )
+
+    return student_id, None
+
+
+@matching_bp.route("/recommendations", methods=["GET"])
+def get_recommendations():
+    student_id, error = student_login_required()
+
+    if error:
+        return error
+
     recommendations = get_ranked_project_recommendations(student_id)
+
     return jsonify({
         "success": True,
         "count": len(recommendations),
         "recommendations": recommendations
-    })
+    }), 200
 
 
-@matching_bp.route('/projects/<int:project_id>/gaps', methods=['GET'])
+@matching_bp.route("/dashboard", methods=["GET"])
+def get_dashboard_data():
+    student_id, error = student_login_required()
+
+    if error:
+        return error
+
+    dashboard = get_dashboard(student_id)
+
+    if not dashboard:
+        return jsonify({
+            "success": False,
+            "message": "Dashboard data not found."
+        }), 404
+
+    return jsonify({
+        "success": True,
+        "dashboard": dashboard
+    }), 200
+
+
+@matching_bp.route("/projects/<int:project_id>/gaps", methods=["GET"])
 def get_gaps(project_id):
+    student_id, error = student_login_required()
+
+    if error:
+        return error
+
     gaps_data = get_project_skill_gaps(project_id)
-    if not gaps_data:
-        return jsonify({"success": False, "message": "Project not found."}), 404
-    return jsonify({"success": True, "data": gaps_data})
+
+    if gaps_data is None:
+        return jsonify({
+            "success": False,
+            "message": "Skill-gap data not found."
+        }), 404
+
+    return jsonify({
+        "success": True,
+        "project_id": project_id,
+        "gaps": gaps_data
+    }), 200
 
 
-@matching_bp.route('/projects/<int:project_id>/teammates', methods=['GET'])
+@matching_bp.route(
+    "/projects/<int:project_id>/teammates",
+    methods=["GET"]
+)
 def get_teammates(project_id):
+    student_id, error = student_login_required()
+
+    if error:
+        return error
+
     teammates = get_teammate_recommendations_for_project(project_id)
-    return jsonify({"success": True, "count": len(teammates), "teammates": teammates})
+
+    if teammates is None:
+        return jsonify({
+            "success": False,
+            "message": "Teammate recommendations not found."
+        }), 404
+
+    return jsonify({
+        "success": True,
+        "project_id": project_id,
+        "teammates": teammates
+    }), 200
 
 
-@matching_bp.route('/all-gaps', methods=['GET'])
+@matching_bp.route("/all-gaps", methods=["GET"])
 def get_all_gaps():
-    projects = fetch_all("SELECT id, title, domain FROM projects")
+    student_id, error = student_login_required()
+
+    if error:
+        return error
+
+    projects = fetch_all(
+        "SELECT id, title, domain FROM projects"
+    )
+
+    if projects is None:
+        return jsonify({
+            "success": False,
+            "message": "Unable to retrieve projects."
+        }), 500
+
     results = []
-    for p in projects:
-        gap_info = get_project_skill_gaps(p['id'])
-        if gap_info:
-            results.append({
-                "project_id": p['id'],
-                "project_title": p['title'],
-                "domain": p['domain'],
-                "gaps": gap_info['gaps'],
-                "skill_breakdown": gap_info['skill_breakdown'],
-                "team_members_count": len(gap_info['team_members'])
-            })
-    return jsonify({"success": True, "projects_gaps": results})
+
+    for project in projects:
+        gaps_data = get_project_skill_gaps(project["id"])
+
+        results.append({
+            "project_id": project["id"],
+            "title": project["title"],
+            "domain": project["domain"],
+            "gaps": gaps_data
+        })
+
+    return jsonify({
+        "success": True,
+        "count": len(results),
+        "projects": results
+    }), 200

@@ -2,7 +2,8 @@ def calculate_weighted_match(
     skill_score,
     interest_score,
     experience_score,
-    availability_score
+    availability_score,
+    weights=None
 ):
     """
     Calculates the final weighted compatibility score.
@@ -13,15 +14,42 @@ def calculate_weighted_match(
         Experience   = 20%
         Availability = 10%
 
+    Parameters:
+        weights: Optional override of the four factor weights, given as a
+                 mapping with the keys 'skill', 'interest', 'experience' and
+                 'availability'. The weights are normalised so they always
+                 add up to 1.0, which is what happens when a student turns
+                 one of the matching factors off in their settings.
+
     Returns:
         final_score: Overall weighted compatibility percentage
     """
 
     # Define weights
-    skill_weight = 0.50
-    interest_weight = 0.20
-    experience_weight = 0.20
-    availability_weight = 0.10
+    if weights is None:
+        weights = {
+            "skill": 0.50,
+            "interest": 0.20,
+            "experience": 0.20,
+            "availability": 0.10
+        }
+
+    skill_weight = weights.get("skill", 0.50)
+    interest_weight = weights.get("interest", 0.20)
+    experience_weight = weights.get("experience", 0.20)
+    availability_weight = weights.get("availability", 0.10)
+
+    # Normalise so the weights always add up to 1.0
+    total_weight = skill_weight + interest_weight + experience_weight + availability_weight
+    if total_weight > 0:
+        skill_weight /= total_weight
+        interest_weight /= total_weight
+        experience_weight /= total_weight
+        availability_weight /= total_weight
+    else:
+        # Every factor was switched off: fall back to the standard weights.
+        skill_weight, interest_weight = 0.50, 0.20
+        experience_weight, availability_weight = 0.20, 0.10
 
     # Calculate weighted contributions
     skill_contribution = skill_score * skill_weight

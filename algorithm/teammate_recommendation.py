@@ -7,6 +7,10 @@ def recommend_teammates(
     Recommends students who possess skills missing
     from the current project team.
 
+    A student is only credited with a gap when their proficiency for that
+    skill actually reaches the level the project requires; merely owning the
+    skill is not enough to close the gap.
+
     Parameters:
         students:
             Dictionary containing student names and skills.
@@ -20,7 +24,7 @@ def recommend_teammates(
     Returns:
         recommendations:
             List of students who have skills required
-            by the project.
+            by the project, best match first.
     """
 
     recommendations = []
@@ -35,21 +39,37 @@ def recommend_teammates(
         if student_name in current_team:
             continue
 
-        # Find skills that match the gaps
+        # Find skills that match the gaps at a sufficient proficiency
         matching_skills = []
+        total_level = 0
 
-        for skill in student_skills:
+        for skill, level in student_skills.items():
 
-            if skill in required_skills:
+            if skill not in required_skills:
+                continue
+
+            required_level = skill_gaps[skill].get('required_level', 1)
+
+            # The student's proficiency must meet the required level
+            if level >= required_level:
                 matching_skills.append(skill)
+                total_level += level
 
         # If the student has useful skills, recommend them
         if matching_skills:
 
             recommendations.append({
                 "name": student_name,
-                "matching_skills": matching_skills
+                "matching_skills": matching_skills,
+                "gaps_filled": len(matching_skills),
+                "total_proficiency": total_level
             })
+
+    # Best candidates first: most gaps closed, then strongest proficiency
+    recommendations.sort(
+        key=lambda r: (r['gaps_filled'], r['total_proficiency']),
+        reverse=True
+    )
 
     return recommendations
 

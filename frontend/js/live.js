@@ -1,0 +1,1288 @@
+/* =========================================================
+   SKILLMATCH — LIVE DATA LAYER
+   -------------------------------------------------------
+   Renders every page from the database and wires up the
+   forms. Loaded after main.js; it targets the same garden
+   containers and adds the missing live panels.
+
+   Every panel degrades to an empty state when the database
+   has no rows, so nothing ever shows stale demo content.
+   ========================================================= */
+
+const API = window.location.origin.includes("http")
+    ? `${window.location.origin}/api`
+    : "http://127.0.0.1:5000/api";
+
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+/* ------------------------------------------------------------
+   Helpers
+   ------------------------------------------------------------ */
+
+async function api(path, options = {}) {
+    const res = await fetch(API + path, {
+        headers: options.body ? { "Content-Type": "application/json" } : {},
+        ...options
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) { data = {}; }
+    return { ok: res.ok, status: res.status, data };
+}
+
+function toast(message) {
+    let el = $(".garden-toast");
+    if (!el) {
+        el = document.createElement("div");
+        el.className = "garden-toast";
+        document.body.appendChild(el);
+    }
+    el.textContent = message;
+    el.classList.add("show");
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+function emptyState(container, message) {
+    container.innerHTML = `
+        <div class="empty-state">
+            <p>${message}</p>
+        </div>`;
+}
+
+/** The project currently being viewed (?id=), defaulting to the first one. */
+function currentProjectId() {
+    const id = new URLSearchParams(window.location.search).get("id");
+    return id || "1";
+}
+
+/* ------------------------------------------------------------
+   Dashboard
+   ------------------------------------------------------------ */
+
+async function renderDashboard() {
+    const card = $(".project-match-card");
+    if (!card) return;
+
+    const { ok, data } = await api("/matching/dashboard");
+    if (!ok || !data.dashboard) {
+        const stats = $(".dashboard-grid");
+        if (stats) emptyState(stats, "Sign in to see your garden.");
+        return;
+    }
+
+    const d = data.dashboard;
+
+    // Statistic cards
+    const statMap = {
+        skills: d.stats.skills,
+        interests: d.stats.interests,
+        experiences: d.stats.experiences
+    };
+    $$(".stat-card").forEach((el) => {
+        const heading = (el.querySelector("h3") || {}).textContent || "";
+        const key = Object.keys(statMap).find(k => heading.toLowerCase().includes(k));
+        const number = el.querySelector(".stat-number");
+        if (key && number) number.textContent = String(statMap[key]).padStart(2, "0");
+    });
+
+    // Featured project
+    if (d.top_match) {
+        const m = d.top_match;
+        const domain = $(".project-match-domain", card);
+        if (domain) domain.textContent = `${m.domain.toUpperCase()} · TEAM OF ${m.team_size}`;
+
+        const title = $(".project-match-title", card);
+        if (title) title.textContent = m.title;
+
+        const desc = $(".project-match-description", card);
+        if (desc) desc.textContent = m.description;
+
+        const score = $("[data-score]", card);
+        if (score) {
+            score.dataset.score = Math.round(m.final_score);
+            score.textContent = `${Math.round(m.final_score)}%`;
+        }
+        const circle = $(".match-score-circle", card);
+        if (circle) circle.style.setProperty("--score", Math.round(m.final_score));
+
+        const tags = $(".project-tags", card);
+        if (tags) {
+            tags.innerHTML = (m.skill_details || [])
+                .map(s => `<span>${s.skill}</span>`).join("");
+        }
+    }
+
+    // Skill garden
+    const plants = $(".skill-plants");
+    if (plants) {
+        const flowers = ["✿", "❀", "✾", "❁", "✽"];
+        if (!d.skills.length) {
+            plants.innerHTML = `<p class="muted-text">No skills planted yet.</p>`;
+        } else {
+            plants.innerHTML = d.skills.map((sk, i) => {
+                const pct = Math.round((sk.proficiency_level / 5) * 100);
+                const stage = pct >= 90 ? "BLOOMING" : pct >= 70 ? "GROWING" : "SPROUTING";
+                const cert = sk.certificate_status === "Verified"
+                    ? `<div class="skill-plant-cert verified">📜 Verified</div>`
+                    : sk.certificate_status === "Pending"
+                        ? `<div class="skill-plant-cert pending">📜 Pending ⏳</div>` : "";
+                return `
+                    <div class="skill-plant">
+                        <div class="skill-plant-flower">${flowers[i % flowers.length]}</div>
+                        <div class="skill-plant-name">${sk.name}</div>
+                        <div class="skill-plant-level">${sk.proficiency_level} / 5 · ${pct}% · ${stage}</div>
+                        ${cert}
+                    </div>`;
+            }).join("");
+        }
+    }
+
+    // Garden team
+    const team = $(".team-branch");
+    if (team) {
+        const { ok, data } = await api(`/projects/${d.top_match ? d.top_match.project_id : currentProjectId()}`);
+        const members = (ok && data.project && data.project.team_members) || [];
+        if (!members.length) {
+            team.innerHTML = `<p class="muted-text">No team members yet.</p>`;
+        } else {
+            team.innerHTML = members.map(m => `
+                <div class="team-member">
+                    <div class="team-member-avatar">${(m.name || "?").charAt(0)}</div>
+                    <div>
+                        <div class="team-member-name">${(m.name || "").split(" ")[0]}</div>
+                        <div class="team-member-role">${m.role || "Contributor"}</div>
+                    </div>
+                </div>`).join("");
+        }
+    }
+
+    // Recent activity
+    const timeline = $(".growth-timeline");
+    if (timeline) {
+        const events = [];
+        (d.applications || []).forEach(a => events.push({
+            when: "RECENT",
+            title: `Applied to ${a.project_title}`,
+            body: `Your compatibility score was ${Math.round(a.match_score || 0)}%.`
+        }));
+        (d.notifications || []).slice(0, 3).forEach(n => events.push({
+            when: "LATEST",
+            title: n.title,
+            body: n.message
+        }));
+        if (!events.length) {
+            timeline.innerHTML = `<p class="muted-text">Your growth story starts with your first skill.</p>`;
+        } else {
+            timeline.innerHTML = events.map(ev => `
+                <div class="growth-item">
+                    <div class="growth-year">${ev.when}</div>
+                    <div>
+                        <h3>${ev.title}</h3>
+                        <p>${ev.body}</p>
+                    </div>
+                </div>`).join("");
+        }
+    }
+}
+
+/* ------------------------------------------------------------
+   Applications
+   ------------------------------------------------------------ */
+
+async function renderApplications() {
+    const container = $("#applicationsListItems");
+    if (!container) return;
+
+    const { ok, data } = await api("/applications");
+    if (!ok || !data.applications) {
+        emptyState(container, "Your applications will appear here.");
+        return;
+    }
+    if (!data.applications.length) {
+        emptyState(container, "You have not applied to any project yet.");
+        return;
+    }
+
+    container.innerHTML = data.applications.map(app => {
+        const cls = app.status === "Accepted" ? "accepted"
+            : app.status === "Rejected" ? "rejected" : "pending";
+        const label = app.status === "Accepted" ? "Accepted ✓"
+            : app.status === "Rejected" ? "Rejected" : "Pending Review";
+        const applied = app.applied_at
+            ? new Date(app.applied_at).toLocaleDateString() : "—";
+        const withdraw = app.status === "Accepted" ? "" : `
+            <button class="garden-button secondary" type="button"
+                    data-withdraw-app="${app.id}"
+                    data-project-title="${app.project_title}">Withdraw</button>`;
+        return `
+            <article class="garden-card application-card">
+                <div class="application-card-top">
+                    <div>
+                        <span class="application-project-status open">${app.domain || "Open Project"}</span>
+                        <h3>${app.project_title}</h3>
+                        <p>${app.message || "Application submitted for academic project matching."}</p>
+                    </div>
+                    <div class="application-match">
+                        <small>MATCH</small>
+                        <strong>${Math.round(app.match_score || 0)}%</strong>
+                    </div>
+                </div>
+                <div class="application-meta">
+                    <span>📅 Applied ${applied}</span>
+                    <span>✿ ${app.status}</span>
+                </div>
+                <div class="application-status-row">
+                    <div class="application-status ${cls}">
+                        <span class="status-dot"></span>${label}
+                    </div>
+                    <div class="application-actions">
+                        <a href="project-details.html?id=${app.project_id}" class="garden-button">View Project</a>
+                        ${withdraw}
+                    </div>
+                </div>
+            </article>`;
+    }).join("");
+
+    // Withdraw buttons
+    $$("[data-withdraw-app]", container).forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const id = btn.dataset.withdrawApp;
+            const title = btn.dataset.projectTitle || "this project";
+            if (!window.confirm(`Withdraw your application for ${title}?`)) return;
+            btn.disabled = true;
+            const { ok, data } = await api(`/applications/${id}/withdraw`, { method: "POST" });
+            if (ok && data.success) {
+                toast("Application withdrawn.");
+                renderApplications();
+            } else {
+                toast(data.message || "Could not withdraw the application.");
+                btn.disabled = false;
+            }
+        });
+    });
+}
+
+/* ------------------------------------------------------------
+   Notifications
+   ------------------------------------------------------------ */
+
+async function renderNotifications() {
+    const container = $(".notification-list");
+    if (!container) return;
+
+    const { ok, data } = await api("/notifications");
+    if (!ok || !data.notifications) return;
+
+    if (!data.notifications.length) {
+        emptyState(container, "No notifications yet.");
+        return;
+    }
+
+    container.innerHTML = data.notifications.map(n => `
+        <article class="garden-card notification-item ${n.is_read ? "read" : "unread"}"
+                 data-notification="${n.id}">
+            <div class="notification-icon ${n.type || "info"}">🔔</div>
+            <div class="notification-content">
+                <div class="notification-top">
+                    <h3>${n.title}</h3>
+                    <span>${n.created_at ? new Date(n.created_at).toLocaleDateString() : ""}</span>
+                </div>
+                <p>${n.message}</p>
+                ${n.link ? `<a href="${n.link}" class="notification-link">View →</a>` : ""}
+            </div>
+            ${n.is_read ? "" : `<span class="unread-dot"></span>`}
+        </article>`).join("");
+
+    // Clicking marks as read
+    $$("[data-notification]", container).forEach(item => {
+        item.addEventListener("click", async () => {
+            if (item.classList.contains("read")) return;
+            item.classList.add("read");
+            const dot = $(".unread-dot", item);
+            if (dot) dot.remove();
+            await api(`/notifications/${item.dataset.notification}/read`, { method: "POST" });
+            updateUnreadBadge();
+        });
+    });
+    updateUnreadBadge();
+}
+
+function updateUnreadBadge() {
+    const unread = $$(".notification-item:not(.read)").length;
+    const badge = $("[data-unread-count]");
+    if (badge) {
+        badge.textContent = unread;
+        badge.style.display = unread > 0 ? "" : "none";
+    }
+}
+
+/* ------------------------------------------------------------
+   Skill gaps  (gaps.html and the gaps panel on the dashboard)
+   ------------------------------------------------------------ */
+
+async function renderGaps() {
+    const list = $(".gap-list");
+    if (!list) return;
+
+    const projectId = currentProjectId();
+    const { ok, data } = await api(`/matching/projects/${projectId}/gaps`);
+    // The API returns the payload under "gaps"; older builds used "data".
+    const payload = data.gaps || data.data;
+    if (!ok || !payload) return;
+
+    const breakdown = payload.skill_breakdown || [];
+    if (!breakdown.length) {
+        emptyState(list, "This project does not list any required skills yet.");
+        return;
+    }
+
+    list.innerHTML = breakdown.map(item => {
+        const pct = Math.round((item.available_level / item.required_level) * 100);
+        const badge = item.status === "Missing" ? "Missing 💧"
+            : item.status === "Insufficient" ? "Insufficient ⚠️" : "Covered ✓";
+        const cls = item.status === "Missing" ? "missing"
+            : item.status === "Insufficient" ? "insufficient" : "covered";
+        return `
+            <article class="gap-item garden-card">
+                <div class="gap-item-icon">${item.status === "Covered" ? "❧" : "🌱"}</div>
+                <div class="gap-item-content">
+                    <div class="gap-item-heading">
+                        <div>
+                            <h4>${item.skill}</h4>
+                            <p>Required level ${item.required_level}/5 · team has ${item.available_level}/5</p>
+                        </div>
+                        <span class="gap-percentage">${Math.min(pct, 100)}%</span>
+                    </div>
+                    <div class="gap-progress">
+                        <div class="gap-progress-track">
+                            <div class="gap-progress-fill" style="width:${Math.min(pct, 100)}%;"></div>
+                        </div>
+                    </div>
+                    <div class="gap-item-footer">
+                        <span class="botanical-badge ${cls}">${badge}</span>
+                    </div>
+                </div>
+            </article>`;
+    }).join("");
+
+    // Summary counts
+    const counts = {
+        tracked: breakdown.length,
+        developing: breakdown.filter(i => i.status === "Insufficient").length,
+        priority: breakdown.filter(i => i.status === "Missing").length
+    };
+    Object.entries(counts).forEach(([key, value]) => {
+        const el = $(`[data-gap-stat="${key}"]`);
+        if (el) el.textContent = value;
+    });
+
+    // Team coverage cards
+    const teamGrid = $(".team-gap-grid");
+    if (teamGrid) {
+        const gaps = breakdown.filter(i => i.status !== "Covered");
+        if (!gaps.length) {
+            teamGrid.innerHTML = `
+                <article class="team-gap-card garden-card">
+                    <div class="team-gap-icon">❧</div>
+                    <div>
+                        <h4>Nothing missing</h4>
+                        <p>The team already covers every skill this project needs.</p>
+                    </div>
+                </article>`;
+        } else {
+            teamGrid.innerHTML = gaps.map(item => {
+                const pct = Math.min(100, Math.round((item.available_level / item.required_level) * 100));
+                return `
+                    <article class="team-gap-card garden-card">
+                        <div class="team-gap-icon">${item.status === "Missing" ? "🌧" : "🌱"}</div>
+                        <div>
+                            <h4>${item.skill}</h4>
+                            <p>Current team coverage: <strong>${pct}%</strong></p>
+                            <div class="gap-progress-track">
+                                <div class="gap-progress-fill" style="width:${pct}%;"></div>
+                            </div>
+                        </div>
+                    </article>`;
+            }).join("");
+        }
+    }
+}
+
+/* ------------------------------------------------------------
+   Team page
+   ------------------------------------------------------------ */
+
+async function renderTeam() {
+    const roster = $(".team-members-grid");
+    const mates = $(".recommended-teammates-grid");
+    const coverage = $(".team-skill-coverage-grid");
+    if (!roster && !mates && !coverage) return;
+
+    const projectId = currentProjectId();
+
+    // Current team
+    if (roster) {
+        const { ok, data } = await api(`/projects/${projectId}`);
+        const members = (ok && data.project && data.project.team_members) || [];
+        if (!members.length) {
+            roster.innerHTML = `<div class="empty-state"><p>No team members yet — this project is waiting for its first gardener.</p></div>`;
+        } else {
+            roster.innerHTML = members.map(m => `
+                <article class="team-member-card garden-card">
+                    <div class="team-member-avatar">${(m.name || "?").charAt(0)}</div>
+                    <div class="team-member-info">
+                        <h3>${m.name}</h3>
+                        <span>${m.role || "Contributor"}</span>
+                    </div>
+                    <div class="team-member-skills">
+                        ${(m.skills || []).map(s => `<span>${s.name} · ${s.proficiency_level}/5</span>`).join("")
+                            || "<span>No skills listed</span>"}
+                    </div>
+                    <span class="team-role-badge">${m.department || "Student"}</span>
+                </article>`).join("");
+        }
+    }
+
+    // Recommended teammates
+    if (mates) {
+        const { ok, data } = await api(`/matching/projects/${projectId}/teammates`);
+        const list = (ok && data.teammates) || [];
+        if (!list.length) {
+            mates.innerHTML = `<div class="empty-state"><p>No teammates are needed — the team covers every skill.</p></div>`;
+        } else {
+            mates.innerHTML = list.map(stu => {
+                const skills = (stu.matching_skills_detailed || [])
+                    .map(s => `<span>${s.has_certificate ? "📜 " : ""}${s.name} (Lvl ${s.level})</span>`).join("");
+                return `
+                    <article class="recommended-teammate garden-card" data-search-item>
+                        <div class="recommended-avatar">${(stu.name || "?").charAt(0)}</div>
+                        <div class="recommended-info">
+                            <h3>${stu.name}</h3>
+                            <p>${stu.department || ""} · ${stu.year || ""}</p>
+                            <div class="skill-list">${skills}</div>
+                        </div>
+                        <div class="teammate-match">
+                            <small>GAPS FILLED</small>
+                            <strong>${stu.gaps_filled ?? (stu.matching_skills || []).length}</strong>
+                        </div>
+                    </article>`;
+            }).join("");
+        }
+    }
+
+    // Skill coverage
+    if (coverage) {
+        const { ok, data } = await api(`/matching/projects/${projectId}/gaps`);
+        const payload = data.gaps || data.data;
+        const breakdown = (ok && payload && payload.skill_breakdown) || [];
+        if (!breakdown.length) {
+            coverage.innerHTML = `<div class="empty-state"><p>No skill requirements listed.</p></div>`;
+        } else {
+            coverage.innerHTML = breakdown.map(item => {
+                const pct = Math.min(100, Math.round((item.available_level / item.required_level) * 100));
+                return `
+                    <div class="coverage-item">
+                        <span>${item.skill}</span>
+                        <strong>${pct}%</strong>
+                        <div class="match-component-track">
+                            <div class="match-component-fill" style="width:${pct}%;"></div>
+                        </div>
+                    </div>`;
+            }).join("");
+
+            const covered = breakdown.filter(i => i.status === "Covered").length;
+            const total = breakdown.length;
+            const pct = Math.round((covered / total) * 100);
+            const number = $("[data-team-coverage]");
+            if (number) number.textContent = `${pct}%`;
+            const bar = $(".team-coverage-fill");
+            if (bar) bar.style.width = `${pct}%`;
+        }
+    }
+}
+
+/* ------------------------------------------------------------
+   Project details
+   ------------------------------------------------------------ */
+
+async function renderProjectDetails() {
+    const skillsBox = $("[data-detail-skills]");
+    const gapBox = $("[data-detail-gaps]");
+    const applyBtn = $("[data-apply]");
+    if (!skillsBox && !gapBox && !applyBtn) return;
+
+    const projectId = currentProjectId();
+    const { ok, data } = await api(`/projects/${projectId}`);
+    if (!ok || !data.project) return;
+    const p = data.project;
+
+    if (skillsBox) {
+        const mine = {};
+        ((p.match && p.match.skill_details) || []).forEach(s => { mine[s.skill] = s.student_level; });
+        const list = p.required_skills || [];
+        skillsBox.innerHTML = list.length ? list.map(s => {
+            const level = mine[s.name] || 0;
+            const covered = level >= s.required_level;
+            const pct = Math.round((s.required_level / 5) * 100);
+            return `
+                <div class="required-skill">
+                    <div>
+                        <strong>${s.name}</strong>
+                        <span>Required Level: ${s.required_level}/5</span>
+                        <span class="muted-text">Your level: ${level}/5 ${covered ? "✓" : ""}</span>
+                    </div>
+                    <div class="skill-level-bar">
+                        <div class="skill-level-fill" style="width:${pct}%;"></div>
+                    </div>
+                </div>`;
+        }).join("") : `<p class="muted-text">No specific skills are required.</p>`;
+    }
+
+    if (gapBox) {
+        const detail = (p.match && p.match.skill_details) || [];
+        const weak = detail.filter(s => s.student_level < s.required_level);
+        gapBox.innerHTML = weak.length ? weak.map(s => {
+            const pct = Math.round((s.student_level / 5) * 100);
+            return `
+                <div class="skill-gap-detail">
+                    <div class="gap-detail-flower">🌱</div>
+                    <div>
+                        <h3>${s.skill}</h3>
+                        <p>Your current level: ${s.student_level}/5</p>
+                        <div class="skill-level-bar">
+                            <div class="skill-level-fill" style="width:${pct}%;"></div>
+                        </div>
+                    </div>
+                </div>`;
+        }).join("") : `<div class="empty-state"><p>You already meet every required level for this project. 🌿</p></div>`;
+    }
+
+    if (applyBtn) {
+        applyBtn.dataset.applyId = p.id;
+        if (p.application) {
+            applyBtn.disabled = true;
+            applyBtn.textContent = p.application.status === "Accepted" ? "Accepted ✓" : "Applied ✓";
+            applyBtn.classList.add("applied");
+        }
+    }
+}
+
+/** Applying to a project (used on both the list and the details page). */
+async function applyToProject(projectId, button) {
+    if (!button || button.disabled) return;
+    const messageBox = $("#applyMessage");
+    const message = (messageBox && messageBox.value.trim())
+        ? messageBox.value.trim()
+        : "Excited to contribute to this academic project!";
+
+    button.disabled = true;
+    button.textContent = "Applying... ⏳";
+
+    const { ok, data } = await api(`/projects/${projectId}/apply`, {
+        method: "POST",
+        body: JSON.stringify({ message })
+    });
+
+    if (ok && data.success) {
+        toast(`Application submitted! Match score: ${Math.round(data.match_score || 0)}% 🌿`);
+        button.textContent = "Applied ✓";
+        button.classList.add("applied");
+    } else {
+        toast(data.message || "Could not apply to this project.");
+        button.disabled = false;
+        button.textContent = "Apply ✿";
+    }
+}
+
+/* ------------------------------------------------------------
+   Faculty console
+   ------------------------------------------------------------ */
+
+async function renderFacultyConsole() {
+    const apps = $("#facultyApplicationsList");
+    if (!apps) return;
+
+    const { ok, data } = await api("/faculty/overview");
+    // The payload is returned at the top level by some builds and nested
+    // under "overview" by others.
+    const o = data.overview || data;
+    if (!ok || !o || !o.faculty) {
+        emptyState(apps, "Sign in with a faculty account to open the console.");
+        return;
+    }
+
+    const nameEl = $("[data-faculty-name]");
+    if (nameEl) nameEl.textContent = (o.faculty.name || "Guide").replace(/^Dr\.?\s+/, "");
+
+    const statMap = {
+        projects: o.stats.projects,
+        applications: o.stats.applications,
+        pending_applications: o.stats.pending_applications
+    };
+    $$("[data-faculty-stat]").forEach(el => {
+        const key = el.dataset.facultyStat;
+        if (statMap[key] !== undefined) {
+            el.textContent = String(statMap[key]).padStart(2, "0");
+        }
+    });
+
+    const badge = $("#facultyPendingBadge");
+    if (badge) {
+        const pending = o.stats.pending_applications + o.stats.pending_certificates;
+        badge.textContent = `${pending} AWAITING REVIEW`;
+        badge.style.display = pending > 0 ? "" : "none";
+    }
+
+    // Applications
+    const list = o.applications || [];
+    if (!list.length) {
+        emptyState(apps, "No applications have been submitted yet.");
+    } else {
+        apps.innerHTML = list.map(a => `
+            <article class="garden-card application-card">
+                <div class="application-card-top">
+                    <div>
+                        <span class="application-project-status open">${a.domain || "Project"}</span>
+                        <h3>${a.student_name}</h3>
+                        <p>${a.department || ""} · ${a.year || ""} — applied to <strong>${a.project_title}</strong></p>
+                    </div>
+                    <div class="application-match">
+                        <small>MATCH</small>
+                        <strong>${Math.round(a.match_score || 0)}%</strong>
+                    </div>
+                </div>
+                ${a.message ? `<p class="muted-text" style="font-size:0.85rem;">"${a.message}"</p>` : ""}
+                <div class="application-status-row">
+                    <div class="application-status ${a.status === "Accepted" ? "accepted" : a.status === "Rejected" ? "rejected" : "pending"}">
+                        <span class="status-dot"></span>${a.status}
+                    </div>
+                    <div class="application-actions">
+                        <button class="garden-button" type="button"
+                                data-faculty-review="${a.id}" data-status="Accepted">Accept</button>
+                        <button class="garden-button secondary" type="button"
+                                data-faculty-review="${a.id}" data-status="Rejected">Reject</button>
+                    </div>
+                </div>
+            </article>`).join("");
+    }
+
+    // Certificates
+    const certs = $("#facultyCertificatesList");
+    if (certs) {
+        const pending = o.pending_certificates || [];
+        certs.innerHTML = pending.length ? pending.map(c => `
+            <article class="garden-card application-card">
+                <div class="application-card-top">
+                    <div>
+                        <span class="application-project-status open">${c.category || "Skill"}</span>
+                        <h3>${c.skill_name}</h3>
+                        <p>${c.student_name} — ${c.student_email}</p>
+                    </div>
+                    <div class="application-match">
+                        <small>LEVEL</small>
+                        <strong>${c.proficiency_level}/5</strong>
+                    </div>
+                </div>
+                <div class="application-meta">
+                    <span>📄 ${c.certificate_original_name || "Certificate"}</span>
+                </div>
+                <div class="application-status-row">
+                    <div class="application-status pending">
+                        <span class="status-dot"></span>Awaiting verification
+                    </div>
+                    <div class="application-actions">
+                        ${c.certificate_filename
+                            ? `<a class="garden-button secondary" target="_blank"
+                                  href="${API}/certificates/${c.certificate_filename}">View</a>` : ""}
+                        <button class="garden-button" type="button"
+                                data-faculty-verify="${c.student_id}:${c.skill_id}"
+                                data-status="Verified">Verify</button>
+                        <button class="garden-button secondary" type="button"
+                                data-faculty-verify="${c.student_id}:${c.skill_id}"
+                                data-status="Rejected">Reject</button>
+                    </div>
+                </div>
+            </article>`).join("")
+            : `<div class="empty-state"><p>No certificates are waiting for verification.</p></div>`;
+    }
+
+    // Projects
+    const projects = $("#facultyProjectsList");
+    if (projects) {
+        const list2 = o.projects || [];
+        projects.innerHTML = list2.length ? list2.map(p => `
+            <article class="garden-card application-card">
+                <div class="application-card-top">
+                    <div>
+                        <span class="application-project-status ${p.status === "Open" ? "open" : "closed"}">${p.status}</span>
+                        <h3>${p.title}</h3>
+                        <p>${p.domain || ""} · ${p.required_availability}</p>
+                    </div>
+                    <div class="application-match">
+                        <small>TEAM</small>
+                        <strong>${p.member_count}/${p.team_size}</strong>
+                    </div>
+                </div>
+                <div class="application-meta">
+                    <span>✉ ${p.application_count} application(s)</span>
+                    <span>◷ ${p.pending_count} pending</span>
+                </div>
+                <div class="application-status-row">
+                    <div class="application-status ${p.pending_count > 0 ? "pending" : "accepted"}">
+                        <span class="status-dot"></span>${p.pending_count > 0 ? "Needs attention" : "On track"}
+                    </div>
+                    <div class="application-actions">
+                        <a href="project-details.html?id=${p.id}" class="garden-button">View</a>
+                    </div>
+                </div>
+            </article>`).join("")
+            : `<div class="empty-state"><p>You have not published any projects yet.</p></div>`;
+    }
+
+    // Review buttons
+    $$("[data-faculty-review]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            btn.disabled = true;
+            const { ok, data } = await api(`/faculty/applications/${btn.dataset.facultyReview}/status`, {
+                method: "PUT",
+                body: JSON.stringify({ status: btn.dataset.status })
+            });
+            if (ok && data.success) {
+                toast(`Application ${btn.dataset.status.toLowerCase()} ✓`);
+                renderFacultyConsole();
+            } else {
+                toast(data.message || "Could not update the application.");
+                btn.disabled = false;
+            }
+        });
+    });
+
+    // Verify buttons
+    $$("[data-faculty-verify]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            btn.disabled = true;
+            const [studentId, skillId] = btn.dataset.facultyVerify.split(":");
+            const { ok, data } = await api(`/faculty/certificates/${studentId}/${skillId}`, {
+                method: "PUT",
+                body: JSON.stringify({ status: btn.dataset.status })
+            });
+            if (ok && data.success) {
+                toast(`Certificate ${btn.dataset.status.toLowerCase()} ✓`);
+                renderFacultyConsole();
+            } else {
+                toast(data.message || "Could not update the certificate.");
+                btn.disabled = false;
+            }
+        });
+    });
+}
+
+/* ------------------------------------------------------------
+   Profile editing
+   ------------------------------------------------------------ */
+
+async function renderProfileManagement() {
+    const skillForm = $("#addSkillForm");
+    const interestForm = $("#addInterestForm");
+    const expForm = $("#addExperienceForm");
+    const availForm = $("#availabilityForm");
+    if (!skillForm && !interestForm && !expForm && !availForm) return;
+
+    // Interests
+    const interestBox = $("#profileInterests");
+    if (interestBox) {
+        const { ok, data } = await api("/student/interests");
+        renderInterestChips((ok && data.interests) || []);
+    }
+
+    // Experiences
+    const expBox = $("#profileExperiences");
+    if (expBox) {
+        const { ok, data } = await api("/student/experiences");
+        const list = (ok && data.experiences) || [];
+        expBox.innerHTML = list.length ? list.map(e => `
+            <div class="growth-item">
+                <div class="growth-year">EXPERIENCE</div>
+                <div>
+                    <h3>${e.title}</h3>
+                    <p>Previous work</p>
+                    <button class="chip-remove" type="button" data-remove-exp="${e.id}" title="Remove">×</button>
+                </div>
+            </div>`).join("")
+            : `<p class="muted-text">No previous work added yet.</p>`;
+
+        $$("[data-remove-exp]", expBox).forEach(btn => {
+            btn.addEventListener("click", async () => {
+                btn.disabled = true;
+                const { ok, data } = await api(`/student/experiences/${btn.dataset.removeExp}`, { method: "DELETE" });
+                if (ok && data.success) {
+                    toast("Experience removed.");
+                    renderProfileManagement();
+                } else {
+                    toast(data.message || "Could not remove the experience.");
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    // Availability
+    const slider = $("#weeklyHoursSlider");
+    if (slider) {
+        const { ok, data } = await api("/student/settings");
+        const hours = (ok && data.settings && data.settings.weekly_hours);
+        if (hours !== undefined && hours !== null) {
+            slider.value = hours;
+            const readout = $("[data-weekly-hours]");
+            if (readout) readout.textContent = hours;
+        }
+    }
+}
+
+/** Renders the interest chips and wires their remove buttons. */
+function renderInterestChips(list) {
+    const box = $("#profileInterests");
+    if (!box) return;
+
+    box.innerHTML = list.length ? list.map(i => `
+        <span class="settings-chip selected">
+            <span>${i}</span>
+            <button class="chip-remove" type="button"
+                    data-remove-interest="${i}" title="Remove">×</button>
+        </span>`).join("")
+        : `<p class="muted-text">No interests selected yet.</p>`;
+
+    $$("[data-remove-interest]", box).forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const name = btn.dataset.removeInterest;
+            const next = list.filter(i => i !== name);
+            btn.disabled = true;
+            const { ok, data } = await api("/student/interests", {
+                method: "PUT",
+                body: JSON.stringify({ interests: next })
+            });
+            if (ok && data.success) {
+                toast("Interest removed.");
+                renderInterestChips(next);
+            } else {
+                toast(data.message || "Could not remove the interest.");
+                btn.disabled = false;
+            }
+        });
+    });
+}
+
+
+/** Re-renders the skill garden after a skill is added or removed. */
+async function refreshSkillPlants() {
+    const plants = $("#skillPlantsContainer");
+    if (!plants) return;
+
+    const { ok, data } = await api("/student/skills");
+    const skills = (ok && data.student_skills) || [];
+    if (!skills.length) {
+        plants.innerHTML = `<p class="muted-text">No skills planted yet.</p>`;
+        return;
+    }
+
+    const flowers = ["✿", "❀", "✾", "❁", "✽"];
+    plants.innerHTML = skills.map((sk, i) => {
+        const pct = Math.round((sk.proficiency_level / 5) * 100);
+        const cert = sk.certificate_status === "Verified"
+            ? `<a href="${API}/certificates/${sk.certificate_filename}" target="_blank"
+                   class="skill-cert-badge verified">Verified ✓</a>`
+            : sk.certificate_status === "Pending"
+                ? `<a href="${API}/certificates/${sk.certificate_filename}" target="_blank"
+                       class="skill-cert-badge pending">Pending ⏳</a>`
+                : `<button type="button" class="skill-cert-badge upload"
+                           onclick="openCertModal(${sk.skill_id}, '${sk.name}')">+ Certificate</button>`;
+        return `
+            <div class="skill-plant">
+                <div class="skill-plant-flower">${flowers[i % flowers.length]}</div>
+                <div class="skill-plant-name">${sk.name}</div>
+                <div class="skill-plant-level">${sk.proficiency_level} / 5 · ${pct}%</div>
+                ${cert}
+                <button type="button" class="chip-remove skill-remove" title="Remove ${sk.name}"
+                        data-remove-skill="${sk.skill_id}">×</button>
+            </div>`;
+    }).join("");
+
+    $$("[data-remove-skill]", plants).forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const name = btn.title.replace("Remove ", "");
+            if (!window.confirm(`Remove ${name} from your profile?`)) return;
+            btn.disabled = true;
+            const { ok, data } = await api(`/student/skills/${btn.dataset.removeSkill}`, { method: "DELETE" });
+            if (ok && data.success) {
+                toast(`${name} removed.`);
+                refreshSkillPlants();
+            } else {
+                toast(data.message || "Could not remove the skill.");
+                btn.disabled = false;
+            }
+        });
+    });
+}
+
+
+function wireProfileManagement() {
+    // Add a skill
+    const skillForm = $("#addSkillForm");
+    if (skillForm) {
+        skillForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const name = $("#newSkillName").value.trim();
+            const level = $("#newSkillLevel") ? $("#newSkillLevel").value : 3;
+            if (!name) { toast("Please type a skill."); return; }
+            const { ok, data } = await api("/student/skills", {
+                method: "POST",
+                body: JSON.stringify({ skill_name: name, proficiency_level: parseInt(level, 10) })
+            });
+            if (ok && data.success) {
+                $("#newSkillName").value = "";
+                toast(`Added ${name} to your skill garden 🌱`);
+                refreshSkillPlants();
+            } else {
+                toast(data.message || "Could not add the skill.");
+            }
+        });
+    }
+
+    // Add an interest
+    const interestForm = $("#addInterestForm");
+    if (interestForm) {
+        interestForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const name = $("#newInterestName").value.trim();
+            if (!name) { toast("Please type an interest."); return; }
+            const { ok, data } = await api("/student/interests");
+            const list = ((ok && data.interests) || []).filter(
+                i => i.toLowerCase() !== name.toLowerCase());
+            list.push(name);
+            const res = await api("/student/interests", {
+                method: "PUT",
+                body: JSON.stringify({ interests: list })
+            });
+            if (res.ok && res.data.success) {
+                $("#newInterestName").value = "";
+                toast("Interest added — your matches have been recalculated 🌿");
+                renderInterestChips(list);
+            } else {
+                toast(res.data.message || "Could not add the interest.");
+            }
+        });
+    }
+
+    // Add an experience
+    const expForm = $("#addExperienceForm");
+    if (expForm) {
+        expForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const title = $("#newExperienceTitle").value.trim();
+            if (!title) { toast("Please type what you worked on."); return; }
+            const { ok, data } = await api("/student/experiences", {
+                method: "POST",
+                body: JSON.stringify({ title })
+            });
+            if (ok && data.success) {
+                $("#newExperienceTitle").value = "";
+                toast("Experience added 🌿");
+                renderProfileManagement();
+            } else {
+                toast(data.message || "Could not add the experience.");
+            }
+        });
+    }
+
+    // Availability slider
+    const availForm = $("#availabilityForm");
+    if (availForm) {
+        availForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const value = $("#availabilitySelect") ? $("#availabilitySelect").value : null;
+            if (!value) return;
+            const { ok, data } = await api("/student/profile", {
+                method: "PUT",
+                body: JSON.stringify({ availability: value })
+            });
+            if (ok && data.success) {
+                toast("Availability updated 🌿");
+                window.dispatchEvent(new CustomEvent("skillmatch:refresh-profile"));
+            } else {
+                toast(data.message || "Could not update availability.");
+            }
+        });
+    }
+
+    // Weekly hours slider
+    const slider = $("#weeklyHoursSlider");
+    if (slider) {
+        const readout = $("[data-weekly-hours]");
+        slider.addEventListener("input", () => {
+            if (readout) readout.textContent = slider.value;
+        });
+        slider.addEventListener("change", async () => {
+            const hours = parseInt(slider.value, 10);
+            const { ok, data } = await api("/student/settings", {
+                method: "PUT",
+                body: JSON.stringify({ weekly_hours: hours })
+            });
+            if (ok && data.success) toast(`Weekly availability set to ${hours} hours 🌿`);
+            else toast(data.message || "Could not save your availability.");
+        });
+    }
+}
+
+/* ------------------------------------------------------------
+   Settings page
+   ------------------------------------------------------------ */
+
+async function renderSettings() {
+    const section = $("[data-settings-panel]");
+    if (!section) return;
+
+    const { ok, data } = await api("/student/settings");
+    if (!ok || !data.settings) return;
+    const s = data.settings;
+
+    const set = (key, value) => {
+        const field = $(`[data-setting="${key}"]`);
+        if (!field || value === undefined || value === null) return;
+        if (field.type === "checkbox") field.checked = !!Number(value);
+        else field.value = value;
+    };
+
+    ["name", "email", "department", "year", "semester", "availability",
+     "email_notifications", "match_alerts", "weekly_digest", "profile_visibility",
+     "prioritise_skills", "consider_interests", "consider_experience",
+     "consider_availability", "application_alerts", "team_alerts", "gap_alerts",
+     "weekly_hours"].forEach(k => set(k, s[k]));
+
+    // Interest chips
+    const chips = $$("[data-interest-chip]");
+    if (chips.length) {
+        const { ok: ok2, data: d2 } = await api("/student/interests");
+        const stored = ((ok2 && d2.interests) || []).map(i => i.toLowerCase());
+        chips.forEach(chip => {
+            const label = chip.parentElement.querySelector("span");
+            const name = label ? label.textContent.trim().toLowerCase() : "";
+            const active = stored.includes(name);
+            chip.checked = active;
+            chip.parentElement.classList.toggle("selected", active);
+            chip.addEventListener("change", saveInterestChips);
+        });
+    }
+}
+
+async function saveInterestChips() {
+    const chips = $$("[data-interest-chip]");
+    const interests = chips
+        .filter(c => c.checked)
+        .map(c => {
+            const label = c.parentElement.querySelector("span");
+            return label ? label.textContent.trim() : "";
+        })
+        .filter(Boolean);
+
+    const { ok, data } = await api("/student/interests", {
+        method: "PUT",
+        body: JSON.stringify({ interests })
+    });
+    if (ok && data.success) toast("Interests updated — your matches have been recalculated 🌿");
+}
+
+function wireSettings() {
+    const saveButton = $('[data-garden-action="save-settings"]');
+    if (!saveButton) return;
+
+    saveButton.addEventListener("click", async () => {
+        const values = {};
+        $$("[data-setting]").forEach(field => {
+            values[field.dataset.setting] = field.type === "checkbox"
+                ? (field.checked ? 1 : 0)
+                : field.value;
+        });
+
+        const { ok, data } = await api("/student/settings", {
+            method: "PUT",
+            body: JSON.stringify(values)
+        });
+        if (ok && data.success) {
+            toast("Settings saved successfully 🌿");
+            await saveInterestChips();
+        } else {
+            toast(data.message || "Could not save your settings.");
+        }
+    });
+}
+
+/* ------------------------------------------------------------
+   Registration
+   ------------------------------------------------------------ */
+
+function wireRegistration() {
+    const toggle = $("[data-register-toggle]");
+    const form = $("#registerForm");
+    const login = $("#loginForm");
+    if (!toggle || !form) return;
+
+    toggle.addEventListener("click", () => {
+        const showing = form.style.display !== "none";
+        form.style.display = showing ? "none" : "";
+        if (login) login.style.display = showing ? "" : "none";
+        const heading = $("[data-auth-heading]");
+        if (heading) heading.innerHTML = showing ? "Enter your <em>garden.</em>" : "Plant your <em>first seed.</em>";
+        toggle.textContent = showing ? "Create your profile" : "Back to sign in";
+    });
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const name = $("#registerName").value.trim();
+        const email = $("#registerEmail").value.trim();
+        const password = $("#registerPassword").value;
+        if (!name || !email || !password) {
+            toast("Please fill in all required fields.");
+            return;
+        }
+        if (password.length < 6) {
+            toast("Password must be at least 6 characters.");
+            return;
+        }
+
+        const { ok, data } = await api("/auth/register", {
+            method: "POST",
+            body: JSON.stringify({
+                name, email, password,
+                role: "student",
+                department: $("#registerDepartment") ? $("#registerDepartment").value : "Computer Science Engineering",
+                year: $("#registerYear") ? $("#registerYear").value : "3rd Year"
+            })
+        });
+        if (ok && data.success) {
+            sessionStorage.setItem("user", JSON.stringify(data.user));
+            toast(`Welcome to the garden, ${name}! 🌿`);
+            setTimeout(() => { window.location.href = "profile.html"; }, 800);
+        } else {
+            toast(data.message || "Could not create the account.");
+        }
+    });
+}
+
+/* ------------------------------------------------------------
+   Project picker
+   ------------------------------------------------------------ */
+
+async function wireProjectPicker() {
+    const picker = $("[data-project-picker]");
+    if (!picker) return;
+
+    const { ok, data } = await api("/projects");
+    const projects = (ok && data.projects) || [];
+    if (!projects.length) return;
+
+    const current = currentProjectId();
+    picker.innerHTML = "";
+    projects.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p.id;
+        option.textContent = p.title;
+        if (String(p.id) === String(current)) option.selected = true;
+        picker.appendChild(option);
+    });
+
+    picker.addEventListener("change", () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("id", picker.value);
+        window.location.href = url.toString();
+    });
+}
+
+/* ------------------------------------------------------------
+   Faculty: publish a project
+   ------------------------------------------------------------ */
+
+function wireFacultyForm() {
+    const form = $("#facultyProjectForm");
+    if (!form) return;
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const skillsRaw = $("#facultyProjectSkills").value.trim();
+        const skills = skillsRaw ? skillsRaw.split(",").map(part => {
+            const [name, level] = part.split(":").map(s => s.trim());
+            return { name, required_level: parseInt(level, 10) || 3 };
+        }).filter(s => s.name) : [];
+
+        const payload = {
+            title: $("#facultyProjectTitle").value.trim(),
+            description: $("#facultyProjectDescription").value.trim(),
+            domain: $("#facultyProjectDomain").value.trim() || "General",
+            required_availability: $("#facultyProjectAvailability").value,
+            team_size: parseInt($("#facultyProjectTeamSize").value, 10) || 4,
+            skills
+        };
+        if (!payload.title || !payload.description) {
+            toast("Title and description are required.");
+            return;
+        }
+
+        const { ok, data } = await api("/projects", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        if (ok && data.success) {
+            toast("Project published successfully ✿");
+            form.reset();
+            renderFacultyConsole();
+        } else {
+            toast(data.message || "Could not publish the project.");
+        }
+    });
+}
+
+/* ------------------------------------------------------------
+   Apply buttons (list + details)
+   ------------------------------------------------------------ */
+
+function wireApplyButtons() {
+    document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-apply]");
+        if (!button) return;
+        const id = button.dataset.applyId || currentProjectId();
+        applyToProject(id, button);
+    });
+}
+
+/* ------------------------------------------------------------
+   Boot
+   ------------------------------------------------------------ */
+
+document.addEventListener("DOMContentLoaded", () => {
+    wireApplyButtons();
+    wireProfileManagement();
+    wireSettings();
+    wireRegistration();
+    wireFacultyForm();
+
+    // The faculty console has its own panels; the garden pages belong to
+    // students, so each page only loads what it needs.
+    if (document.body.dataset.page === "faculty") {
+        wireProjectPicker();
+        renderFacultyConsole();
+        return;
+    }
+
+    wireProjectPicker();
+    renderProfileManagement();
+    renderSettings();
+    renderNotifications();
+    renderFacultyConsole();
+
+    // Page specific panels
+    if ($(".project-match-card") && $(".dashboard-grid")) renderDashboard();
+    if ($(".gap-list")) renderGaps();
+    if ($(".team-members-grid") || $(".recommended-teammates-grid")) renderTeam();
+    if ($("[data-detail-skills]") || $("[data-apply]")) renderProjectDetails();
+    if ($("#applicationsListItems")) renderApplications();
+});

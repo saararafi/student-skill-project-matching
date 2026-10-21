@@ -1,18 +1,17 @@
 import os
 import time
 from werkzeug.utils import secure_filename
-from flask import Blueprint, request, jsonify, session, send_from_directory
+from flask import Blueprint, request, jsonify, send_from_directory
 from backend.config import Config
 from backend.database import fetch_one, fetch_all, execute_query
 from backend.services.matching_service import get_student_profile_data
+from backend.auth_utils import (
+    get_current_student_id,
+    login_required,
+    faculty_required,
+)
 
 student_bp = Blueprint('student', __name__)
-
-def get_current_student_id():
-    """Helper to get logged-in student id, defaulting to demo student 1 if not set."""
-    user_id = session.get('user_id', 1)
-    student = fetch_one("SELECT id FROM students WHERE user_id = %s", (user_id,))
-    return student['id'] if student else 1
 
 
 @student_bp.route('/profile', methods=['GET'])
@@ -56,6 +55,7 @@ def get_profile():
 
 
 @student_bp.route('/profile', methods=['PUT'])
+@login_required
 def update_profile():
     student_id = get_current_student_id()
     data = request.get_json() or {}
@@ -117,6 +117,7 @@ def list_skills():
 
 
 @student_bp.route('/skills', methods=['POST'])
+@login_required
 def add_or_update_skill():
     student_id = get_current_student_id()
     data = request.get_json() or {}
@@ -150,6 +151,7 @@ def add_or_update_skill():
 
 
 @student_bp.route('/skills/<int:skill_id>', methods=['DELETE'])
+@login_required
 def delete_skill(skill_id):
     student_id = get_current_student_id()
     execute_query("DELETE FROM student_skills WHERE student_id = %s AND skill_id = %s", (student_id, skill_id))
@@ -157,6 +159,7 @@ def delete_skill(skill_id):
 
 
 @student_bp.route('/upload-certificate', methods=['POST'])
+@login_required
 def upload_certificate():
     """
     Handles certificate file uploads to verify student skills.
@@ -241,6 +244,7 @@ def upload_certificate():
 
 
 @student_bp.route('/verify-certificate', methods=['POST'])
+@faculty_required
 def verify_certificate():
     """Allows Faculty/Admin to approve or reject a student certificate."""
     data = request.get_json() or {}
@@ -250,6 +254,9 @@ def verify_certificate():
 
     if not student_id or not skill_id:
         return jsonify({"success": False, "message": "student_id and skill_id are required."}), 400
+
+    if status not in ('Verified', 'Rejected', 'Pending', 'None'):
+        return jsonify({"success": False, "message": "Invalid certificate status."}), 400
 
     execute_query("""
         UPDATE student_skills
@@ -272,6 +279,300 @@ def verify_certificate():
         ))
 
     return jsonify({"success": True, "message": f"Certificate has been {status}."})
+
+
+@student_bp.route('/settings', methods=['GET'])
+def get_settings():
+    """Returns the account details and preferences for the student."""
+    student_id = get_current_student_id()
+    student = fetch_one("SELECT * FROM students WHERE id = %s", (student_id,))
+    if not student:
+        return jsonify({"success": False, "message": "Student not found."}), 404
+
+    user = fetch_one(
+        "SELECT name, email FROM users WHERE id = %s",
+        (student['user_id'],)
+    )
+
+    settings = {
+        "name": user['name'] if user else '',
+        "email": user['email'] if user else '',
+        "department": student.get('department'),
+        "year": student.get('year'),
+        "semester": student.get('semester'),
+        "availability": student.get('availability'),
+        "email_notifications": student.get('email_notifications', 1),
+        "match_alerts": student.get('match_alerts', 1),
+        "weekly_digest": student.get('weekly_digest', 0),
+        "profile_visibility": student.get('profile_visibility', 'team'),
+        "prioritise_skills": student.get('prioritise_skills', 1),
+        "consider_interests": student.get('consider_interests', 1),
+        "consider_experience": student.get('consider_experience', 1),
+        "consider_availability": student.get('consider_availability', 1),
+        "application_alerts": student.get('application_alerts', 1),
+        "team_alerts": student.get('team_alerts', 1),
+        "gap_alerts": student.get('gap_alerts', 1),
+        "weekly_hours": student.get('weekly_hours', 20),
+    }
+    return jsonify({"success": True, "settings": settings})
+
+
+@student_bp.route('/settings', methods=['PUT'])
+@login_required
+def update_settings():
+    """
+    Saves the student's settings.
+
+    This covers both the account details shown at the top of the settings
+    page and the matching/notification preferences below it, so the whole
+    page is persisted with a single request.
+    """
+    student_id = get_current_student_id()
+    data = request.get_json() or {}
+
+    student = fetch_one("SELECT * FROM students WHERE id = %s", (student_id,))
+    if not student:
+        return jsonify({"success": False, "message": "Student not found."}), 404
+
+    def as_bool(value, default):
+        if value is None:
+            return default
+        if isinstance(value, bool):
+            return 1 if value else 0
+        return 1 if str(value).lower() in ('1', 'true', 'on', 'yes') else 0
+
+    # --- Account details ----------------------------------------------
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    department = (data.get('department') or '').strip()
+    year = (data.get('year') or '').strip()
+    semester = (data.get('semester') or '').strip()
+    availability = (data.get('availability') or '').strip()
+
+    if email:
+        # The address must stay unique.
+        existing = fetch_one(
+            "SELECT id FROM users WHERE LOWER(email) = %s AND id != %s",
+            (email, student['user_id'],)
+        )
+        if existing:
+            return jsonify({
+                "success": False,
+                "message": "That email address is already in use."
+            }), 409
+
+    if availability and availability not in ('Full-time', 'Part-time'):
+        return jsonify({
+            "success": False,
+            "message": "Availability must be 'Full-time' or 'Part-time'."
+        }), 400
+
+    if name or email:
+        execute_query("""
+            UPDATE users
+            SET name = COALESCE(NULLIF(%s, ''), name),
+                email = COALESCE(NULLIF(%s, ''), email)
+            WHERE id = %s
+        """, (name, email, student['user_id']))
+
+    execute_query("""
+        UPDATE students
+        SET department = COALESCE(NULLIF(%s, ''), department),
+            year = COALESCE(NULLIF(%s, ''), year),
+            semester = COALESCE(NULLIF(%s, ''), semester),
+            availability = COALESCE(NULLIF(%s, ''), availability)
+        WHERE id = %s
+    """, (department, year, semester, availability, student_id))
+
+    # --- Preferences ---------------------------------------------------
+    email_notifications = as_bool(data.get('email_notifications'), 1)
+    match_alerts = as_bool(data.get('match_alerts'), 1)
+    weekly_digest = as_bool(data.get('weekly_digest'), 0)
+    prioritise_skills = as_bool(data.get('prioritise_skills'), 1)
+    consider_interests = as_bool(data.get('consider_interests'), 1)
+    consider_experience = as_bool(data.get('consider_experience'), 1)
+    consider_availability = as_bool(data.get('consider_availability'), 1)
+    application_alerts = as_bool(data.get('application_alerts'), 1)
+    team_alerts = as_bool(data.get('team_alerts'), 1)
+    gap_alerts = as_bool(data.get('gap_alerts'), 1)
+
+    try:
+        weekly_hours = int(data.get('weekly_hours', student.get('weekly_hours', 20)))
+    except (TypeError, ValueError):
+        weekly_hours = student.get('weekly_hours', 20)
+    weekly_hours = max(0, min(40, weekly_hours))
+
+    visibility = data.get('profile_visibility', student.get('profile_visibility', 'team'))
+    if visibility not in ('public', 'team', 'private'):
+        visibility = 'team'
+
+    execute_query("""
+        UPDATE students
+        SET email_notifications = %s,
+            match_alerts = %s,
+            weekly_digest = %s,
+            profile_visibility = %s,
+            prioritise_skills = %s,
+            consider_interests = %s,
+            consider_experience = %s,
+            consider_availability = %s,
+            application_alerts = %s,
+            team_alerts = %s,
+            gap_alerts = %s,
+            weekly_hours = %s
+        WHERE id = %s
+    """, (
+        email_notifications, match_alerts, weekly_digest, visibility,
+        prioritise_skills, consider_interests, consider_experience,
+        consider_availability, application_alerts, team_alerts, gap_alerts,
+        weekly_hours, student_id
+    ))
+
+    saved = fetch_one("SELECT * FROM students WHERE id = %s", (student_id,))
+    user = fetch_one("SELECT name, email FROM users WHERE id = %s", (student['user_id'],))
+
+    return jsonify({
+        "success": True,
+        "message": "Settings saved successfully!",
+        "settings": {
+            "name": user['name'] if user else '',
+            "email": user['email'] if user else '',
+            "department": saved.get('department'),
+            "year": saved.get('year'),
+            "semester": saved.get('semester'),
+            "availability": saved.get('availability'),
+            "email_notifications": email_notifications,
+            "match_alerts": match_alerts,
+            "weekly_digest": weekly_digest,
+            "profile_visibility": visibility,
+            "prioritise_skills": prioritise_skills,
+            "consider_interests": consider_interests,
+            "consider_experience": consider_experience,
+            "consider_availability": consider_availability,
+            "application_alerts": application_alerts,
+            "team_alerts": team_alerts,
+            "gap_alerts": gap_alerts,
+            "weekly_hours": weekly_hours,
+        }
+    })
+
+
+@student_bp.route('/experiences', methods=['GET'])
+def list_experiences():
+    """Returns the student's previous work entries."""
+    student_id = get_current_student_id()
+    rows = fetch_all(
+        "SELECT id, experience_title FROM student_experiences WHERE student_id = %s ORDER BY id",
+        (student_id,)
+    )
+    return jsonify({
+        "success": True,
+        "experiences": [{'id': r['id'], 'title': r['experience_title']} for r in rows]
+    })
+
+
+@student_bp.route('/experiences', methods=['POST'])
+@login_required
+def add_experience():
+    """Adds a previous work entry to the student's profile."""
+    student_id = get_current_student_id()
+    data = request.get_json() or {}
+
+    title = (data.get('title') or '').strip()
+    if not title:
+        return jsonify({"success": False, "message": "A title is required."}), 400
+    if len(title) > 150:
+        return jsonify({"success": False, "message": "Title must be 150 characters or fewer."}), 400
+
+    # Avoid storing the same entry twice.
+    existing = fetch_one(
+        "SELECT id FROM student_experiences WHERE student_id = %s AND LOWER(experience_title) = LOWER(%s)",
+        (student_id, title)
+    )
+    if existing:
+        return jsonify({
+            "success": False,
+            "message": "That experience is already on your profile."
+        }), 400
+
+    new_id = execute_query(
+        "INSERT INTO student_experiences (student_id, experience_title) VALUES (%s, %s)",
+        (student_id, title)
+    )
+
+    return jsonify({
+        "success": True,
+        "message": "Experience added!",
+        "experience": {"id": new_id, "title": title}
+    }), 201
+
+
+@student_bp.route('/experiences/<int:experience_id>', methods=['DELETE'])
+@login_required
+def delete_experience(experience_id):
+    """Removes a previous work entry."""
+    student_id = get_current_student_id()
+    execute_query(
+        "DELETE FROM student_experiences WHERE id = %s AND student_id = %s",
+        (experience_id, student_id)
+    )
+    return jsonify({"success": True, "message": "Experience removed."})
+
+
+@student_bp.route('/interests', methods=['GET'])
+def list_interests():
+    """Returns the student's selected interest areas."""
+    student_id = get_current_student_id()
+    rows = fetch_all(
+        "SELECT interest FROM student_interests WHERE student_id = %s ORDER BY interest",
+        (student_id,)
+    )
+    return jsonify({
+        "success": True,
+        "interests": [r['interest'] for r in rows]
+    })
+
+
+@student_bp.route('/interests', methods=['PUT'])
+@login_required
+def update_interests():
+    """
+    Replaces the student's interest areas.
+
+    Interests feed directly into the interest compatibility factor of the
+    matching algorithm, so this genuinely changes the computed scores.
+    """
+    student_id = get_current_student_id()
+    data = request.get_json() or {}
+
+    raw = data.get('interests', [])
+    if not isinstance(raw, list):
+        return jsonify({"success": False, "message": "interests must be a list."}), 400
+
+    # Normalise, trim and drop duplicates while preserving order.
+    interests = []
+    for item in raw:
+        if not isinstance(item, str):
+            continue
+        value = item.strip()
+        if value and value.lower() not in [i.lower() for i in interests]:
+            interests.append(value[:100])
+
+    if len(interests) > 20:
+        return jsonify({"success": False, "message": "You can select at most 20 interests."}), 400
+
+    execute_query("DELETE FROM student_interests WHERE student_id = %s", (student_id,))
+    for interest in interests:
+        execute_query(
+            "INSERT INTO student_interests (student_id, interest) VALUES (%s, %s)",
+            (student_id, interest)
+        )
+
+    return jsonify({
+        "success": True,
+        "message": "Interests updated successfully!",
+        "interests": interests
+    })
 
 
 @student_bp.route('/certificates/<filename>', methods=['GET'])

@@ -16,7 +16,11 @@
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1">
+
+<link rel="stylesheet" href="css/style.css?v=1">
+<link rel="stylesheet" href="css/design-system.css?v=1">
+<link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=1">
 
 </head>
 
@@ -387,116 +391,9 @@
             </div>
 
 
-            <div class="required-skills-grid">
+            
 
-
-                <div class="required-skill">
-
-                    <div>
-
-                        <strong>
-                            Python
-                        </strong>
-
-                        <span>
-                            Required Level: 4/5
-                        </span>
-
-                    </div>
-
-
-                    <div class="skill-level-bar">
-
-                        <div
-                            class="skill-level-fill"
-                            style="width: 80%;"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="required-skill">
-
-                    <div>
-
-                        <strong>
-                            Flask
-                        </strong>
-
-                        <span>
-                            Required Level: 3/5
-                        </span>
-
-                    </div>
-
-
-                    <div class="skill-level-bar">
-
-                        <div
-                            class="skill-level-fill"
-                            style="width: 60%;"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="required-skill">
-
-                    <div>
-
-                        <strong>
-                            MySQL
-                        </strong>
-
-                        <span>
-                            Required Level: 3/5
-                        </span>
-
-                    </div>
-
-
-                    <div class="skill-level-bar">
-
-                        <div
-                            class="skill-level-fill"
-                            style="width: 60%;"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="required-skill">
-
-                    <div>
-
-                        <strong>
-                            Algorithms
-                        </strong>
-
-                        <span>
-                            Required Level: 4/5
-                        </span>
-
-                    </div>
-
-
-                    <div class="skill-level-bar">
-
-                        <div
-                            class="skill-level-fill"
-                            style="width: 80%;"
-                        ></div>
-
-                    </div>
-
-                </div>
-
+                    <div class="required-skills-grid" data-detail-skills>
             </div>
 
         </section>
@@ -799,76 +696,9 @@
             </p>
 
 
-            <div class="skill-gap-detail-grid">
+            
 
-
-                <div class="skill-gap-detail">
-
-                    <div class="gap-detail-flower">
-                        🌱
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Flask
-                        </h3>
-
-                        <p>
-                            Your current level: 2/5
-                        </p>
-
-                        <div class="skill-level-bar">
-
-                            <div
-                                class="skill-level-fill"
-                                style="width: 48%;"
-                            ></div>
-
-                        </div>
-
-                        <small>
-                            Recommended focus: Flask fundamentals
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="skill-gap-detail">
-
-                    <div class="gap-detail-flower">
-                        🌱
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Data Visualization
-                        </h3>
-
-                        <p>
-                            Your current level: Beginner
-                        </p>
-
-                        <div class="skill-level-bar">
-
-                            <div
-                                class="skill-level-fill"
-                                style="width: 35%;"
-                            ></div>
-
-                        </div>
-
-                        <small>
-                            Recommended focus: Charts and dashboards
-                        </small>
-
-                    </div>
-
-                </div>
-
+                    <div class="skill-gap-detail-grid" data-detail-gaps>
             </div>
 
         </section>
@@ -1000,6 +830,12 @@
             </div>
 
 
+            <div class="apply-message">
+                <label for="applyMessage">Why do you want to join?</label>
+                <textarea id="applyMessage" rows="3" maxlength="500"
+                          placeholder="Tell the project guide what you would like to contribute..."></textarea>
+            </div>
+
             <button
                 class="garden-button"
                 type="button"
@@ -1024,7 +860,8 @@
 </div>
 
 
-<script src="js/main.js"></script>
+<script src="js/main.js?v=1"></script>
+<script src="js/live.js?v=1"></script>
 
 </body>
 

@@ -8,13 +8,13 @@ USE skillmatch_db;
 -- 1. Users (Passwords hashed using werkzeug pbkdf2 / plain demo 'password123')
 -- Default passwords for testing: 'password123'
 INSERT INTO users (id, name, email, password_hash, role) VALUES
-(1, 'Saara Rafi', 'saara@example.com', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'student'),
-(2, 'Aisha Khan', 'aisha@example.com', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'student'),
-(3, 'Rahul Verma', 'rahul@example.com', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'student'),
-(4, 'Meera Patel', 'meera@example.com', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'student'),
-(5, 'Arjun Nair', 'arjun@example.com', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'student'),
-(6, 'Dr. Priya Sharma', 'priya.sharma@faculty.edu', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'faculty'),
-(7, 'Prof. Ramesh Kumar', 'ramesh.kumar@faculty.edu', 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209', 'faculty');
+(1, 'Saara Rafi', 'saara@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
+(2, 'Aisha Khan', 'aisha@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
+(3, 'Rahul Verma', 'rahul@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
+(4, 'Meera Patel', 'meera@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
+(5, 'Arjun Nair', 'arjun@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
+(6, 'Dr. Priya Sharma', 'priya.sharma@faculty.edu', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'faculty'),
+(7, 'Prof. Ramesh Kumar', 'ramesh.kumar@faculty.edu', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'faculty');
 
 -- 2. Students
 INSERT INTO students (id, user_id, department, year, semester, availability, bio, github_url, linkedin_url) VALUES

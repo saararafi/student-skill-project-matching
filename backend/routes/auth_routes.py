@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from backend.database import fetch_one, execute_query
+from backend.auth_utils import get_current_user_id
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -17,14 +18,11 @@ def login():
     if not user:
         return jsonify({"success": False, "message": "No account found with this email."}), 404
 
-    # Allow password match via check_password_hash or demo fallback 'password123'
-    valid = False
+    # Verify the password against the stored hash.
     try:
         valid = check_password_hash(user['password_hash'], password)
     except Exception:
-        pass
-    if not valid and password == 'password123':
-        valid = True
+        valid = False
 
     if not valid:
         return jsonify({"success": False, "message": "Invalid password."}), 401
@@ -95,17 +93,36 @@ def register():
         }
     }), 201
 
-
 @auth_bp.route('/me', methods=['GET'])
 def get_current_user():
-    user_id = session.get('user_id', 1)  # Default to demo student 1 if not set
-    user = fetch_one("SELECT id, name, email, role, created_at FROM users WHERE id = %s", (user_id,))
+    user_id = session.get('user_id')
+
+    # Require a genuine login
+    if not user_id:
+        return jsonify({
+            "success": False,
+            "message": "Please log in first."
+        }), 401
+
+    user = fetch_one(
+        "SELECT id, name, email, role, created_at FROM users WHERE id = %s",
+        (user_id,)
+    )
+
     if not user:
-        return jsonify({"success": False, "message": "Not logged in"}), 401
+        session.clear()
+        return jsonify({
+            "success": False,
+            "message": "Account not found. Please log in again."
+        }), 401
 
     student = None
+
     if user['role'] == 'student':
-        student = fetch_one("SELECT * FROM students WHERE user_id = %s", (user['id'],))
+        student = fetch_one(
+            "SELECT * FROM students WHERE user_id = %s",
+            (user['id'],)
+        )
 
     return jsonify({
         "success": True,
@@ -114,8 +131,7 @@ def get_current_user():
             "student_id": student['id'] if student else None,
             "student_data": student
         }
-    })
-
+    }), 200
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():

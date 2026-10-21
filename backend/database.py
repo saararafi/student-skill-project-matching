@@ -2,17 +2,47 @@ import os
 import sqlite3
 import pymysql
 from pymysql.cursors import DictCursor
+from werkzeug.security import check_password_hash, generate_password_hash
 from backend.config import Config
+
+try:
+    import psycopg2
+    import psycopg2.extras
+    PSYCOPG2_AVAILABLE = True
+except ImportError:
+    PSYCOPG2_AVAILABLE = False
 
 ENGINE_MYSQL = 'mysql'
 ENGINE_SQLITE = 'sqlite'
+ENGINE_POSTGRES = 'postgres'
+
+# Demo accounts seeded for evaluation. All share the same demo password.
+DEMO_PASSWORD = 'password123'
+DEMO_EMAILS = (
+    'saara@example.com',
+    'aisha@example.com',
+    'rahul@example.com',
+    'meera@example.com',
+    'arjun@example.com',
+    'priya.sharma@faculty.edu',
+    'ramesh.kumar@faculty.edu',
+)
 
 active_engine = ENGINE_SQLITE
 _mysql_conn_params = None
 
 def get_connection():
     global active_engine, _mysql_conn_params
-    
+
+    # PostgreSQL is preferred when a DATABASE_URL is provided (Render).
+    if Config.DATABASE_URL and PSYCOPG2_AVAILABLE:
+        try:
+            conn = psycopg2.connect(Config.DATABASE_URL)
+            conn.autocommit = True
+            return conn, ENGINE_POSTGRES
+        except Exception:
+            pass
+
     # Try MySQL first if configured or available
     if active_engine == ENGINE_MYSQL or _mysql_conn_params is not None:
         try:
@@ -36,8 +66,15 @@ def get_connection():
     return conn, ENGINE_SQLITE
 
 
+def _make_cursor(conn, engine):
+    """Returns a cursor that yields dict-like rows on every engine."""
+    if engine == ENGINE_POSTGRES:
+        return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    return conn.cursor()
+
+
 def adapt_sql(sql, target_engine):
-    """Adapts MySQL-style %s placeholders to ? if target is SQLite."""
+    """Adapts %s placeholders to ? when the target is SQLite."""
     if target_engine == ENGINE_SQLITE:
         # Replace %s placeholder with ? placeholder for sqlite3
         return sql.replace('%s', '?')
@@ -48,19 +85,25 @@ def execute_query(sql, params=None):
     """Executes an INSERT, UPDATE, or DELETE query and returns the last inserted ID."""
     conn, engine = get_connection()
     adapted = adapt_sql(sql, engine)
-    cursor = conn.cursor()
+    cursor = _make_cursor(conn, engine)
     try:
         if params is not None:
             cursor.execute(adapted, params)
         else:
             cursor.execute(adapted)
-        
+
         if engine == ENGINE_SQLITE:
             conn.commit()
-            last_id = cursor.lastrowid
-        else:
-            last_id = cursor.lastrowid
-        return last_id
+            return cursor.lastrowid
+
+        if engine == ENGINE_POSTGRES:
+            # psycopg2 has no cursor.lastrowid; lastval() gives the last
+            # sequence value generated in this session.
+            cursor.execute("SELECT lastval() AS id")
+            row = cursor.fetchone()
+            return row['id'] if row else None
+
+        return cursor.lastrowid
     finally:
         cursor.close()
         conn.close()
@@ -70,19 +113,19 @@ def fetch_one(sql, params=None):
     """Fetches a single row as a dictionary."""
     conn, engine = get_connection()
     adapted = adapt_sql(sql, engine)
-    cursor = conn.cursor()
+    cursor = _make_cursor(conn, engine)
     try:
         if params is not None:
             cursor.execute(adapted, params)
         else:
             cursor.execute(adapted)
-        
+
         row = cursor.fetchone()
         if row is None:
             return None
         if engine == ENGINE_SQLITE:
             return dict(row)
-        return row
+        return dict(row)
     finally:
         cursor.close()
         conn.close()
@@ -92,17 +135,17 @@ def fetch_all(sql, params=None):
     """Fetches all rows as a list of dictionaries."""
     conn, engine = get_connection()
     adapted = adapt_sql(sql, engine)
-    cursor = conn.cursor()
+    cursor = _make_cursor(conn, engine)
     try:
         if params is not None:
             cursor.execute(adapted, params)
         else:
             cursor.execute(adapted)
-        
+
         rows = cursor.fetchall()
         if engine == ENGINE_SQLITE:
             return [dict(r) for r in rows]
-        return list(rows)
+        return [dict(r) for r in rows]
     finally:
         cursor.close()
         conn.close()
@@ -143,56 +186,187 @@ def create_sample_certificates():
                 f.write(minimal_pdf)
 
 
+def run_migrations():
+    """
+    Adds columns that were introduced after a database was first created.
+
+    Keeps existing SQLite/MySQL installations working after the schema gains
+    new fields, without requiring the user to recreate their database.
+    """
+    # (table, column, SQLite definition, MySQL definition, PostgreSQL definition)
+    migrations = [
+        ('students', 'email_notifications', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'match_alerts', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'weekly_digest', 'INTEGER DEFAULT 0', 'TINYINT DEFAULT 0', 'SMALLINT DEFAULT 0'),
+        ('students', 'profile_visibility', "TEXT DEFAULT 'team'", "VARCHAR(20) DEFAULT 'team'", "VARCHAR(20) DEFAULT 'team'"),
+        ('students', 'prioritise_skills', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'consider_interests', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'consider_experience', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'consider_availability', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'application_alerts', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'team_alerts', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'gap_alerts', 'INTEGER DEFAULT 1', 'TINYINT DEFAULT 1', 'SMALLINT DEFAULT 1'),
+        ('students', 'weekly_hours', 'INTEGER DEFAULT 20', 'INT DEFAULT 20', 'INT DEFAULT 20'),
+    ]
+
+    conn, engine = get_connection()
+    try:
+        cur = conn.cursor()
+        for table, column, sqlite_def, mysql_def, pg_def in migrations:
+            if engine == ENGINE_SQLITE:
+                definition = sqlite_def
+            elif engine == ENGINE_POSTGRES:
+                definition = pg_def
+            else:
+                definition = mysql_def
+
+            if engine == ENGINE_SQLITE:
+                cur.execute(f"PRAGMA table_info({table})")
+                existing = [row[1] for row in cur.fetchall()]
+            elif engine == ENGINE_POSTGRES:
+                cur.execute(
+                    "SELECT column_name FROM information_schema.columns "
+                    "WHERE table_name = %s AND column_name = %s",
+                    (table, column)
+                )
+                existing = [row['column_name'] for row in cur.fetchall()]
+            else:
+                cur.execute(f"SHOW COLUMNS FROM {table} LIKE '{column}'")
+                existing = [row[0] for row in cur.fetchall()]
+
+            if column not in existing:
+                cur.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+                print(f"[Database] Migrated: added {table}.{column}.")
+        if engine == ENGINE_SQLITE:
+            conn.commit()
+        cur.close()
+    except Exception as e:
+        print(f"[Database Notice] Migration skipped ({e}).")
+    finally:
+        conn.close()
+
+
+def ensure_demo_passwords():
+    """
+    Repairs the demo account password hashes.
+
+    A hard-coded hash stops validating when Werkzeug changes its hashing
+    parameters. When that happens the seeded demo accounts would become
+    unusable, so the hash is regenerated for the demo accounts only.
+    """
+    repaired = 0
+    for email in DEMO_EMAILS:
+        user = fetch_one(
+            "SELECT id, password_hash FROM users WHERE LOWER(email) = %s",
+            (email.lower(),)
+        )
+        if not user:
+            continue
+        stored = user['password_hash'] or ''
+        try:
+            if check_password_hash(stored, DEMO_PASSWORD):
+                continue
+        except Exception:
+            pass
+        execute_query(
+            "UPDATE users SET password_hash = %s WHERE id = %s",
+            (generate_password_hash(DEMO_PASSWORD), user['id'])
+        )
+        repaired += 1
+    if repaired:
+        print(f"[Database] Regenerated {repaired} stale demo password hash(es).")
+    return repaired
+
+
+def _run_sql_script(conn, path, skip_prefixes=()):
+    """Runs a .sql file statement by statement."""
+    with open(path, 'r', encoding='utf-8') as f:
+        for statement in f.read().split(';'):
+            stmt = statement.strip()
+            if not stmt:
+                continue
+            if any(stmt.upper().startswith(p) for p in skip_prefixes):
+                continue
+            conn.cursor().execute(stmt)
+
+
 def init_db():
     """Initializes the database schema and seeds initial data."""
     global active_engine, _mysql_conn_params
-    
-    create_sample_certificates()
-    
-    # 1. Attempt MySQL connection
-    mysql_success = False
-    try:
-        conn = pymysql.connect(
-            host=Config.MYSQL_HOST,
-            port=Config.MYSQL_PORT,
-            user=Config.MYSQL_USER,
-            password=Config.MYSQL_PASSWORD,
-            autocommit=True
-        )
-        with conn.cursor() as cur:
-            cur.execute(f"CREATE DATABASE IF NOT EXISTS `{Config.MYSQL_DATABASE}`;")
-        conn.select_db(Config.MYSQL_DATABASE)
-        
-        # Check if users table exists
-        with conn.cursor() as cur:
-            cur.execute("SHOW TABLES LIKE 'users';")
-            if not cur.fetchone():
-                # Read schema.sql and seed_data.sql
-                schema_path = os.path.join(Config.BASE_DIR, 'database', 'schema.sql')
-                seed_path = os.path.join(Config.BASE_DIR, 'database', 'seed_data.sql')
-                
-                with open(schema_path, 'r', encoding='utf-8') as f:
-                    for statement in f.read().split(';'):
-                        stmt = statement.strip()
-                        if stmt and not stmt.upper().startswith("CREATE DATABASE") and not stmt.upper().startswith("USE"):
-                            cur.execute(stmt)
-                            
-                with open(seed_path, 'r', encoding='utf-8') as f:
-                    for statement in f.read().split(';'):
-                        stmt = statement.strip()
-                        if stmt and not stmt.upper().startswith("USE"):
-                            cur.execute(stmt)
-                            
-        conn.close()
-        active_engine = ENGINE_MYSQL
-        _mysql_conn_params = True
-        mysql_success = True
-        print(f"[Database] Successfully initialized MySQL engine on database '{Config.MYSQL_DATABASE}'.")
-    except Exception as e:
-        print(f"[Database Notice] MySQL connection could not be established ({e}). Falling back to SQLite.")
 
-    # 2. If MySQL failed, initialize SQLite
-    if not mysql_success:
+    create_sample_certificates()
+
+    # 1. PostgreSQL (Render) when a DATABASE_URL is present
+    postgres_success = False
+    if Config.DATABASE_URL and PSYCOPG2_AVAILABLE:
+        try:
+            conn = psycopg2.connect(Config.DATABASE_URL)
+            conn.autocommit = True
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT table_name FROM information_schema.tables "
+                "WHERE table_schema = 'public' AND table_name = 'users'"
+            )
+            if not cur.fetchone():
+                schema_path = os.path.join(
+                    Config.BASE_DIR, 'database', 'schema_postgres.sql')
+                seed_path = os.path.join(
+                    Config.BASE_DIR, 'database', 'seed_data.sql')
+                _run_sql_script(conn, schema_path)
+                _run_sql_script(conn, seed_path, skip_prefixes=('USE ',))
+            cur.close()
+            conn.close()
+            active_engine = ENGINE_POSTGRES
+            postgres_success = True
+            print("[Database] Using PostgreSQL (DATABASE_URL).")
+        except Exception as e:
+            print(f"[Database Notice] PostgreSQL could not be reached ({e}).")
+
+    # 2. MySQL
+    mysql_success = False
+    if not postgres_success:
+        try:
+            conn = pymysql.connect(
+                host=Config.MYSQL_HOST,
+                port=Config.MYSQL_PORT,
+                user=Config.MYSQL_USER,
+                password=Config.MYSQL_PASSWORD,
+                autocommit=True
+            )
+            with conn.cursor() as cur:
+                cur.execute(f"CREATE DATABASE IF NOT EXISTS `{Config.MYSQL_DATABASE}`;")
+            conn.select_db(Config.MYSQL_DATABASE)
+
+            # Check if users table exists
+            with conn.cursor() as cur:
+                cur.execute("SHOW TABLES LIKE 'users';")
+                if not cur.fetchone():
+                    # Read schema.sql and seed_data.sql
+                    schema_path = os.path.join(Config.BASE_DIR, 'database', 'schema.sql')
+                    seed_path = os.path.join(Config.BASE_DIR, 'database', 'seed_data.sql')
+
+                    with open(schema_path, 'r', encoding='utf-8') as f:
+                        for statement in f.read().split(';'):
+                            stmt = statement.strip()
+                            if stmt and not stmt.upper().startswith("CREATE DATABASE") and not stmt.upper().startswith("USE"):
+                                cur.execute(stmt)
+
+                    with open(seed_path, 'r', encoding='utf-8') as f:
+                        for statement in f.read().split(';'):
+                            stmt = statement.strip()
+                            if stmt and not stmt.upper().startswith("USE"):
+                                cur.execute(stmt)
+
+            conn.close()
+            active_engine = ENGINE_MYSQL
+            _mysql_conn_params = True
+            mysql_success = True
+            print(f"[Database] Successfully initialized MySQL engine on database '{Config.MYSQL_DATABASE}'.")
+        except Exception as e:
+            print(f"[Database Notice] MySQL connection could not be established ({e}). Falling back to SQLite.")
+
+    # 3. If neither PostgreSQL nor MySQL worked, fall back to SQLite
+    if not postgres_success and not mysql_success:
         active_engine = ENGINE_SQLITE
         os.makedirs(os.path.dirname(Config.SQLITE_DB_PATH), exist_ok=True)
         conn = sqlite3.connect(Config.SQLITE_DB_PATH)
@@ -222,6 +396,18 @@ def init_db():
                 bio TEXT,
                 github_url TEXT DEFAULT '',
                 linkedin_url TEXT DEFAULT '',
+                email_notifications INTEGER DEFAULT 1,
+                match_alerts INTEGER DEFAULT 1,
+                weekly_digest INTEGER DEFAULT 0,
+                profile_visibility TEXT DEFAULT 'team',
+                prioritise_skills INTEGER DEFAULT 1,
+                consider_interests INTEGER DEFAULT 1,
+                consider_experience INTEGER DEFAULT 1,
+                consider_availability INTEGER DEFAULT 1,
+                application_alerts INTEGER DEFAULT 1,
+                team_alerts INTEGER DEFAULT 1,
+                gap_alerts INTEGER DEFAULT 1,
+                weekly_hours INTEGER DEFAULT 20,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             );
 
@@ -345,8 +531,9 @@ def init_db():
             """)
 
             # Seed SQLite Data
-            # Password hashes for 'password123'
-            pwd_hash = 'scrypt:32768:8:1$k1n1V7z6dI6u1V1G$7d7301c3bf1e0d37e50ebc72ad69324e9334d7d11f5feea49603e8ff6c8b939fa552ceba4a2ffea635904fc494ae6d2463e2a048a17d4a6ffc2547b311756209'
+            # Generate the demo password hash at runtime so it always matches
+            # the installed Werkzeug version (hard-coded hashes go stale).
+            pwd_hash = generate_password_hash(DEMO_PASSWORD)
             
             cur.executemany("INSERT INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [
                 (1, 'Saara Rafi', 'saara@example.com', pwd_hash, 'student'),
@@ -526,3 +713,9 @@ def init_db():
             conn.commit()
             print("[Database] Successfully initialized and seeded SQLite database at database/skillmatch.db.")
         conn.close()
+
+    # Make sure the seeded demo accounts can still be logged into.
+    ensure_demo_passwords()
+
+    # Bring existing databases up to date with the current schema.
+    run_migrations()

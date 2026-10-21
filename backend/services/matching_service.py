@@ -55,8 +55,47 @@ def get_student_profile_data(student_id):
         "skills_list": skills_rows,
         "interests": interests,
         "experiences": experiences,
-        "availability": student.get('availability', 'Part-time')
+        "availability": student.get('availability', 'Part-time'),
+        "preferences": get_matching_preferences(student)
     }
+
+
+# Default weights for the four compatibility factors.
+DEFAULT_WEIGHTS = {
+    "skill": 0.50,
+    "interest": 0.20,
+    "experience": 0.20,
+    "availability": 0.10
+}
+
+
+def get_matching_preferences(student):
+    """
+    Returns the factor weights for a student.
+
+    A student can switch individual factors off in their settings. Disabled
+    factors are dropped and the remaining weights are renormalised so the
+    total always stays at 1.0.
+    """
+    preferences = {
+        "prioritise_skills": bool(student.get('prioritise_skills', 1)),
+        "consider_interests": bool(student.get('consider_interests', 1)),
+        "consider_experience": bool(student.get('consider_experience', 1)),
+        "consider_availability": bool(student.get('consider_availability', 1)),
+    }
+
+    weights = {
+        "skill": DEFAULT_WEIGHTS["skill"] if preferences["prioritise_skills"] else 0,
+        "interest": DEFAULT_WEIGHTS["interest"] if preferences["consider_interests"] else 0,
+        "experience": DEFAULT_WEIGHTS["experience"] if preferences["consider_experience"] else 0,
+        "availability": DEFAULT_WEIGHTS["availability"] if preferences["consider_availability"] else 0,
+    }
+
+    # If every factor is switched off, fall back to the standard weights.
+    if sum(weights.values()) <= 0:
+        weights = dict(DEFAULT_WEIGHTS)
+
+    return {"weights": weights, "enabled": preferences}
 
 
 def get_project_profile_data(project_id):
@@ -125,12 +164,14 @@ def compute_match(student_id, project_id):
         project_data['required_availability']
     )
 
-    # 5. Final Weighted Match
+    # 5. Final Weighted Match (using the student's chosen factors)
+    weights = student_data.get('preferences', {}).get('weights')
     final_score = calculate_weighted_match(
         skill_score,
         interest_score,
         experience_score,
-        availability_score
+        availability_score,
+        weights=weights
     )
 
     # Enrich skill breakdown with certificate information
@@ -332,6 +373,8 @@ def get_teammate_recommendations_for_project(project_id):
             "availability": meta.get('availability'),
             "bio": meta.get('bio'),
             "matching_skills": rec['matching_skills'],
+            "gaps_filled": rec.get('gaps_filled', len(rec['matching_skills'])),
+            "total_proficiency": rec.get('total_proficiency', 0),
             "matching_skills_detailed": matching_skills_detailed
         })
 
