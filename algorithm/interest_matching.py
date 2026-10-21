@@ -11,16 +11,26 @@ def calculate_interest_match(student_interests, project_interests):
     if not project_interests:
         return 0
 
-    # Convert interests to lowercase for comparison
-    student_interests_normalized = {
-        interest.strip().lower()
-        for interest in student_interests
-    }
+    if not student_interests:
+        return 0
 
-    project_interests_normalized = {
-        interest.strip().lower()
-        for interest in project_interests
-    }
+    # Convert interests to lowercase for comparison, safely handling non-strings and empty values
+    student_interests_normalized = set()
+    for item in student_interests:
+        if item is not None:
+            cleaned = str(item).strip().lower()
+            if cleaned:
+                student_interests_normalized.add(cleaned)
+
+    project_interests_normalized = set()
+    for item in project_interests:
+        if item is not None:
+            cleaned = str(item).strip().lower()
+            if cleaned:
+                project_interests_normalized.add(cleaned)
+
+    if not project_interests_normalized:
+        return 0
 
     # Find common interests
     matching_interests = (
@@ -32,7 +42,9 @@ def calculate_interest_match(student_interests, project_interests):
     interest_score = (
         len(matching_interests)
         / len(project_interests_normalized)
-    ) * 100
+    ) * 100.0
+
+    interest_score = max(0.0, min(100.0, interest_score))
 
     return round(interest_score, 2)
 

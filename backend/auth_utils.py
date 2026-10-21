@@ -142,3 +142,62 @@ def faculty_required(view_function):
         return view_function(*args, **kwargs)
 
     return wrapped_view
+
+
+def authorize_certificate_access(filename):
+    """
+    Validates whether the current requester has authorization to access
+    a specific certificate file.
+    
+    Access policy:
+    1. Unauthenticated requests are rejected (401).
+    2. Path traversal or malformed names are rejected (400).
+    3. The owner student can view/download their own certificate (200).
+    4. An administrator can view all certificates (200).
+    5. A faculty member can view certificates of students who applied
+       to that faculty member's projects (200).
+    6. All other requests are denied (403).
+    """
+    from werkzeug.utils import secure_filename
+    from backend.config import Config
+
+    user_id = get_current_user_id()
+    if not user_id:
+        return False, (jsonify({"success": False, "message": "Authentication required."}), 401)
+
+    clean_name = secure_filename(filename)
+    if not clean_name or clean_name != filename:
+        return False, (jsonify({"success": False, "message": "Invalid filename or path traversal detected."}), 400)
+
+    # Check if certificate exists in database
+    cert_row = fetch_one(
+        "SELECT student_id FROM student_skills WHERE certificate_filename = %s",
+        (clean_name,)
+    )
+
+    if not cert_row:
+        # Check if it's a valid demo sample file when demo data is enabled
+        if Config.SEED_DEMO_DATA and clean_name.startswith("cert_"):
+            return True, clean_name
+        return False, (jsonify({"success": False, "message": "Certificate record not found."}), 404)
+
+    # Student accessing their own certificate
+    cur_student_id = get_current_student_id()
+    if cur_student_id and cert_row['student_id'] == cur_student_id:
+        return True, clean_name
+
+    # Administrators have full access
+    if is_admin():
+        return True, clean_name
+
+    # Faculty members who own a project the student applied to
+    if is_faculty():
+        app_exists = fetch_one("""
+            SELECT 1 FROM applications a
+            JOIN projects p ON a.project_id = p.id
+            WHERE a.student_id = %s AND p.faculty_id = %s
+        """, (cert_row['student_id'], user_id))
+        if app_exists:
+            return True, clean_name
+
+    return False, (jsonify({"success": False, "message": "You are not authorized to view this certificate."}), 403)

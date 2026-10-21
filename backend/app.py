@@ -10,6 +10,8 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 from backend.config import Config
 from backend.database import init_db
+from backend.csrf import check_csrf, get_or_create_csrf_token
+from backend.auth_utils import authorize_certificate_access
 
 # Import route blueprints
 from backend.routes.auth_routes import auth_bp
@@ -32,8 +34,15 @@ def create_app():
     app.config['SESSION_COOKIE_SAMESITE'] = Config.SESSION_COOKIE_SAMESITE
     app.config['SESSION_COOKIE_SECURE'] = Config.SESSION_COOKIE_SECURE
 
-    # Enable Cross-Origin Resource Sharing
-    CORS(app, supports_credentials=True)
+    # Enable Cross-Origin Resource Sharing with explicit trusted origins
+    CORS(app, origins=Config.CORS_ALLOWED_ORIGINS, supports_credentials=True)
+
+    # CSRF Protection Hook on state-changing requests
+    @app.before_request
+    def enforce_csrf():
+        csrf_err = check_csrf()
+        if csrf_err is not None:
+            return csrf_err
 
     # Initialize Database on startup
     with app.app_context():
@@ -48,10 +57,21 @@ def create_app():
     app.register_blueprint(notification_bp, url_prefix='/api/notifications')
     app.register_blueprint(faculty_bp, url_prefix='/api/faculty')
 
-    # Direct certificate serving route
+    # Endpoint to retrieve fresh CSRF token
+    @app.route('/api/auth/csrf-token', methods=['GET'])
+    def get_csrf_token_endpoint():
+        token = get_or_create_csrf_token()
+        return jsonify({"success": True, "csrf_token": token})
+
+    # Secured certificate serving route with IDOR & authorization enforcement
     @app.route('/api/certificates/<filename>', methods=['GET'])
     def get_certificate(filename):
-        return send_from_directory(Config.UPLOAD_FOLDER, filename)
+        is_authorized, result = authorize_certificate_access(filename)
+        if not is_authorized:
+            response_tuple = result
+            return response_tuple
+        clean_filename = result
+        return send_from_directory(Config.UPLOAD_FOLDER, clean_filename)
 
     # Health check
     @app.route('/api/health', methods=['GET'])
@@ -63,24 +83,27 @@ def create_app():
         })
 
     @app.after_request
-    def keep_pages_fresh(response):
+    def set_headers_and_csrf(response):
         """
-        HTML pages must always be the current version.
+        Sets freshness headers, sets readable CSRF cookie for client JS,
+        and secures browser caching behavior.
+        """
+        # Expose CSRF token in a cookie readable by client JavaScript
+        token = get_or_create_csrf_token()
+        response.set_cookie(
+            'csrf_token',
+            token,
+            secure=Config.SESSION_COOKIE_SECURE,
+            httponly=False,
+            samesite=Config.SESSION_COOKIE_SAMESITE,
+            path='/'
+        )
 
-        The stylesheets and scripts carry a version in their file name, so
-        they can be cached. The pages themselves cannot: a browser that
-        kept an old page would be looking for elements the current
-        JavaScript no longer finds.
-        """
         if response.mimetype == 'text/html':
             response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
-        elif response.mimetype in ('text/css', 'application/javascript',
-                                    'text/javascript'):
-            # The stylesheets and scripts carry a version in their file
-            # name, so the browser can keep them until a new version
-            # ships.
+        elif response.mimetype in ('text/css', 'application/javascript', 'text/javascript'):
             response.headers['Cache-Control'] = 'public, max-age=3600'
         return response
 
@@ -124,8 +147,10 @@ app = create_app()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_DEBUG', '0') == '1'
     print(f"\n=======================================================")
     print(f"  STUDENT SKILL AND PROJECT MATCHING SYSTEM")
     print(f"  Server starting at: http://127.0.0.1:{port}")
+    print(f"  Debug mode: {'ON' if debug else 'OFF'}")
     print(f"=======================================================\n")
-    app.run(host='127.0.0.1', port=port, debug=True)
+    app.run(host='127.0.0.1', port=port, debug=debug)

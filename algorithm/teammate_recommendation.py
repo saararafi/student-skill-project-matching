@@ -29,40 +29,72 @@ def recommend_teammates(
 
     recommendations = []
 
-    # Get the skills required to fill the gaps
-    required_skills = set(skill_gaps.keys())
+    if not isinstance(students, dict) or not students:
+        return recommendations
+
+    if not isinstance(skill_gaps, dict) or not skill_gaps:
+        return recommendations
+
+    if not current_team:
+        current_team = []
+
+    team_set = {str(x).strip().lower() for x in current_team if x is not None}
+
+    # Map normalized skill name -> (original_skill, required_level)
+    normalized_gaps = {}
+    for skill, gap_info in skill_gaps.items():
+        if skill is None:
+            continue
+        req_lvl = 1.0
+        if isinstance(gap_info, dict):
+            try:
+                req_lvl = float(gap_info.get('required_level', 1))
+            except (TypeError, ValueError):
+                req_lvl = 1.0
+        normalized_gaps[str(skill).strip().lower()] = (str(skill), req_lvl)
 
     # Check every student
     for student_name, student_skills in students.items():
+        if student_name is None:
+            continue
 
         # Do not recommend students already in the team
-        if student_name in current_team:
+        if str(student_name).strip().lower() in team_set or student_name in current_team:
+            continue
+
+        if not isinstance(student_skills, dict):
             continue
 
         # Find skills that match the gaps at a sufficient proficiency
         matching_skills = []
-        total_level = 0
+        total_level = 0.0
 
         for skill, level in student_skills.items():
-
-            if skill not in required_skills:
+            if skill is None:
+                continue
+            norm_k = str(skill).strip().lower()
+            if norm_k not in normalized_gaps:
                 continue
 
-            required_level = skill_gaps[skill].get('required_level', 1)
+            orig_skill_name, required_level = normalized_gaps[norm_k]
+
+            try:
+                stu_lvl = float(level)
+            except (TypeError, ValueError):
+                stu_lvl = 0.0
 
             # The student's proficiency must meet the required level
-            if level >= required_level:
-                matching_skills.append(skill)
-                total_level += level
+            if stu_lvl >= required_level:
+                matching_skills.append(orig_skill_name)
+                total_level += stu_lvl
 
         # If the student has useful skills, recommend them
         if matching_skills:
-
             recommendations.append({
                 "name": student_name,
                 "matching_skills": matching_skills,
                 "gaps_filled": len(matching_skills),
-                "total_proficiency": total_level
+                "total_proficiency": round(total_level, 2)
             })
 
     # Best candidates first: most gaps closed, then strongest proficiency

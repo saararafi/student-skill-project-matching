@@ -149,6 +149,7 @@ class PostgresPathTestCase(unittest.TestCase):
             'url': db.Config.DATABASE_URL,
             'engine': db.active_engine,
             'params': db._mysql_conn_params,
+            'seed_demo': db.Config.SEED_DEMO_DATA,
         }
 
         db.psycopg2 = self.fake
@@ -156,6 +157,7 @@ class PostgresPathTestCase(unittest.TestCase):
         db.Config.DATABASE_URL = 'postgresql://user:pass@host:5432/skillmatch'
         db.active_engine = db.ENGINE_POSTGRES
         db._mysql_conn_params = None
+        db.Config.SEED_DEMO_DATA = True
 
     def tearDown(self):
         db.psycopg2 = self._saved['psycopg2']
@@ -163,6 +165,7 @@ class PostgresPathTestCase(unittest.TestCase):
         db.Config.DATABASE_URL = self._saved['url']
         db.active_engine = self._saved['engine']
         db._mysql_conn_params = self._saved['params']
+        db.Config.SEED_DEMO_DATA = self._saved['seed_demo']
 
     def statements(self):
         """Every statement across every connection the code opened."""

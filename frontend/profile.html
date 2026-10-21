@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Growth | SkillMatch</title>
+    <title>Student Profile | SkillMatch</title>
 
     <link rel="stylesheet" href="css/style.css?v=3">
     <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
@@ -19,17 +19,15 @@
     >
 </head>
 
-<body class="app-body">
+<body class="app-body" data-page="profile">
 
 <div class="app-layout">
-
-<div class="app-container">
 
     <!-- =====================================================
          SIDEBAR
          ===================================================== -->
 
-        <aside class="sidebar">
+    <aside class="sidebar">
 
         <div class="sidebar-logo">
             ❧ Skill<span>Match</span>
@@ -46,7 +44,7 @@
                 My Garden
             </a>
 
-            <a href="profile.html" class="active">
+            <a href="growth.html">
                 <span class="nav-icon">✳</span>
                 My Growth
             </a>
@@ -86,7 +84,7 @@
 
         <nav class="sidebar-nav">
 
-            <a href="profile.html">
+            <a href="profile.html" class="active">
                 <span class="nav-icon">◉</span>
                 Profile
             </a>
@@ -138,16 +136,15 @@
             <div>
 
                 <span class="eyebrow">
-                    MY GROWTH
+                    STUDENT PROFILE
                 </span>
 
                 <h1>
-                    Your garden is growing.
+                    Academic Profile &amp; Identity
                 </h1>
 
                 <p class="header-subtitle">
-                    Everything you've learned, explored and built
-                    becomes part of your professional garden.
+                    Manage your personal details, academic background, bio, and professional links.
                 </p>
 
             </div>
@@ -171,29 +168,29 @@
 
             <div class="profile-intro">
 
-                <div class="profile-avatar">
-                    SR
+                <div class="profile-avatar" data-profile-avatar>
+                    ?
                 </div>
 
                 <div class="profile-intro-content">
 
                     <span class="botanical-badge">
-                        🌱 Growing Student
+                        🌱 Student
                     </span>
 
-                    <h2 data-profile-display="name"></h2>
+                    <h2 data-profile-display="name">Student</h2>
 
                     <p data-profile-display="department">
-                        Computer Science Engineering
+                        —
                     </p>
 
                     <p class="muted-text">
                         <span data-profile-display="year">
-                            2nd Year
+                            —
                         </span>
                         ·
                         <span data-profile-display="semester">
-                            5th Semester
+                            —
                         </span>
                     </p>
 
@@ -210,8 +207,8 @@
                         Profile Completeness
                     </span>
 
-                    <strong>
-                        82%
+                    <strong data-profile-completeness-text>
+                        0%
                     </strong>
 
                 </div>
@@ -220,14 +217,14 @@
 
                     <div
                         class="match-component-fill"
-                        style="width: 82%;"
+                        data-profile-completeness
+                        style="width: 0%;"
                     ></div>
 
                 </div>
 
                 <p class="muted-text">
-                    Add more previous work and availability
-                    details to improve your project matching.
+                    Add certificates and project experience in My Growth to maximize your compatibility scores.
                 </p>
 
             </div>
@@ -246,7 +243,7 @@
                 <span>❧</span>
 
                 <div>
-                    <small>ABOUT THE GARDENER</small>
+                    <small>ABOUT THE STUDENT</small>
                     <h2>About Me</h2>
                 </div>
 
@@ -256,18 +253,14 @@
                 class="profile-bio"
                 data-profile-display="bio"
             >
-                CSE student interested in algorithms, web
-                development, cybersecurity and artificial
-                intelligence. Currently working on building
-                practical technical skills through academic
-                projects and collaborative development.
+                No bio added yet. Click Edit Profile to add your bio.
             </p>
 
         </section>
 
 
         <!-- =================================================
-             BASIC INFORMATION
+             BASIC INFORMATION & ACADEMIC DETAILS
              ================================================= -->
 
         <section class="garden-card">
@@ -277,8 +270,8 @@
                 <span>🌿</span>
 
                 <div>
-                    <small>YOUR ROOTS</small>
-                    <h2>Basic Information</h2>
+                    <small>ACADEMIC ROOTS</small>
+                    <h2>Academic &amp; Contact Details</h2>
                 </div>
 
             </div>
@@ -289,12 +282,28 @@
                 <div class="settings-field">
 
                     <label>
-                        Name
+                        Full Name
                     </label>
 
                     <p
                         class="profile-info-value"
                         data-profile-display="name"
+                    >
+                        
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Email Address
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="email"
                     >
                         
                     </p>
@@ -312,7 +321,7 @@
                         class="profile-info-value"
                         data-profile-display="department"
                     >
-                        Computer Science Engineering
+                        —
                     </p>
 
                 </div>
@@ -328,7 +337,7 @@
                         class="profile-info-value"
                         data-profile-display="year"
                     >
-                        2nd Year
+                        —
                     </p>
 
                 </div>
@@ -337,14 +346,62 @@
                 <div class="settings-field">
 
                     <label>
-                        Semester
+                        Current Semester
                     </label>
 
                     <p
                         class="profile-info-value"
                         data-profile-display="semester"
                     >
-                        5th Semester
+                        —
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        Project Availability
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="availability"
+                    >
+                        —
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        GitHub Profile
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="github"
+                    >
+                        Not provided
+                    </p>
+
+                </div>
+
+
+                <div class="settings-field">
+
+                    <label>
+                        LinkedIn Profile
+                    </label>
+
+                    <p
+                        class="profile-info-value"
+                        data-profile-display="linkedin"
+                    >
+                        Not provided
                     </p>
 
                 </div>
@@ -355,247 +412,30 @@
 
 
         <!-- =================================================
-             SKILL GARDEN
-             ================================================= -->
-
-        <section class="garden-card">
-
-            <div class="garden-section-title">
-
-                <span>🌸</span>
-
-                <div>
-                    <small>YOUR SKILL GARDEN</small>
-                    <h2>Technical Skills</h2>
-                </div>
-
-            </div>
-
-
-            
-
-                    <div class="skill-plants" id="skillPlantsContainer">
-            </div>
-
-            <form class="inline-add-form" id="addSkillForm">
-                <div class="input-group">
-                    <label>Add a skill</label>
-                    <div class="input-wrapper">
-                        <span>🌱</span>
-                        <input type="text" id="newSkillName" placeholder="e.g. React" maxlength="100" required>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Proficiency</label>
-                    <div class="input-wrapper">
-                        <span>✦</span>
-                        <select id="newSkillLevel">
-                            <option value="1">1 - Beginner</option>
-                            <option value="2">2 - Basic</option>
-                            <option value="3" selected>3 - Intermediate</option>
-                            <option value="4">4 - Advanced</option>
-                            <option value="5">5 - Expert</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="garden-button">Add Skill ✿</button>
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             INTERESTS
-             ================================================= -->
-
-        <section class="garden-card">
-
-            <div class="garden-section-title">
-
-                <span>🌼</span>
-
-                <div>
-                    <small>WHAT DRAWS YOUR ATTENTION</small>
-                    <h2>Interests</h2>
-                </div>
-
-            </div>
-
-
-            
-
-                    <div class="settings-chip-group" id="profileInterests">
-            </div>
-
-            <form class="inline-add-form" id="addInterestForm">
-                <div class="input-group">
-                    <label>Add an interest</label>
-                    <div class="input-wrapper">
-                        <span>🌼</span>
-                        <input type="text" id="newInterestName" placeholder="e.g. Artificial Intelligence" maxlength="100" required>
-                    </div>
-                </div>
-                <button type="submit" class="garden-button">Add Interest ✿</button>
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             PREFERRED DOMAINS
-             ================================================= -->
-
-        <section class="garden-card">
-
-            <div class="garden-section-title">
-
-                <span>🌱</span>
-
-                <div>
-                    <small>WHERE YOU WANT TO GROW</small>
-                    <h2>Preferred Domains</h2>
-                </div>
-
-            </div>
-
-
-            <div class="settings-chip-group">
-
-                <div class="settings-chip selected">
-                    <span>Artificial Intelligence</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Web Applications</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Cybersecurity</span>
-                </div>
-
-                <div class="settings-chip selected">
-                    <span>Education Technology</span>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             PREVIOUS WORK
-             ================================================= -->
-
-        <section class="garden-card">
-
-            <div class="garden-section-title">
-
-                <span>🌳</span>
-
-                <div>
-                    <small>WHAT YOU HAVE GROWN</small>
-                    <h2>Previous Work</h2>
-                </div>
-
-            </div>
-
-
-            
-
-                    <div class="growth-timeline" id="profileExperiences">
-            </div>
-
-            <form class="inline-add-form" id="addExperienceForm">
-                <div class="input-group">
-                    <label>Add previous work</label>
-                    <div class="input-wrapper">
-                        <span>🌳</span>
-                        <input type="text" id="newExperienceTitle" placeholder="e.g. Web Development" maxlength="150" required>
-                    </div>
-                </div>
-                <button type="submit" class="garden-button">Add Experience ✿</button>
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             AVAILABILITY
-             ================================================= -->
-
-        <section class="garden-card">
-
-            <div class="garden-section-title">
-
-                <span>💧</span>
-
-                <div>
-                    <small>HOW MUCH YOU CAN GROW</small>
-                    <h2>Availability</h2>
-                </div>
-
-            </div>
-
-
-
-                    <div class="capacity-card">
-                <div>
-                    <span class="capacity-label">WEEKLY CAPACITY</span>
-                    <h3><span data-weekly-hours>20</span> hours / week</h3>
-                    <p class="muted-text">How much time you can offer each week.</p>
-                </div>
-                <div class="capacity-ring" data-capacity-ring style="--capacity:50;">
-                    <div class="capacity-ring-inner" data-capacity-value>50%</div>
-                </div>
-            </div>
-
-            <form class="inline-add-form" id="availabilityForm">
-                <div class="input-group">
-                    <label>Availability</label>
-                    <div class="input-wrapper">
-                        <span>◷</span>
-                        <select id="availabilitySelect">
-                            <option value="Full-time">Full-time</option>
-                            <option value="Part-time">Part-time</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Weekly hours</label>
-                    <div class="input-wrapper">
-                        <span>◷</span>
-                        <input type="range" id="weeklyHoursSlider" min="0" max="40" value="20" class="availability-slider">
-                    </div>
-                </div>
-                <button type="submit" class="garden-button">Update ✿</button>
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             MATCHING NOTE
+             GROWTH SHORTCUT CARD
              ================================================= -->
 
         <section class="garden-card watering-card">
 
             <div class="watering-icon">
-                🌿
+                🌸
             </div>
 
             <div>
 
                 <h3>
-                    Keep your garden growing
+                    Technical Skills &amp; Growth Portfolio
                 </h3>
 
                 <p>
-                    Your profile information helps the matching
-                    system understand your skills, interests,
-                    experience and availability. Keeping it
-                    updated will allow the system to recommend
-                    more relevant projects and teammates.
+                    Manage your 1–5 technical skill ratings, upload verified coursework certifications, customize domain interests, and record previous work.
                 </p>
+
+                <div style="margin-top: 15px;">
+                    <a href="growth.html" class="garden-button">
+                        Open My Growth →
+                    </a>
+                </div>
 
             </div>
 
@@ -609,6 +449,7 @@
         <section
             class="garden-card profile-edit-panel"
             id="profileEditPanel"
+            hidden
         >
 
             <div class="garden-section-title">
@@ -618,7 +459,7 @@
                 <div>
 
                     <small>
-                        TEND YOUR PROFILE
+                        UPDATE DETAILS
                     </small>
 
                     <h2>
@@ -639,10 +480,10 @@
                     <div class="settings-field">
 
                         <label for="profileName">
-                            Name
+                            Full Name
                         </label>
 
-                        <input type="text" id="profileName" data-profile-field="name" placeholder="Your full name">
+                        <input type="text" id="profileName" data-profile-field="name" placeholder="Your full name" required>
 
                     </div>
 
@@ -659,7 +500,7 @@
                             type="text"
                             id="profileDepartment"
                             data-profile-field="department"
-                            value="Computer Science Engineering"
+                            placeholder="e.g. Computer Science Engineering"
                         >
 
                     </div>
@@ -677,7 +518,7 @@
                             type="text"
                             id="profileYear"
                             data-profile-field="year"
-                            value="2nd Year"
+                            placeholder="e.g. 3rd Year"
                         >
 
                     </div>
@@ -695,7 +536,43 @@
                             type="text"
                             id="profileSemester"
                             data-profile-field="semester"
-                            value="5th Semester"
+                            placeholder="e.g. 5th Semester"
+                        >
+
+                    </div>
+
+
+                    <!-- GITHUB -->
+
+                    <div class="settings-field">
+
+                        <label for="profileGithub">
+                            GitHub URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="profileGithub"
+                            data-profile-field="github_url"
+                            placeholder="https://github.com/username"
+                        >
+
+                    </div>
+
+
+                    <!-- LINKEDIN -->
+
+                    <div class="settings-field">
+
+                        <label for="profileLinkedin">
+                            LinkedIn URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="profileLinkedin"
+                            data-profile-field="linkedin_url"
+                            placeholder="https://linkedin.com/in/username"
                         >
 
                     </div>
@@ -717,8 +594,9 @@
                     <textarea
                         id="profileBio"
                         data-profile-field="bio"
-                        rows="5"
-                    >CSE student interested in algorithms, web development, cybersecurity and artificial intelligence. Currently working on building practical technical skills through academic projects and collaborative development.</textarea>
+                        rows="4"
+                        placeholder="Tell faculty and teammates about your interests, passions and background..."
+                    ></textarea>
 
                 </div>
 
@@ -751,40 +629,6 @@
 
 
         <!-- =================================================
-             CERTIFICATE UPLOAD MODAL
-             ================================================= -->
-        <div class="cert-modal-overlay" id="certModalOverlay">
-            <div class="cert-modal">
-                <div class="cert-modal-header">
-                    <h3>📜 Skill Certificate Verification</h3>
-                    <button type="button" class="cert-close-btn" id="closeCertModal">&times;</button>
-                </div>
-                <form id="certUploadForm">
-                    <input type="hidden" id="certSkillId" name="skill_id">
-                    <input type="hidden" id="certSkillName" name="skill_name">
-                    <p style="margin: 0 0 10px; font-size: 0.95rem; color: #444;">
-                        Upload an official certificate or coursework proof for <strong id="certModalSkillTitle" style="color: #26351b;"></strong>:
-                    </p>
-                    <div class="cert-file-drop" id="certDropZone" onclick="document.getElementById('certFileInput').click()">
-                        <span style="font-size: 2rem; display: block; margin-bottom: 6px;">📂</span>
-                        <span>Click or drag & drop certificate here</span>
-                        <small style="display: block; color: #777; margin-top: 4px;">PDF, PNG, JPG or JPEG (Max 16 MB)</small>
-                        <input type="file" id="certFileInput" name="certificate" accept=".pdf,.png,.jpg,.jpeg">
-                        <div class="cert-file-chosen-text" id="certChosenText">No file selected yet</div>
-                    </div>
-                    <div class="settings-actions" style="margin-top: 20px;">
-                        <button type="submit" class="garden-button" id="submitCertBtn">
-                            🌿 Upload & Request Verification
-                        </button>
-                        <button type="button" class="garden-button secondary" id="cancelCertBtn">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- =================================================
              FOOTER
              ================================================= -->
 
@@ -792,9 +636,7 @@
             SKILLMATCH · GROW WHERE YOU BELONG
         </footer>
 
-        </main>
-
-</div>
+    </main>
 
 </div>
 

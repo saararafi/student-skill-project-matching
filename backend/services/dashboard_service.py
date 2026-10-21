@@ -82,21 +82,43 @@ def get_dashboard(student_id):
         LIMIT 4
     """, (student['user_id'],))
 
-    # --- Profile health -------------------------------------------------
-    completeness = 40  # base
-    if student.get('bio'):
+    # --- Profile health (0% base, based purely on real fields) ----------
+    completeness = 0
+    dept = (student.get('department') or '').strip()
+    if dept and dept.lower() not in ('', 'general'):
         completeness += 10
-    if len(skills) >= 4:
+
+    year = (student.get('year') or '').strip()
+    sem = (student.get('semester') or '').strip()
+    if year and sem:
+        completeness += 10
+
+    bio = (student.get('bio') or '').strip()
+    if bio and bio.lower() not in ('', 'new student profile.'):
+        completeness += 10
+
+    gh = (student.get('github_url') or '').strip()
+    li = (student.get('linkedin_url') or '').strip()
+    if gh or li:
+        completeness += 10
+
+    if len(skills) >= 3:
         completeness += 20
-    elif len(skills) >= 2:
+    elif len(skills) >= 1:
         completeness += 10
+
     if len(interests) >= 2:
+        completeness += 15
+    elif len(interests) >= 1:
         completeness += 10
-    if len(experiences) >= 2:
+
+    if len(experiences) >= 1:
         completeness += 10
+
     if any(s.get('certificate_filename') for s in skills):
-        completeness += 10
-    completeness = min(completeness, 100)
+        completeness += 15
+
+    completeness = max(0, min(100, completeness))
 
     return {
         "profile": {

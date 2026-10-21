@@ -6,9 +6,13 @@ Works both as a local development server:
 
     python run.py
 
-and as a production entry point on Render.com:
+and as a production entry point on WSGI servers (Gunicorn, Waitress, Render):
 
-    gunicorn run:app
+    gunicorn -w 4 -b 0.0.0.0:5000 "backend.app:app"
+
+For development with hot-reload and debugging, explicitly set FLASK_DEBUG=1:
+
+    $env:FLASK_DEBUG="1"; python run.py
 """
 
 import sys
@@ -21,10 +25,12 @@ from backend.app import app
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_DEBUG', '1') == '1'
+    # Debug mode is explicitly OFF by default for security
+    debug = os.environ.get('FLASK_DEBUG', '0') == '1'
     print("\n" + "=" * 65)
     print("  STUDENT SKILL AND PROJECT MATCHING SYSTEM")
-    print("  Web Application running at: http://127.0.0.1:" + str(port))
+    print(f"  Web Application running at: http://127.0.0.1:{port}")
+    print(f"  Debug mode: {'ON (Development only)' if debug else 'OFF (Secure default)'}")
     print("  Press Ctrl+C to terminate.")
     print("=" * 65 + "\n")
     app.run(host='0.0.0.0', port=port, debug=debug)

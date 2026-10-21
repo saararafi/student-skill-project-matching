@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Growth | SkillMatch</title>
+
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
+    <link rel="stylesheet" href="css/design-system.css?v=3">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="app-body" data-page="growth">
+
+<div class="app-layout">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            ❧ Skill<span>Match</span>
+        </div>
+
+        <div class="sidebar-caption">
+            MY GARDEN
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span class="nav-icon">❧</span>
+                My Garden
+            </a>
+
+            <a href="growth.html" class="active">
+                <span class="nav-icon">✳</span>
+                My Growth
+            </a>
+
+            <a href="projects.html">
+                <span class="nav-icon">🌿</span>
+                Projects in Bloom
+            </a>
+
+            <a href="team.html">
+                <span class="nav-icon">🌳</span>
+                Garden Team
+            </a>
+
+            <a href="gaps.html">
+                <span class="nav-icon">🌾</span>
+                What Needs Watering?
+            </a>
+
+            <a href="applications.html">
+                <span class="nav-icon">✉</span>
+                Applications
+            </a>
+
+            <a href="notifications.html">
+                <span class="nav-icon">♣</span>
+                Notifications
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-caption sidebar-caption-bottom">
+            ACCOUNT
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="profile.html">
+                <span class="nav-icon">◉</span>
+                Profile
+            </a>
+
+            <a href="settings.html">
+                <span class="nav-icon">⚙</span>
+                Settings
+            </a>
+
+            <a href="#" data-logout>
+                <span class="nav-icon">↪</span>
+                Leave Garden
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="app-main">
+
+        <!-- Mobile Header -->
+
+        <div class="mobile-header">
+
+            <button
+                class="mobile-menu-button"
+                type="button"
+                aria-label="Open menu"
+            >
+                ☰
+            </button>
+
+            <span>SkillMatch</span>
+
+        </div>
+
+
+        <!-- =================================================
+             PAGE HEADER
+             ================================================= -->
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    MY GROWTH &amp; SKILL PORTFOLIO
+                </span>
+
+                <h1>
+                    Technical Skills &amp; Growth
+                </h1>
+
+                <p class="header-subtitle">
+                    Manage your claimed technical skills, verify certifications, specify your interests, and track previous project experiences.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             SKILL GARDEN
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌸</span>
+
+                <div>
+                    <small>YOUR SKILL GARDEN</small>
+                    <h2>Technical Skills &amp; Certifications</h2>
+                </div>
+
+            </div>
+
+            <p class="muted-text" style="margin-bottom: 20px;">
+                Each skill is rated on a 1–5 proficiency scale. Upload certificates (PDF/PNG/JPG) to earn verified status from faculty guides.
+            </p>
+
+            <div class="skill-plants" id="skillPlantsContainer">
+            </div>
+
+            <form class="inline-add-form" id="addSkillForm">
+                <div class="input-group">
+                    <label>Add a skill</label>
+                    <div class="input-wrapper">
+                        <span>🌱</span>
+                        <input type="text" id="newSkillName" placeholder="e.g. React" maxlength="100" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Proficiency</label>
+                    <div class="input-wrapper">
+                        <span>✦</span>
+                        <select id="newSkillLevel">
+                            <option value="1">1 - Beginner</option>
+                            <option value="2">2 - Basic</option>
+                            <option value="3" selected>3 - Intermediate</option>
+                            <option value="4">4 - Advanced</option>
+                            <option value="5">5 - Expert</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Add Skill ✿</button>
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             INTERESTS
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌼</span>
+
+                <div>
+                    <small>WHAT DRAWS YOUR ATTENTION</small>
+                    <h2>Domain Interests</h2>
+                </div>
+
+            </div>
+
+            <p class="muted-text" style="margin-bottom: 15px;">
+                Interests directly inform the 20% interest-compatibility factor of the project recommendation engine.
+            </p>
+
+            <div class="settings-chip-group" id="profileInterests">
+            </div>
+
+            <form class="inline-add-form" id="addInterestForm">
+                <div class="input-group">
+                    <label>Add an interest</label>
+                    <div class="input-wrapper">
+                        <span>🌼</span>
+                        <input type="text" id="newInterestName" placeholder="e.g. Artificial Intelligence" maxlength="100" required>
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Add Interest ✿</button>
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             PREVIOUS WORK
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>🌳</span>
+
+                <div>
+                    <small>WHAT YOU HAVE GROWN</small>
+                    <h2>Previous Work &amp; Project Experience</h2>
+                </div>
+
+            </div>
+
+            <p class="muted-text" style="margin-bottom: 15px;">
+                Prior experiences feed into the 20% experience-compatibility factor of the matching algorithm.
+            </p>
+
+            <div class="growth-timeline" id="profileExperiences">
+            </div>
+
+            <form class="inline-add-form" id="addExperienceForm">
+                <div class="input-group">
+                    <label>Add previous work</label>
+                    <div class="input-wrapper">
+                        <span>🌳</span>
+                        <input type="text" id="newExperienceTitle" placeholder="e.g. Web Development" maxlength="150" required>
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Add Experience ✿</button>
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             AVAILABILITY
+             ================================================= -->
+
+        <section class="garden-card">
+
+            <div class="garden-section-title">
+
+                <span>💧</span>
+
+                <div>
+                    <small>HOW MUCH YOU CAN GROW</small>
+                    <h2>Availability &amp; Commitment</h2>
+                </div>
+
+            </div>
+
+            <div class="capacity-card">
+                <div>
+                    <span class="capacity-label">WEEKLY CAPACITY</span>
+                    <h3><span data-weekly-hours>0</span> hours / week</h3>
+                    <p class="muted-text">How much time you can offer each week.</p>
+                </div>
+                <div class="capacity-ring" data-capacity-ring style="--capacity:0;">
+                    <div class="capacity-ring-inner" data-capacity-value>0%</div>
+                </div>
+            </div>
+
+            <form class="inline-add-form" id="availabilityForm">
+                <div class="input-group">
+                    <label>Availability</label>
+                    <div class="input-wrapper">
+                        <span>◷</span>
+                        <select id="availabilitySelect">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time" selected>Part-time</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Weekly hours</label>
+                    <div class="input-wrapper">
+                        <span>◷</span>
+                        <input type="range" id="weeklyHoursSlider" min="0" max="40" value="0" class="availability-slider">
+                    </div>
+                </div>
+                <button type="submit" class="garden-button">Update ✿</button>
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             MATCHING NOTE
+             ================================================= -->
+
+        <section class="garden-card watering-card">
+
+            <div class="watering-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <h3>
+                    Keep your growth updated
+                </h3>
+
+                <p>
+                    Every verified skill certificate and recorded project experience improves your weighted compatibility score and places you higher in teammate discovery.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CERTIFICATE UPLOAD MODAL
+             ================================================= -->
+        <div class="cert-modal-overlay" id="certModalOverlay">
+            <div class="cert-modal">
+                <div class="cert-modal-header">
+                    <h3>📜 Skill Certificate Verification</h3>
+                    <button type="button" class="cert-close-btn" id="closeCertModal">&times;</button>
+                </div>
+                <form id="certUploadForm">
+                    <input type="hidden" id="certSkillId" name="skill_id">
+                    <input type="hidden" id="certSkillName" name="skill_name">
+                    <p style="margin: 0 0 10px; font-size: 0.95rem; color: #444;">
+                        Upload an official certificate or coursework proof for <strong id="certModalSkillTitle" style="color: #26351b;"></strong>:
+                    </p>
+                    <div class="cert-file-drop" id="certDropZone" onclick="document.getElementById('certFileInput').click()">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 6px;">📂</span>
+                        <span>Click or drag &amp; drop certificate here</span>
+                        <small style="display: block; color: #777; margin-top: 4px;">PDF, PNG, JPG or JPEG (Max 16 MB)</small>
+                        <input type="file" id="certFileInput" name="certificate" accept=".pdf,.png,.jpg,.jpeg">
+                        <div class="cert-file-chosen-text" id="certChosenText">No file selected yet</div>
+                    </div>
+                    <div class="settings-actions" style="margin-top: 20px;">
+                        <button type="submit" class="garden-button" id="submitCertBtn">
+                            🌿 Upload &amp; Request Verification
+                        </button>
+                        <button type="button" class="garden-button secondary" id="cancelCertBtn">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <footer class="app-footer">
+            SKILLMATCH · GROW WHERE YOU BELONG
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script src="js/main.js?v=3"></script>
+<script src="js/live.js?v=3"></script>
+
+</body>
+</html>

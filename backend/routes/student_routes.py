@@ -10,6 +10,9 @@ from backend.auth_utils import (
     get_current_student_id,
     login_required,
     faculty_required,
+    is_faculty,
+    is_admin,
+    authorize_certificate_access,
 )
 
 student_bp = Blueprint('student', __name__)
@@ -37,22 +40,64 @@ def require_signed_in_user():
 
 @student_bp.route('/profile', methods=['GET'])
 def get_profile():
-    student_id = request.args.get('student_id', type=int) or get_current_student_id()
+    cur_student_id = get_current_student_id()
+    requested_id = request.args.get('student_id', type=int)
+
+    # Prevent IDOR: students can only access their own profile; faculty/admin can inspect students
+    if requested_id and requested_id != cur_student_id:
+        if not (is_faculty() or is_admin()):
+            return jsonify({
+                "success": False,
+                "message": "Unauthorized access to another student's profile."
+            }), 403
+        student_id = requested_id
+    else:
+        student_id = cur_student_id
+
     data = get_student_profile_data(student_id)
     if not data:
         return jsonify({"success": False, "message": "Student profile not found."}), 404
 
-    # Calculate profile completeness
-    completeness = 40  # base
-    if data['student'].get('bio'): completeness += 10
-    if len(data['skills_list']) >= 4: completeness += 20
-    elif len(data['skills_list']) >= 2: completeness += 10
-    if len(data['interests']) >= 2: completeness += 10
-    if len(data['experiences']) >= 2: completeness += 10
-    # Any certificates uploaded
-    certs_uploaded = sum(1 for s in data['skills_list'] if s.get('certificate_filename'))
-    if certs_uploaded > 0: completeness += 10
-    completeness = min(completeness, 100)
+    # Calculate profile completeness purely based on actual completed fields (0% base)
+    completeness = 0
+    dept = (data['student'].get('department') or '').strip()
+    if dept and dept.lower() not in ('', 'general'):
+        completeness += 10
+
+    year = (data['student'].get('year') or '').strip()
+    sem = (data['student'].get('semester') or '').strip()
+    if year and sem:
+        completeness += 10
+
+    bio = (data['student'].get('bio') or '').strip()
+    if bio and bio.lower() not in ('', 'new student profile.'):
+        completeness += 10
+
+    gh = (data['student'].get('github_url') or '').strip()
+    li = (data['student'].get('linkedin_url') or '').strip()
+    if gh or li:
+        completeness += 10
+
+    num_skills = len(data.get('skills_list') or [])
+    if num_skills >= 3:
+        completeness += 20
+    elif num_skills >= 1:
+        completeness += 10
+
+    num_interests = len(data.get('interests') or [])
+    if num_interests >= 2:
+        completeness += 15
+    elif num_interests >= 1:
+        completeness += 10
+
+    if len(data.get('experiences') or []) >= 1:
+        completeness += 10
+
+    certs_uploaded = sum(1 for s in (data.get('skills_list') or []) if s.get('certificate_filename'))
+    if certs_uploaded > 0:
+        completeness += 15
+
+    completeness = max(0, min(100, completeness))
 
     return jsonify({
         "success": True,
@@ -116,7 +161,20 @@ def update_profile():
 
 @student_bp.route('/skills', methods=['GET'])
 def list_skills():
-    student_id = request.args.get('student_id', type=int) or get_current_student_id()
+    cur_student_id = get_current_student_id()
+    requested_id = request.args.get('student_id', type=int)
+
+    # Prevent IDOR on student skills
+    if requested_id and requested_id != cur_student_id:
+        if not (is_faculty() or is_admin()):
+            return jsonify({
+                "success": False,
+                "message": "Unauthorized access to another student's skills."
+            }), 403
+        student_id = requested_id
+    else:
+        student_id = cur_student_id
+
     skills = fetch_all("""
         SELECT s.id as skill_id, s.name, s.category, ss.proficiency_level,
                ss.certificate_filename, ss.certificate_original_name,
@@ -213,6 +271,23 @@ def upload_certificate():
         return jsonify({
             "success": False, 
             "message": f"Invalid file format '.{ext}'. Allowed types are PDF, PNG, JPG, JPEG."
+        }), 400
+
+    # Validate file signatures / magic bytes to prevent disguised or malicious executable uploads
+    header = file.read(16)
+    file.seek(0)
+    is_valid_magic = False
+    if ext == 'pdf' and header.startswith(b'%PDF'):
+        is_valid_magic = True
+    elif ext == 'png' and header.startswith(b'\x89PNG\r\n\x1a\n'):
+        is_valid_magic = True
+    elif ext in ('jpg', 'jpeg') and header.startswith(b'\xff\xd8\xff'):
+        is_valid_magic = True
+
+    if not is_valid_magic:
+        return jsonify({
+            "success": False,
+            "message": f"File content does not match the valid signature for a {ext.upper()} file."
         }), 400
 
     # Ensure upload directory exists
@@ -478,6 +553,29 @@ def update_settings():
     })
 
 
+@student_bp.route('/reset-settings', methods=['POST'])
+@login_required
+def reset_settings():
+    """Resets student matching and notification preferences to defaults."""
+    student_id = get_current_student_id()
+    execute_query("""
+        UPDATE students
+        SET prioritise_skills = 1,
+            consider_interests = 1,
+            consider_experience = 1,
+            consider_availability = 1,
+            weekly_hours = 20,
+            match_alerts = 1,
+            application_alerts = 1,
+            team_alerts = 1,
+            gap_alerts = 1,
+            email_notifications = 1,
+            weekly_digest = 0
+        WHERE id = %s
+    """, (student_id,))
+    return jsonify({"success": True, "message": "Preferences reset to default values."})
+
+
 @student_bp.route('/experiences', methods=['GET'])
 def list_experiences():
     """Returns the student's previous work entries."""
@@ -596,8 +694,66 @@ def update_interests():
     })
 
 
+@student_bp.route('/interests', methods=['POST'])
+@login_required
+def add_interest():
+    """Adds a single interest or a batch of interests to the student profile."""
+    student_id = get_current_student_id()
+    data = request.get_json() or {}
+    interest = (data.get('interest') or '').strip()
+
+    if not interest:
+        raw_list = data.get('interests', [])
+        if isinstance(raw_list, list) and raw_list:
+            added = []
+            for item in raw_list:
+                if isinstance(item, str) and item.strip():
+                    val = item.strip()[:100]
+                    existing = fetch_one(
+                        "SELECT id FROM student_interests WHERE student_id = %s AND LOWER(interest) = LOWER(%s)",
+                        (student_id, val)
+                    )
+                    if not existing:
+                        execute_query(
+                            "INSERT INTO student_interests (student_id, interest) VALUES (%s, %s)",
+                            (student_id, val)
+                        )
+                        added.append(val)
+            return jsonify({"success": True, "message": f"{len(added)} interest(s) added successfully!"}), 201
+        return jsonify({"success": False, "message": "Interest is required."}), 400
+
+    existing = fetch_one(
+        "SELECT id FROM student_interests WHERE student_id = %s AND LOWER(interest) = LOWER(%s)",
+        (student_id, interest)
+    )
+    if existing:
+        return jsonify({"success": True, "message": "Interest already added."}), 200
+
+    execute_query(
+        "INSERT INTO student_interests (student_id, interest) VALUES (%s, %s)",
+        (student_id, interest[:100])
+    )
+    return jsonify({"success": True, "message": f"Interest '{interest}' added successfully!"}), 201
+
+
+@student_bp.route('/interests/<string:interest_name>', methods=['DELETE'])
+@login_required
+def delete_interest(interest_name):
+    """Removes a specific interest from the student profile."""
+    student_id = get_current_student_id()
+    execute_query(
+        "DELETE FROM student_interests WHERE student_id = %s AND LOWER(interest) = LOWER(%s)",
+        (student_id, interest_name.strip())
+    )
+    return jsonify({"success": True, "message": f"Interest '{interest_name}' removed."})
+
+
 @student_bp.route('/certificates/<filename>', methods=['GET'])
 def view_certificate(filename):
-    """Serves the uploaded certificate for browser preview/download."""
-    safe_name = secure_filename(filename)
-    return send_from_directory(Config.UPLOAD_FOLDER, safe_name)
+    """Serves the uploaded certificate for browser preview/download with authorization enforcement."""
+    is_authorized, result = authorize_certificate_access(filename)
+    if not is_authorized:
+        response_tuple = result
+        return response_tuple
+    clean_filename = result
+    return send_from_directory(Config.UPLOAD_FOLDER, clean_filename)

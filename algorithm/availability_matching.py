@@ -15,30 +15,27 @@ def calculate_availability_match(
         score: Availability compatibility percentage
     """
 
-    # Normalize input
-    student_availability = student_availability.strip().lower()
-    project_requirement = project_requirement.strip().lower()
+    if student_availability is None or project_requirement is None:
+        return 0
+
+    # Normalize input safely
+    s_avail = str(student_availability).strip().lower().replace(" ", "-")
+    p_req = str(project_requirement).strip().lower().replace(" ", "-")
 
     # Student is not available
-    if student_availability == "not available":
+    if s_avail in ("not-available", "not available", "none", "0", ""):
         return 0
 
     # Exact availability match
-    if student_availability == project_requirement:
+    if s_avail == p_req:
         return 100
 
     # A full-time student can satisfy a part-time requirement
-    if (
-        student_availability == "full-time"
-        and project_requirement == "part-time"
-    ):
+    if s_avail == "full-time" and p_req == "part-time":
         return 100
 
     # A part-time student partially satisfies a full-time requirement
-    if (
-        student_availability == "part-time"
-        and project_requirement == "full-time"
-    ):
+    if s_avail == "part-time" and p_req == "full-time":
         return 50
 
     # Default

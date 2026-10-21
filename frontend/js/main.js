@@ -7,6 +7,44 @@ const API_BASE = window.location.origin.includes('http')
     ? `${window.location.origin}/api`
     : 'http://127.0.0.1:5000/api';
 
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
+function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function safeUrl(url) {
+    if (!url) return "#";
+    const trimmed = String(url).trim();
+    if (/^(https?:\/\/|mailto:|\/)/i.test(trimmed)) {
+        return trimmed;
+    }
+    return "#";
+}
+
+async function secureFetch(url, options = {}) {
+    const opts = { ...options };
+    opts.credentials = opts.credentials || "include";
+    const method = (opts.method || "GET").toUpperCase();
+    opts.headers = { ...(opts.headers || {}) };
+    if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
+        const csrf = getCookie("csrf_token");
+        if (csrf && !opts.headers["X-CSRF-Token"]) {
+            opts.headers["X-CSRF-Token"] = csrf;
+        }
+    }
+    return fetch(url, opts);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initializeLogin();
     initializeRevealAnimations();
@@ -68,7 +106,7 @@ function initializeLogin() {
         }
 
         try {
-            const res = await fetch(`${API_BASE}/auth/login`, {
+            const res = await secureFetch(`${API_BASE}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -111,7 +149,13 @@ async function initializeLiveProfile() {
     if (!skillContainer && !nameEl) return;
 
     try {
-        const res = await fetch(`${API_BASE}/student/profile`);
+        const res = await fetch(`${API_BASE}/student/profile`, {
+            credentials: "include"
+        });
+        if (res.status === 401) {
+            window.location.href = "login.html";
+            return;
+        }
         if (!res.ok) return;
         const json = await res.json();
         if (!json.success || !json.profile) return;
@@ -130,6 +174,16 @@ async function initializeLiveProfile() {
         setVal('[data-profile-display="semester"]', p.semester);
         setVal('[data-profile-display="bio"]', p.bio);
         setVal('[data-profile-display="availability"]', p.availability);
+        setVal('[data-profile-display="email"]', p.email);
+        setVal('[data-profile-display="github"]', p.github_url || "Not provided");
+        setVal('[data-profile-display="linkedin"]', p.linkedin_url || "Not provided");
+
+        // Update avatar initials
+        const avatar = document.querySelector("[data-profile-avatar]") || document.querySelector(".profile-avatar");
+        if (avatar && p.name) {
+            const initials = p.name.split(" ").filter(Boolean).map(n => n[0]).join("").slice(0, 2).toUpperCase();
+            avatar.textContent = initials || "S";
+        }
 
         // Prepopulate edit form fields if present
         const setInput = (id, val) => {
@@ -141,12 +195,14 @@ async function initializeLiveProfile() {
         setInput("profileYear", p.year);
         setInput("profileSemester", p.semester);
         setInput("profileBio", p.bio);
+        setInput("profileGithub", p.github_url);
+        setInput("profileLinkedin", p.linkedin_url);
 
         // Update completeness
         const compBar = document.querySelector("[data-profile-completeness]");
         const compText = document.querySelector("[data-profile-completeness-text]");
         if (compBar) compBar.style.width = `${p.completeness}%`;
-        if (compText) compText.textContent = `${p.completeness}% complete`;
+        if (compText) compText.textContent = `${p.completeness}%`;
 
         // Render skill plants with live certificates
         if (skillContainer && p.skills && p.skills.length > 0) {
@@ -160,19 +216,19 @@ async function initializeLiveProfile() {
                 let certBadge = "";
                 if (sk.certificate_status === "Verified") {
                     certBadge = `
-                        <a href="${API_BASE}/certificates/${sk.certificate_filename}" target="_blank" class="skill-cert-badge verified" title="Verified certificate: ${sk.certificate_original_name || 'Proof'}">
+                        <a href="${API_BASE}/certificates/${encodeURIComponent(sk.certificate_filename || '')}" target="_blank" class="skill-cert-badge verified" title="Verified certificate: ${escapeHtml(sk.certificate_original_name || 'Proof')}">
                             Verified ✓
                         </a>
                     `;
                 } else if (sk.certificate_status === "Pending") {
                     certBadge = `
-                        <a href="${API_BASE}/certificates/${sk.certificate_filename}" target="_blank" class="skill-cert-badge pending" title="Verification pending">
+                        <a href="${API_BASE}/certificates/${encodeURIComponent(sk.certificate_filename || '')}" target="_blank" class="skill-cert-badge pending" title="Verification pending">
                             Pending ⏳
                         </a>
                     `;
                 } else {
                     certBadge = `
-                        <button type="button" class="skill-cert-badge upload" onclick="openCertModal(${sk.skill_id}, '${sk.name}')" title="Upload verification certificate">
+                        <button type="button" class="skill-cert-badge upload" data-skill-id="${sk.skill_id}" data-skill-name="${escapeHtml(sk.name)}" title="Upload verification certificate">
                             + Certificate
                         </button>
                     `;
@@ -182,10 +238,14 @@ async function initializeLiveProfile() {
                 plant.className = "skill-plant";
                 plant.innerHTML = `
                     <div class="skill-plant-flower">${flower}</div>
-                    <div class="skill-plant-name">${sk.name}</div>
+                    <div class="skill-plant-name">${escapeHtml(sk.name)}</div>
                     <div class="skill-plant-level">${sk.proficiency_level} / 5 · ${pct}%</div>
                     ${certBadge}
                 `;
+                const uploadBtn = plant.querySelector("button.skill-cert-badge.upload");
+                if (uploadBtn) {
+                    uploadBtn.addEventListener("click", () => openCertModal(sk.skill_id, sk.name));
+                }
                 skillContainer.appendChild(plant);
             });
         }
@@ -268,7 +328,7 @@ function setupCertificateModal() {
             }
 
             try {
-                const res = await fetch(`${API_BASE}/student/upload-certificate`, {
+                const res = await secureFetch(`${API_BASE}/student/upload-certificate`, {
                     method: "POST",
                     body: formData
                 });
@@ -305,7 +365,27 @@ async function initializeLiveProjects() {
         const res = await fetch(`${API_BASE}/projects`);
         if (!res.ok) return;
         const data = await res.json();
-        if (!data.success || !data.projects || data.projects.length === 0) return;
+        if (!data.success) return;
+
+        // Update matches count badge
+        const badge = document.querySelector(".botanical-badge");
+        if (badge && badge.textContent.includes("Matches")) {
+            badge.textContent = `${(data.projects || []).length} Matches`;
+        }
+
+        if (!data.projects || data.projects.length === 0) {
+            projectGrid.innerHTML = `
+                <div class="garden-card" style="grid-column: 1 / -1; padding: 40px 25px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 12px;">🌱</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--olive-deep);">No Projects Available Yet</h3>
+                    <p style="color: var(--muted); margin: 8px 0 16px; font-size: 14px;">
+                        No project beds have been planted yet. Log in with a Faculty account to publish your first academic project, or add skills in My Growth to prepare for matching!
+                    </p>
+                    <a href="growth.html" class="garden-button">Tend Your Skills →</a>
+                </div>
+            `;
+            return;
+        }
 
         projectGrid.innerHTML = "";
 
@@ -322,26 +402,26 @@ async function initializeLiveProjects() {
 
             const skillsTags = (proj.skill_details || []).map(s => `
                 <span title="Req Level: ${s.required_level}/5 | Your Level: ${s.student_level}/5">
-                    ${s.skill}
+                    ${escapeHtml(s.skill)}
                 </span>
             `).join("");
 
             article.innerHTML = `
                 <div class="project-card-top">
                     <div class="project-flower">✿</div>
-                    <span class="project-status">${proj.status}</span>
+                    <span class="project-status">${escapeHtml(proj.status)}</span>
                 </div>
 
-                <h2>${proj.title}</h2>
+                <h2>${escapeHtml(proj.title)}</h2>
 
                 <p class="project-description">
-                    ${proj.description}
+                    ${escapeHtml(proj.description)}
                 </p>
 
                 <div class="project-meta">
-                    <span>🌿 ${proj.domain}</span>
+                    <span>🌿 ${escapeHtml(proj.domain)}</span>
                     <span>👥 ${proj.team_size} members</span>
-                    <span>◷ ${proj.required_availability}</span>
+                    <span>◷ ${escapeHtml(proj.required_availability)}</span>
                 </div>
 
                 <div class="skill-list">
@@ -419,7 +499,7 @@ window.applyToProjectLive = async function(projectId, buttonElement) {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/projects/${projectId}/apply`, {
+        const res = await secureFetch(`${API_BASE}/projects/${projectId}/apply`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: "Excited to collaborate on this academic project!" })
@@ -644,16 +724,16 @@ async function initializeLiveTeammates() {
 
             const skillPills = stu.matching_skills_detailed.map(s => {
                 const certIcon = s.has_certificate ? "📜 " : "";
-                return `<span class="botanical-badge" style="margin: 3px; font-size: 0.72rem;">${certIcon}${s.name} (Lvl ${s.level})</span>`;
+                return `<span class="botanical-badge" style="margin: 3px; font-size: 0.72rem;">${certIcon}${escapeHtml(s.name)} (Lvl ${s.level})</span>`;
             }).join("");
 
             card.innerHTML = `
                 <div class="member-avatar" style="font-size: 2rem; margin-bottom: 8px;">🌱</div>
-                <h3 style="margin: 4px 0;">${stu.name}</h3>
-                <small style="color: #666; display: block; margin-bottom: 8px;">${stu.department} · ${stu.year}</small>
+                <h3 style="margin: 4px 0;">${escapeHtml(stu.name)}</h3>
+                <small style="color: #666; display: block; margin-bottom: 8px;">${escapeHtml(stu.department)} · ${escapeHtml(stu.year)}</small>
                 
                 <p style="font-size: 0.85rem; color: #444; margin-bottom: 12px;">
-                    ${stu.bio || "Active academic collaborator with verified technical competencies."}
+                    ${escapeHtml(stu.bio || "Active academic collaborator with verified technical competencies.")}
                 </p>
 
                 <div style="margin: 10px 0;">
@@ -662,11 +742,17 @@ async function initializeLiveTeammates() {
                 </div>
 
                 <div style="margin-top: 14px;">
-                    <button type="button" class="garden-button secondary" onclick="showGardenToast('Invitation sent to ${stu.name} 🌿')">
+                    <button type="button" class="garden-button secondary invite-btn">
                         Invite to Team
                     </button>
                 </div>
             `;
+            const inviteBtn = card.querySelector(".invite-btn");
+            if (inviteBtn) {
+                inviteBtn.addEventListener("click", () => {
+                    showGardenToast(`Invitation sent to ${stu.name} 🌿`);
+                });
+            }
             teamGrid.appendChild(card);
         });
     } catch (e) {
@@ -703,17 +789,17 @@ async function initializeLiveApplications() {
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                     <div>
                         <h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">
-                            ${app.project_title}
+                            ${escapeHtml(app.project_title)}
                         </h3>
-                        <small style="color: #666;">🌿 ${app.domain}</small>
+                        <small style="color: #666;">🌿 ${escapeHtml(app.domain)}</small>
                     </div>
                     <span class="botanical-badge ${statusClass}" style="padding: 4px 10px; border-radius: 12px;">
-                        ${app.status}
+                        ${escapeHtml(app.status)}
                     </span>
                 </div>
 
                 <p style="font-size: 0.88rem; color: #444; margin: 10px 0;">
-                    ${app.message || "Application submitted for academic project matching."}
+                    ${escapeHtml(app.message || "Application submitted for academic project matching.")}
                 </p>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 0.82rem; color: #666;">
@@ -751,8 +837,8 @@ async function initializeLiveNotifications() {
             item.innerHTML = `
                 <div class="notification-icon">🔔</div>
                 <div class="notification-content">
-                    <h4>${n.title}</h4>
-                    <p>${n.message}</p>
+                    <h4>${escapeHtml(n.title)}</h4>
+                    <p>${escapeHtml(n.message)}</p>
                     <small>${new Date(n.created_at || Date.now()).toLocaleDateString()}</small>
                 </div>
             `;
@@ -849,12 +935,14 @@ function initializeProfileEditing() {
             const year = document.querySelector("#profileYear")?.value || "";
             const semester = document.querySelector("#profileSemester")?.value || "";
             const bio = document.querySelector("#profileBio")?.value || "";
+            const github_url = document.querySelector("#profileGithub")?.value || "";
+            const linkedin_url = document.querySelector("#profileLinkedin")?.value || "";
 
             try {
-                const res = await fetch(`${API_BASE}/student/profile`, {
+                const res = await secureFetch(`${API_BASE}/student/profile`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, department, year, semester, bio })
+                    body: JSON.stringify({ name, department, year, semester, bio, github_url, linkedin_url })
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -1031,21 +1119,32 @@ function initializeNotifications() {
     const notifications = document.querySelectorAll("[data-notification]");
 
     notifications.forEach((notification) => {
-        notification.addEventListener("click", () => {
+        notification.addEventListener("click", async () => {
             const item = notification.closest(".notification-item") || notification;
             item.classList.add("read");
             updateUnreadCount();
+            const notifId = item.dataset.notificationId;
+            if (notifId) {
+                try {
+                    await secureFetch(`${API_BASE}/notifications/${notifId}/read`, { method: "POST" });
+                } catch (e) {}
+            }
         });
     });
 
     const markAllButton = document.querySelector("#markAllRead");
     if (markAllButton) {
-        markAllButton.addEventListener("click", () => {
+        markAllButton.addEventListener("click", async () => {
             document.querySelectorAll(".notification-item").forEach((item) => {
                 item.classList.add("read");
             });
             updateUnreadCount();
-            showGardenToast("All notifications marked as read.");
+            try {
+                await secureFetch(`${API_BASE}/notifications/read-all`, { method: "POST" });
+                showGardenToast("All notifications marked as read.");
+            } catch (e) {
+                showGardenToast("All notifications marked as read.");
+            }
         });
     }
 }
@@ -1103,7 +1202,11 @@ function initializeGardenButtons() {
     const buttons = document.querySelectorAll("[data-garden-action]");
     buttons.forEach((button) => {
         button.addEventListener("click", () => {
-            const message = button.dataset.gardenAction || "Your garden is growing 🌿";
+            const action = button.dataset.gardenAction;
+            if (["save-settings", "change-password", "reset-settings", "invite"].includes(action)) {
+                return;
+            }
+            const message = action || "Your garden is growing 🌿";
             showGardenToast(message);
         });
     });
@@ -1117,9 +1220,17 @@ function initializeGardenButtons() {
 function initializeLogout() {
     const logoutButtons = document.querySelectorAll("[data-logout]");
     logoutButtons.forEach((button) => {
-        button.addEventListener("click", (event) => {
+        button.addEventListener("click", async (event) => {
             event.preventDefault();
+            try {
+                await secureFetch(`${API_BASE}/auth/logout`, {
+                    method: "POST"
+                });
+            } catch (err) {
+                // Ignore network errors on logout
+            }
             sessionStorage.clear();
+            localStorage.clear();
             showGardenToast("Leaving the garden...");
             setTimeout(() => {
                 window.location.href = "index.html";
@@ -1137,14 +1248,22 @@ function initializeProfileCompleteness() {
     updateProfileCompleteness();
 }
 
-function updateProfileCompleteness() {
+async function updateProfileCompleteness() {
     const progress = document.querySelector("[data-profile-completeness]");
     const progressText = document.querySelector("[data-profile-completeness-text]");
     if (!progress && !progressText) return;
 
-    const completeness = 85;
-    if (progress) progress.style.width = `${completeness}%`;
-    if (progressText) progressText.textContent = `${completeness}% complete`;
+    try {
+        const res = await fetch(`${API_BASE}/student/profile`, { credentials: "include" });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.success && data.profile) {
+                const completeness = data.profile.completeness || 0;
+                if (progress) progress.style.width = `${completeness}%`;
+                if (progressText) progressText.textContent = `${completeness}%`;
+            }
+        }
+    } catch (e) {}
 }
 
 

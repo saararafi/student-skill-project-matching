@@ -227,7 +227,7 @@ class TestOriginalThemePreserved(unittest.TestCase):
 
     def test_pages_use_the_shared_app_shell(self):
         """All app pages should share one sidebar/layout structure."""
-        for name in ['dashboard.html', 'profile.html', 'projects.html',
+        for name in ['dashboard.html', 'growth.html', 'profile.html', 'projects.html',
                      'project-details.html', 'team.html', 'gaps.html',
                      'applications.html', 'notifications.html',
                      'settings.html', 'faculty.html']:

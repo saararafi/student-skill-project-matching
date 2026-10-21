@@ -54,7 +54,7 @@
                 My Garden
             </a>
 
-            <a href="profile.html">
+            <a href="growth.html">
                 <span class="nav-icon">✿</span>
                 My Growth
             </a>
@@ -119,7 +119,7 @@
          MAIN
     ========================== -->
 
-    <main class="app-main">
+    <main class="app-main" data-settings-panel>
 
 
         <!-- HEADER -->
@@ -347,7 +347,7 @@
 
                     <input
                         type="checkbox"
-                            data-interest-chip
+                        data-setting="prioritise_skills"
                         checked
                     >
 
@@ -371,7 +371,7 @@
 
                     <input
                         type="checkbox"
-                            data-interest-chip
+                        data-setting="consider_interests"
                         checked
                     >
 
@@ -395,7 +395,7 @@
 
                     <input
                         type="checkbox"
-                            data-interest-chip
+                        data-setting="consider_experience"
                         checked
                     >
 
@@ -419,7 +419,7 @@
 
                     <input
                         type="checkbox"
-                            data-interest-chip
+                        data-setting="consider_availability"
                         checked
                     >
 
@@ -614,6 +614,8 @@
                     max="40"
                     value="20"
                     class="availability-slider"
+                    data-setting="weekly_hours"
+                    id="settingsWeeklyHours"
                 >
 
 
@@ -702,6 +704,7 @@
 
                     <input
                         type="checkbox"
+                        data-setting="match_alerts"
                         checked
                     >
 
@@ -724,6 +727,7 @@
 
                     <input
                         type="checkbox"
+                        data-setting="application_alerts"
                         checked
                     >
 
@@ -746,6 +750,7 @@
 
                     <input
                         type="checkbox"
+                        data-setting="team_alerts"
                         checked
                     >
 
@@ -769,6 +774,7 @@
 
                     <input
                         type="checkbox"
+                        data-setting="gap_alerts"
                         checked
                     >
 
@@ -830,7 +836,7 @@
                 <button
                     type="button"
                     class="garden-button secondary"
-                    data-garden-action="change-password"
+                    id="changePasswordBtn"
                 >
                     Change Password
                 </button>
@@ -896,12 +902,41 @@
             <button
                 type="button"
                 class="garden-button secondary"
-                data-garden-action="reset-settings"
+                id="resetPreferencesBtn"
             >
                 Reset Preferences
             </button>
 
         </section>
+
+
+        <!-- Change Password Modal -->
+        <div class="cert-modal-overlay" id="changePasswordModal">
+            <div class="cert-modal" style="max-width: 440px;">
+                <div class="cert-modal-header">
+                    <h3>❧ Change Account Password</h3>
+                    <button type="button" class="cert-close-btn" id="closeChangePasswordModal">&times;</button>
+                </div>
+                <form id="changePasswordForm" style="padding-top: 15px;">
+                    <div class="settings-field" style="margin-bottom: 14px;">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:12px; color:var(--olive-deep,#26351b);">Current Password</label>
+                        <input type="password" id="currentPassword" required placeholder="Enter current password" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--sage-dark, #b5c4a5); background: #fff; box-sizing: border-box;">
+                    </div>
+                    <div class="settings-field" style="margin-bottom: 14px;">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:12px; color:var(--olive-deep,#26351b);">New Password (min 8 characters)</label>
+                        <input type="password" id="newPassword" required minlength="8" placeholder="Enter new password" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--sage-dark, #b5c4a5); background: #fff; box-sizing: border-box;">
+                    </div>
+                    <div class="settings-field" style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:12px; color:var(--olive-deep,#26351b);">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" required minlength="8" placeholder="Re-enter new password" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--sage-dark, #b5c4a5); background: #fff; box-sizing: border-box;">
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="garden-button secondary" id="cancelChangePassword">Cancel</button>
+                        <button type="submit" class="garden-button">Update Password ✿</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
 

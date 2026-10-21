@@ -30,7 +30,9 @@ class ApiTestCase(unittest.TestCase):
         cls._tmpdir = tempfile.mkdtemp(prefix='skillmatch-test-')
         cls._db_path = os.path.join(cls._tmpdir, 'test.db')
         cls._original_db_path = Config.SQLITE_DB_PATH
+        cls._original_seed_demo = Config.SEED_DEMO_DATA
         Config.SQLITE_DB_PATH = cls._db_path
+        Config.SEED_DEMO_DATA = True
 
         cls.app = create_app()
         cls.app.config['TESTING'] = True
@@ -38,6 +40,7 @@ class ApiTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         Config.SQLITE_DB_PATH = cls._original_db_path
+        Config.SEED_DEMO_DATA = cls._original_seed_demo
         shutil.rmtree(cls._tmpdir, ignore_errors=True)
 
     def setUp(self):

@@ -1,7 +1,8 @@
+import re
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import check_password_hash, generate_password_hash
-from backend.database import fetch_one, execute_query
-from backend.auth_utils import get_current_user_id
+from backend.database import fetch_one, execute_query, db_transaction, adapt_sql
+from backend.auth_utils import get_current_user_id, login_required
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -61,22 +62,48 @@ def register():
     if not name or not email or not password:
         return jsonify({"success": False, "message": "Name, email and password are required."}), 400
 
+    if len(password) < 8:
+        return jsonify({"success": False, "message": "Password must be at least 8 characters long."}), 400
+
+    if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return jsonify({"success": False, "message": "Please provide a valid email address."}), 400
+
+    if role not in ('student', 'faculty'):
+        role = 'student'
+
     existing = fetch_one("SELECT id FROM users WHERE LOWER(email) = %s", (email,))
     if existing:
         return jsonify({"success": False, "message": "An account with this email already exists."}), 409
 
     pwd_hash = generate_password_hash(password)
-    user_id = execute_query(
-        "INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s)",
-        (name, email, pwd_hash, role)
-    )
-
-    student_id = None
-    if role == 'student':
-        student_id = execute_query(
-            "INSERT INTO students (user_id, department, year, semester, availability, bio) VALUES (%s, %s, %s, '5th Semester', 'Full-time', 'New student profile.')",
-            (user_id, department, year)
+    with db_transaction() as (cur, engine):
+        cur.execute(
+            adapt_sql("INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s)", engine),
+            (name, email, pwd_hash, role)
         )
+        user_id = cur.lastrowid
+        if not user_id and engine == 'postgres':
+            cur.execute("SELECT lastval() AS id")
+            row = cur.fetchone()
+            user_id = row['id'] if row else None
+
+        student_id = None
+        if role == 'student':
+            sem = (data.get('semester') or '').strip()
+            avail = (data.get('availability') or 'Part-time').strip() or 'Part-time'
+            cur.execute(
+                adapt_sql(
+                    "INSERT INTO students (user_id, department, year, semester, availability, bio, weekly_hours) "
+                    "VALUES (%s, %s, %s, %s, %s, '', 0)",
+                    engine
+                ),
+                (user_id, department, year, sem, avail)
+            )
+            student_id = cur.lastrowid
+            if not student_id and engine == 'postgres':
+                cur.execute("SELECT lastval() AS id")
+                row = cur.fetchone()
+                student_id = row['id'] if row else None
 
     session['user_id'] = user_id
     session['role'] = role
@@ -136,4 +163,33 @@ def get_current_user():
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return jsonify({"success": True, "message": "Logged out successfully."})
+    resp = jsonify({"success": True, "message": "Logged out successfully."})
+    resp.delete_cookie('csrf_token')
+    return resp
+
+
+@auth_bp.route('/change-password', methods=['POST'])
+@login_required
+def change_password():
+    user_id = get_current_user_id()
+    data = request.get_json() or {}
+    current_pwd = data.get('current_password', '')
+    new_pwd = data.get('new_password', '')
+    confirm_pwd = data.get('confirm_password', '')
+
+    if not current_pwd or not new_pwd:
+        return jsonify({"success": False, "message": "Current and new password are required."}), 400
+
+    if len(new_pwd) < 8:
+        return jsonify({"success": False, "message": "New password must be at least 8 characters long."}), 400
+
+    if confirm_pwd and new_pwd != confirm_pwd:
+        return jsonify({"success": False, "message": "New passwords do not match."}), 400
+
+    user = fetch_one("SELECT password_hash FROM users WHERE id = %s", (user_id,))
+    if not user or not check_password_hash(user['password_hash'], current_pwd):
+        return jsonify({"success": False, "message": "Incorrect current password."}), 400
+
+    new_hash = generate_password_hash(new_pwd)
+    execute_query("UPDATE users SET password_hash = %s WHERE id = %s", (new_hash, user_id))
+    return jsonify({"success": True, "message": "Password changed successfully."})

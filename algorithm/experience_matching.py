@@ -11,17 +11,27 @@ def calculate_experience_match(student_experience, project_experience):
     if not project_experience:
         return 0
 
-    # Normalize student experience
-    student_experience_normalized = {
-        experience.strip().lower()
-        for experience in student_experience
-    }
+    if not student_experience:
+        return 0
 
-    # Normalize project experience
-    project_experience_normalized = {
-        experience.strip().lower()
-        for experience in project_experience
-    }
+    # Normalize student experience safely
+    student_experience_normalized = set()
+    for exp in student_experience:
+        if exp is not None:
+            cleaned = str(exp).strip().lower()
+            if cleaned:
+                student_experience_normalized.add(cleaned)
+
+    # Normalize project experience safely
+    project_experience_normalized = set()
+    for exp in project_experience:
+        if exp is not None:
+            cleaned = str(exp).strip().lower()
+            if cleaned:
+                project_experience_normalized.add(cleaned)
+
+    if not project_experience_normalized:
+        return 0
 
     # Find common experience areas
     matching_experience = (
@@ -33,7 +43,9 @@ def calculate_experience_match(student_experience, project_experience):
     experience_score = (
         len(matching_experience)
         / len(project_experience_normalized)
-    ) * 100
+    ) * 100.0
+
+    experience_score = max(0.0, min(100.0, experience_score))
 
     return round(experience_score, 2)
 

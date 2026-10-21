@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from backend.database import fetch_one, fetch_all, execute_query
+from backend.database import fetch_one, fetch_all, execute_query, db_transaction, adapt_sql
 from backend.services.matching_service import compute_match, get_ranked_project_recommendations
 from backend.auth_utils import (
     get_current_student_id,
@@ -148,18 +148,30 @@ def apply_to_project(project_id):
     match_res = compute_match(student_id, project_id)
     score = match_res['final_score'] if match_res else 0.0
 
-    app_id = execute_query("""
-        INSERT INTO applications (project_id, student_id, status, message, match_score)
-        VALUES (%s, %s, 'Pending', %s, %s)
-    """, (project_id, student_id, message, score))
-
-    # Notify student
     stu = fetch_one("SELECT user_id FROM students WHERE id = %s", (student_id,))
-    if stu:
-        execute_query("""
-            INSERT INTO notifications (user_id, title, message, type, link)
-            VALUES (%s, %s, %s, 'info', 'applications.html')
-        """, (stu['user_id'], 'Application Submitted', f'Your application for {project["title"]} has been submitted for review.'))
+
+    with db_transaction() as (cur, engine):
+        cur.execute(
+            adapt_sql("""
+                INSERT INTO applications (project_id, student_id, status, message, match_score)
+                VALUES (%s, %s, 'Pending', %s, %s)
+            """, engine),
+            (project_id, student_id, message, score)
+        )
+        app_id = cur.lastrowid
+        if not app_id and engine == 'postgres':
+            cur.execute("SELECT lastval() AS id")
+            row = cur.fetchone()
+            app_id = row['id'] if row else None
+
+        if stu:
+            cur.execute(
+                adapt_sql("""
+                    INSERT INTO notifications (user_id, title, message, type, link)
+                    VALUES (%s, %s, %s, 'info', 'applications.html')
+                """, engine),
+                (stu['user_id'], 'Application Submitted', f'Your application for {project["title"]} has been submitted for review.')
+            )
 
     return jsonify({
         "success": True, 
@@ -198,31 +210,80 @@ def create_project():
     if not 1 <= team_size <= 20:
         return jsonify({"success": False, "message": "Team size must be between 1 and 20."}), 400
 
-    proj_id = execute_query("""
-        INSERT INTO projects (faculty_id, title, description, domain, required_availability, team_size, status)
-        VALUES (%s, %s, %s, %s, %s, %s, 'Open')
-    """, (user_id, title, description, domain, availability, team_size))
+    with db_transaction() as (cur, engine):
+        cur.execute(
+            adapt_sql("""
+                INSERT INTO projects (faculty_id, title, description, domain, required_availability, team_size, status)
+                VALUES (%s, %s, %s, %s, %s, %s, 'Open')
+            """, engine),
+            (user_id, title, description, domain, availability, team_size)
+        )
+        proj_id = cur.lastrowid
+        if not proj_id and engine == 'postgres':
+            cur.execute("SELECT lastval() AS id")
+            row = cur.fetchone()
+            proj_id = row['id'] if row else None
 
-    # Add required skills
-    for sk in skills:
-        sk_name = (sk.get('name') or '').strip()
-        if not sk_name:
-            continue
-        try:
-            lvl = int(sk.get('required_level', 3))
-        except (TypeError, ValueError):
-            lvl = 3
-        lvl = max(1, min(5, lvl))
+        # Add required skills
+        for sk in skills:
+            sk_name = (sk.get('name') or '').strip()
+            if not sk_name:
+                continue
+            try:
+                lvl = int(sk.get('required_level', 3))
+            except (TypeError, ValueError):
+                lvl = 3
+            lvl = max(1, min(5, lvl))
 
-        # Check or create master skill
-        master = fetch_one("SELECT id FROM skills WHERE LOWER(name) = %s", (sk_name.lower(),))
-        if not master:
-            m_id = execute_query("INSERT INTO skills (name, category) VALUES (%s, %s)", (sk_name, domain))
-        else:
-            m_id = master['id']
-        execute_query("""
-            INSERT INTO project_skills (project_id, skill_id, required_level)
-            VALUES (%s, %s, %s)
-        """, (proj_id, m_id, lvl))
+            # Check or create master skill
+            cur.execute(
+                adapt_sql("SELECT id FROM skills WHERE LOWER(name) = %s", engine),
+                (sk_name.lower(),)
+            )
+            master = cur.fetchone()
+            if not master:
+                cur.execute(
+                    adapt_sql("INSERT INTO skills (name, category) VALUES (%s, %s)", engine),
+                    (sk_name, domain)
+                )
+                m_id = cur.lastrowid
+                if not m_id and engine == 'postgres':
+                    cur.execute("SELECT lastval() AS id")
+                    r = cur.fetchone()
+                    m_id = r['id'] if r else None
+            else:
+                m_id = master['id'] if isinstance(master, dict) or hasattr(master, '__getitem__') else master[0]
+
+            cur.execute(
+                adapt_sql("""
+                    INSERT INTO project_skills (project_id, skill_id, required_level)
+                    VALUES (%s, %s, %s)
+                """, engine),
+                (proj_id, m_id, lvl)
+            )
+
+        # Add project interests if provided
+        interests = data.get('interests', [])
+        for it in interests:
+            if isinstance(it, str) and it.strip():
+                cur.execute(
+                    adapt_sql("""
+                        INSERT INTO project_interests (project_id, interest)
+                        VALUES (%s, %s)
+                    """, engine),
+                    (proj_id, it.strip()[:100])
+                )
+
+        # Add project experiences if provided
+        experiences = data.get('experiences', [])
+        for exp in experiences:
+            if isinstance(exp, str) and exp.strip():
+                cur.execute(
+                    adapt_sql("""
+                        INSERT INTO project_experiences (project_id, experience_title)
+                        VALUES (%s, %s)
+                    """, engine),
+                    (proj_id, exp.strip()[:150])
+                )
 
     return jsonify({"success": True, "message": "Project created successfully!", "project_id": proj_id}), 201

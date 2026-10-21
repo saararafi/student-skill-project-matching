@@ -20,10 +20,46 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
    Helpers
    ------------------------------------------------------------ */
 
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
+function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function safeUrl(url) {
+    if (!url) return "#";
+    const trimmed = String(url).trim();
+    if (/^(https?:\/\/|mailto:|\/)/i.test(trimmed)) {
+        return trimmed;
+    }
+    return "#";
+}
+
 async function api(path, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    const headers = { ...(options.headers || {}) };
+    if (options.body && !(options.body instanceof FormData) && !headers["Content-Type"]) {
+        headers["Content-Type"] = "application/json";
+    }
+    if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
+        const csrfToken = getCookie("csrf_token");
+        if (csrfToken && !headers["X-CSRF-Token"]) {
+            headers["X-CSRF-Token"] = csrfToken;
+        }
+    }
     const res = await fetch(API + path, {
-        headers: options.body ? { "Content-Type": "application/json" } : {},
-        ...options
+        credentials: "include",
+        ...options,
+        headers
     });
     let data = null;
     try { data = await res.json(); } catch (e) { data = {}; }
@@ -46,14 +82,35 @@ function toast(message) {
 function emptyState(container, message) {
     container.innerHTML = `
         <div class="empty-state">
-            <p>${message}</p>
+            <p>${escapeHtml(message)}</p>
         </div>`;
 }
 
-/** The project currently being viewed (?id=), defaulting to the first one. */
+let resolvedProjectId = null;
+
+/** Resolves the active project ID: URL ?id= first, then first available project. */
+async function resolveProjectId() {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (id) {
+        resolvedProjectId = id;
+        return id;
+    }
+    if (resolvedProjectId) return resolvedProjectId;
+    try {
+        const { ok, data } = await api("/projects");
+        const list = (ok && data.projects) || [];
+        if (list.length > 0) {
+            resolvedProjectId = String(list[0].id);
+            return resolvedProjectId;
+        }
+    } catch (e) {}
+    return null;
+}
+
+/** The project currently being viewed (?id=), defaulting to resolved project. */
 function currentProjectId() {
     const id = new URLSearchParams(window.location.search).get("id");
-    return id || "1";
+    return id || resolvedProjectId || "1";
 }
 
 /* ------------------------------------------------------------
@@ -78,6 +135,21 @@ async function renderDashboard() {
     if (welcome) {
         const name = (d.profile && d.profile.name) || "";
         welcome.textContent = name ? name.split(" ")[0].toUpperCase() : "THERE";
+    }
+
+    // Profile completeness
+    if (d.profile && d.profile.completeness !== undefined) {
+        const healthEm = $("[data-dashboard-completeness-text]") || $(".profile-health-card em");
+        if (healthEm) healthEm.textContent = `${d.profile.completeness}% complete.`;
+        const healthBar = $("[data-dashboard-completeness-bar]") || $(".profile-health-card div[style*='background:linear-gradient']");
+        if (healthBar) healthBar.style.width = `${d.profile.completeness}%`;
+    }
+
+    // Avatar initials
+    const avatars = $$(".user-avatar");
+    if (avatars.length && d.profile && d.profile.name) {
+        const initial = d.profile.name.trim().charAt(0).toUpperCase() || "S";
+        avatars.forEach(av => av.textContent = initial);
     }
 
     // Statistic cards
@@ -118,6 +190,70 @@ async function renderDashboard() {
             tags.innerHTML = (m.skill_details || [])
                 .map(s => `<span>${s.skill}</span>`).join("");
         }
+
+        const badge = $(".botanical-badge", card);
+        if (badge) badge.textContent = "Strong skill compatibility";
+
+        const viewBtn = $("a.garden-button", card);
+        if (viewBtn && m.project_id) {
+            viewBtn.textContent = "View Project →";
+            viewBtn.href = `project-details.html?id=${m.project_id}`;
+        }
+    } else {
+        const domain = $(".project-match-domain", card);
+        if (domain) domain.textContent = "RECOMMENDATION";
+
+        const title = $(".project-match-title", card);
+        if (title) title.textContent = "No Projects Available Yet";
+
+        const desc = $(".project-match-description", card);
+        if (desc) desc.textContent = "Add your skills in My Growth, or publish a project from the Faculty desk to start matching!";
+
+        const score = $("[data-score]", card);
+        if (score) {
+            score.dataset.score = 0;
+            score.textContent = "0%";
+        }
+        const circle = $(".match-score-circle", card);
+        if (circle) circle.style.setProperty("--score", 0);
+
+        const tags = $(".project-tags", card);
+        if (tags) tags.innerHTML = "<span>Add skills to start matching</span>";
+
+        const badge = $(".botanical-badge", card);
+        if (badge) badge.textContent = "Awaiting projects & skills";
+
+        const viewBtn = $("a.garden-button", card);
+        if (viewBtn) {
+            viewBtn.textContent = "Explore Projects →";
+            viewBtn.href = "projects.html";
+        }
+    }
+
+    // Match breakdown bars on dashboard
+    const breakdownSection = $(".match-components");
+    if (breakdownSection) {
+        const m = d.top_match;
+        const comps = m ? [
+            { label: "Skill Compatibility", score: m.skill_score || 0 },
+            { label: "Interest Compatibility", score: m.interest_score || 0 },
+            { label: "Previous Experience", score: m.experience_score || 0 },
+            { label: "Availability", score: m.availability_score || 0 }
+        ] : [
+            { label: "Skill Compatibility", score: 0 },
+            { label: "Interest Compatibility", score: 0 },
+            { label: "Previous Experience", score: 0 },
+            { label: "Availability", score: 0 }
+        ];
+        breakdownSection.innerHTML = comps.map(c => `
+            <div class="match-component">
+                <span class="match-component-label">${c.label}</span>
+                <div class="match-component-track">
+                    <div class="match-component-fill" style="width:${Math.round(c.score)}%;"></div>
+                </div>
+                <span class="match-component-value">${Math.round(c.score)}%</span>
+            </div>
+        `).join("");
     }
 
     // Skill garden
@@ -148,19 +284,24 @@ async function renderDashboard() {
     // Garden team
     const team = $(".team-branch");
     if (team) {
-        const { ok, data } = await api(`/projects/${d.top_match ? d.top_match.project_id : currentProjectId()}`);
-        const members = (ok && data.project && data.project.team_members) || [];
-        if (!members.length) {
-            team.innerHTML = `<p class="muted-text">No team members yet.</p>`;
+        const pid = (d.top_match && d.top_match.project_id) || await resolveProjectId();
+        if (!pid) {
+            team.innerHTML = `<p class="muted-text">Explore projects to join a garden team.</p>`;
         } else {
-            team.innerHTML = members.map(m => `
-                <div class="team-member">
-                    <div class="team-member-avatar">${(m.name || "?").charAt(0)}</div>
-                    <div>
-                        <div class="team-member-name">${(m.name || "").split(" ")[0]}</div>
-                        <div class="team-member-role">${m.role || "Contributor"}</div>
-                    </div>
-                </div>`).join("");
+            const { ok, data } = await api(`/projects/${pid}`);
+            const members = (ok && data.project && data.project.team_members) || [];
+            if (!members.length) {
+                team.innerHTML = `<p class="muted-text">No team members yet.</p>`;
+            } else {
+                team.innerHTML = members.map(m => `
+                    <div class="team-member">
+                        <div class="team-member-avatar">${escapeHtml((m.name || "?").charAt(0).toUpperCase())}</div>
+                        <div>
+                            <div class="team-member-name">${escapeHtml((m.name || "").split(" ")[0])}</div>
+                            <div class="team-member-role">${escapeHtml(m.role || "Contributor")}</div>
+                        </div>
+                    </div>`).join("");
+            }
         }
     }
 
@@ -332,7 +473,11 @@ async function renderGaps() {
     const list = $(".gap-list");
     if (!list) return;
 
-    const projectId = currentProjectId();
+    const projectId = await resolveProjectId();
+    if (!projectId) {
+        emptyState(list, "No projects available to analyze. Projects published by faculty will appear here.");
+        return;
+    }
     const { ok, data } = await api(`/matching/projects/${projectId}/gaps`);
     // The API returns the payload under "gaps"; older builds used "data".
     const payload = data.gaps || data.data;
@@ -426,28 +571,95 @@ async function renderTeam() {
     const coverage = $(".team-skill-coverage-grid");
     if (!roster && !mates && !coverage) return;
 
-    const projectId = currentProjectId();
+    const projectId = await resolveProjectId();
+    if (!projectId) {
+        if (roster) roster.innerHTML = `<div class="empty-state"><p>No projects available yet. Explore published projects or create one as faculty.</p></div>`;
+        if (mates) mates.innerHTML = `<div class="empty-state"><p>No projects available yet.</p></div>`;
+        if (coverage) coverage.innerHTML = `<div class="empty-state"><p>No project selected.</p></div>`;
+        const heroTitle = $(".team-hero-card h2");
+        if (heroTitle) heroTitle.textContent = "No Project Selected";
+        return;
+    }
 
-    // Current team
-    if (roster) {
+    // Current team and project hero
+    let members = [];
+    if (roster || $(".team-hero-card") || $(".team-tree")) {
         const { ok, data } = await api(`/projects/${projectId}`);
-        const members = (ok && data.project && data.project.team_members) || [];
-        if (!members.length) {
-            roster.innerHTML = `<div class="empty-state"><p>No team members yet — this project is waiting for its first gardener.</p></div>`;
-        } else {
-            roster.innerHTML = members.map(m => `
-                <article class="team-member-card garden-card">
-                    <div class="team-member-avatar">${(m.name || "?").charAt(0)}</div>
-                    <div class="team-member-info">
-                        <h3>${m.name}</h3>
-                        <span>${m.role || "Contributor"}</span>
-                    </div>
-                    <div class="team-member-skills">
-                        ${(m.skills || []).map(s => `<span>${s.name} · ${s.proficiency_level}/5</span>`).join("")
-                            || "<span>No skills listed</span>"}
-                    </div>
-                    <span class="team-role-badge">${m.department || "Student"}</span>
-                </article>`).join("");
+        const project = (ok && data.project) || null;
+        members = (project && project.team_members) || [];
+
+        const heroTitle = $(".team-hero-card h2");
+        if (heroTitle && project) heroTitle.textContent = project.title;
+
+        const heroStatus = $(".team-status-row");
+        if (heroStatus && project) {
+            heroStatus.innerHTML = `
+                <span>● ${escapeHtml(project.domain || "Team Formation")}</span>
+                <span>👥 ${members.length} / ${project.team_size || 5} members</span>
+                <span>◷ ${escapeHtml(project.required_availability || "Regular")}</span>
+            `;
+        }
+
+        // Update team tree visual
+        const tree = $(".team-tree");
+        if (tree && project) {
+            const memberNodes = [
+                { cls: "member-one" },
+                { cls: "member-two" },
+                { cls: "member-three" },
+                { cls: "member-four" }
+            ];
+            let nodesHtml = "";
+            if (members.length === 0) {
+                nodesHtml = `
+                    <div class="member-node member-one">
+                        <div class="member-avatar">?</div>
+                        <strong>Open</strong>
+                        <small>Awaiting team</small>
+                    </div>`;
+            } else {
+                members.slice(0, 4).forEach((m, idx) => {
+                    const cfg = memberNodes[idx] || { cls: "member-one" };
+                    const initial = (m.name || "?").charAt(0).toUpperCase();
+                    const shortName = (m.name || "Member").split(" ")[0];
+                    const role = m.role || "Contributor";
+                    nodesHtml += `
+                        <div class="member-node ${cfg.cls}">
+                            <div class="member-avatar">${escapeHtml(initial)}</div>
+                            <strong>${escapeHtml(shortName)}</strong>
+                            <small>${escapeHtml(role)}</small>
+                        </div>`;
+                });
+            }
+            tree.innerHTML = `
+                <div class="tree-trunk"></div>
+                <div class="tree-branch-line"></div>
+                <div class="team-center">
+                    <strong>${escapeHtml(project.title.slice(0, 25))}</strong>
+                    <small>PROJECT</small>
+                </div>
+                ${nodesHtml}
+            `;
+        }
+
+        if (roster) {
+            if (!members.length) {
+                roster.innerHTML = `<div class="empty-state"><p>No team members yet — this project is waiting for its first gardener.</p></div>`;
+            } else {
+                roster.innerHTML = members.map(m => `
+                    <article class="team-member-card garden-card">
+                        <div class="team-member-avatar">${escapeHtml((m.name || "?").charAt(0).toUpperCase())}</div>
+                        <div class="team-member-info">
+                            <h3>${escapeHtml(m.name)}</h3>
+                            <span>${escapeHtml(m.role || "Contributor")}</span>
+                        </div>
+                        <div class="team-member-skills">
+                            ${(m.skills || []).map(s => `<span>${escapeHtml(s.name)} · ${s.proficiency_level}/5</span>`).join("")
+                                || "<span>No skills listed</span>"}
+                        </div>
+                        <span class="team-role-badge">${escapeHtml(m.department || "Student")}</span>
+                    </article>`).join("");
+            }
         }
     }
 
@@ -460,21 +672,42 @@ async function renderTeam() {
         } else {
             mates.innerHTML = list.map(stu => {
                 const skills = (stu.matching_skills_detailed || [])
-                    .map(s => `<span>${s.has_certificate ? "📜 " : ""}${s.name} (Lvl ${s.level})</span>`).join("");
+                    .map(s => `<span>${s.has_certificate ? "📜 " : ""}${escapeHtml(s.name)} (Lvl ${s.level})</span>`).join("");
+                const stuId = stu.id || stu.student_id || "";
                 return `
                     <article class="recommended-teammate garden-card" data-search-item>
-                        <div class="recommended-avatar">${(stu.name || "?").charAt(0)}</div>
+                        <div class="recommended-avatar">${escapeHtml((stu.name || "?").charAt(0).toUpperCase())}</div>
                         <div class="recommended-info">
-                            <h3>${stu.name}</h3>
-                            <p>${stu.department || ""} · ${stu.year || ""}</p>
+                            <h3>${escapeHtml(stu.name)}</h3>
+                            <p>${escapeHtml(stu.department || "")} · ${escapeHtml(stu.year || "")}</p>
                             <div class="skill-list">${skills}</div>
                         </div>
                         <div class="teammate-match">
                             <small>GAPS FILLED</small>
                             <strong>${stu.gaps_filled ?? (stu.matching_skills || []).length}</strong>
+                            <button type="button" class="garden-button" data-invite-btn data-student-id="${stuId}" data-student-name="${escapeHtml(stu.name)}" style="margin-top: 8px;">
+                                ✿ Invite
+                            </button>
                         </div>
                     </article>`;
             }).join("");
+
+            mates.querySelectorAll("[data-invite-btn]").forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    const sId = btn.dataset.studentId;
+                    const sName = btn.dataset.studentName;
+                    btn.disabled = true;
+                    btn.textContent = "Invited ✓";
+                    btn.classList.add("applied");
+                    try {
+                        await api(`/matching/projects/${projectId}/invite`, {
+                            method: "POST",
+                            body: JSON.stringify({ student_id: sId, student_name: sName })
+                        });
+                    } catch (e) {}
+                    toast(`Invitation sent to ${sName}! 🌿`);
+                });
+            });
         }
     }
 
@@ -533,7 +766,11 @@ async function renderProjectDetails() {
     const applyBtn = $("[data-apply]");
     if (!skillsBox && !gapBox && !applyBtn) return;
 
-    const projectId = currentProjectId();
+    const projectId = await resolveProjectId();
+    if (!projectId) {
+        if (skillsBox) skillsBox.innerHTML = "<p class='muted-text'>No project selected.</p>";
+        return;
+    }
     const { ok, data } = await api(`/projects/${projectId}`);
     if (!ok || !data.project) return;
     const p = data.project;
@@ -664,19 +901,19 @@ async function renderFacultyConsole() {
             <article class="garden-card application-card">
                 <div class="application-card-top">
                     <div>
-                        <span class="application-project-status open">${a.domain || "Project"}</span>
-                        <h3>${a.student_name}</h3>
-                        <p>${a.department || ""} · ${a.year || ""} — applied to <strong>${a.project_title}</strong></p>
+                        <span class="application-project-status open">${escapeHtml(a.domain || "Project")}</span>
+                        <h3>${escapeHtml(a.student_name)}</h3>
+                        <p>${escapeHtml(a.department || "")} · ${escapeHtml(a.year || "")} — applied to <strong>${escapeHtml(a.project_title)}</strong></p>
                     </div>
                     <div class="application-match">
                         <small>MATCH</small>
                         <strong>${Math.round(a.match_score || 0)}%</strong>
                     </div>
                 </div>
-                ${a.message ? `<p class="muted-text" style="font-size:0.85rem;">"${a.message}"</p>` : ""}
+                ${a.message ? `<p class="muted-text" style="font-size:0.85rem;">"${escapeHtml(a.message)}"</p>` : ""}
                 <div class="application-status-row">
                     <div class="application-status ${a.status === "Accepted" ? "accepted" : a.status === "Rejected" ? "rejected" : "pending"}">
-                        <span class="status-dot"></span>${a.status}
+                        <span class="status-dot"></span>${escapeHtml(a.status)}
                     </div>
                     <div class="application-actions">
                         <button class="garden-button" type="button"
@@ -696,9 +933,9 @@ async function renderFacultyConsole() {
             <article class="garden-card application-card">
                 <div class="application-card-top">
                     <div>
-                        <span class="application-project-status open">${c.category || "Skill"}</span>
-                        <h3>${c.skill_name}</h3>
-                        <p>${c.student_name} — ${c.student_email}</p>
+                        <span class="application-project-status open">${escapeHtml(c.category || "Skill")}</span>
+                        <h3>${escapeHtml(c.skill_name)}</h3>
+                        <p>${escapeHtml(c.student_name)} — ${escapeHtml(c.student_email)}</p>
                     </div>
                     <div class="application-match">
                         <small>LEVEL</small>
@@ -706,7 +943,7 @@ async function renderFacultyConsole() {
                     </div>
                 </div>
                 <div class="application-meta">
-                    <span>📄 ${c.certificate_original_name || "Certificate"}</span>
+                    <span>📄 ${escapeHtml(c.certificate_original_name || "Certificate")}</span>
                 </div>
                 <div class="application-status-row">
                     <div class="application-status pending">
@@ -715,7 +952,7 @@ async function renderFacultyConsole() {
                     <div class="application-actions">
                         ${c.certificate_filename
                             ? `<a class="garden-button secondary" target="_blank"
-                                  href="${API}/certificates/${c.certificate_filename}">View</a>` : ""}
+                                  href="${API}/certificates/${encodeURIComponent(c.certificate_filename)}">View</a>` : ""}
                         <button class="garden-button" type="button"
                                 data-faculty-verify="${c.student_id}:${c.skill_id}"
                                 data-status="Verified">Verify</button>
@@ -736,9 +973,9 @@ async function renderFacultyConsole() {
             <article class="garden-card application-card">
                 <div class="application-card-top">
                     <div>
-                        <span class="application-project-status ${p.status === "Open" ? "open" : "closed"}">${p.status}</span>
-                        <h3>${p.title}</h3>
-                        <p>${p.domain || ""} · ${p.required_availability}</p>
+                        <span class="application-project-status ${p.status === "Open" ? "open" : "closed"}">${escapeHtml(p.status)}</span>
+                        <h3>${escapeHtml(p.title)}</h3>
+                        <p>${escapeHtml(p.domain || "")} · ${escapeHtml(p.required_availability)}</p>
                     </div>
                     <div class="application-match">
                         <small>TEAM</small>
@@ -810,10 +1047,17 @@ async function renderProfileManagement() {
     const availForm = $("#availabilityForm");
     if (!skillForm && !interestForm && !expForm && !availForm) return;
 
+    // Load skills
+    refreshSkillPlants();
+
     // Interests
     const interestBox = $("#profileInterests");
     if (interestBox) {
-        const { ok, data } = await api("/student/interests");
+        const { ok, status, data } = await api("/student/interests");
+        if (status === 401) {
+            window.location.href = "login.html";
+            return;
+        }
         renderInterestChips((ok && data.interests) || []);
     }
 
@@ -882,9 +1126,9 @@ function renderInterestChips(list) {
 
     box.innerHTML = list.length ? list.map(i => `
         <span class="settings-chip selected">
-            <span>${i}</span>
+            <span>${escapeHtml(i)}</span>
             <button class="chip-remove" type="button"
-                    data-remove-interest="${i}" title="Remove">×</button>
+                    data-remove-interest="${escapeHtml(i)}" title="Remove">×</button>
         </span>`).join("")
         : `<p class="muted-text">No interests selected yet.</p>`;
 
@@ -925,23 +1169,33 @@ async function refreshSkillPlants() {
     plants.innerHTML = skills.map((sk, i) => {
         const pct = Math.round((sk.proficiency_level / 5) * 100);
         const cert = sk.certificate_status === "Verified"
-            ? `<a href="${API}/certificates/${sk.certificate_filename}" target="_blank"
+            ? `<a href="${API}/certificates/${encodeURIComponent(sk.certificate_filename || '')}" target="_blank"
                    class="skill-cert-badge verified">Verified ✓</a>`
             : sk.certificate_status === "Pending"
-                ? `<a href="${API}/certificates/${sk.certificate_filename}" target="_blank"
+                ? `<a href="${API}/certificates/${encodeURIComponent(sk.certificate_filename || '')}" target="_blank"
                        class="skill-cert-badge pending">Pending ⏳</a>`
                 : `<button type="button" class="skill-cert-badge upload"
-                           onclick="openCertModal(${sk.skill_id}, '${sk.name}')">+ Certificate</button>`;
+                           data-skill-id="${sk.skill_id}" data-skill-name="${escapeHtml(sk.name)}">+ Certificate</button>`;
         return `
             <div class="skill-plant">
                 <div class="skill-plant-flower">${flowers[i % flowers.length]}</div>
-                <div class="skill-plant-name">${sk.name}</div>
+                <div class="skill-plant-name">${escapeHtml(sk.name)}</div>
                 <div class="skill-plant-level">${sk.proficiency_level} / 5 · ${pct}%</div>
                 ${cert}
-                <button type="button" class="chip-remove skill-remove" title="Remove ${sk.name}"
+                <button type="button" class="chip-remove skill-remove" title="Remove ${escapeHtml(sk.name)}"
                         data-remove-skill="${sk.skill_id}">×</button>
             </div>`;
     }).join("");
+
+    $$("button.skill-cert-badge.upload", plants).forEach(btn => {
+        btn.addEventListener("click", () => {
+            const sid = btn.dataset.skillId;
+            const sname = btn.dataset.skillName;
+            if (typeof openCertModal === "function") {
+                openCertModal(sid, sname);
+            }
+        });
+    });
 
     $$("[data-remove-skill]", plants).forEach(btn => {
         btn.addEventListener("click", async () => {
@@ -1056,6 +1310,7 @@ function wireProfileManagement() {
         const readout = $("[data-weekly-hours]");
         slider.addEventListener("input", () => {
             if (readout) readout.textContent = slider.value;
+            updateCapacityRing(slider.value);
         });
         slider.addEventListener("change", async () => {
             const hours = parseInt(slider.value, 10);
@@ -1063,8 +1318,12 @@ function wireProfileManagement() {
                 method: "PUT",
                 body: JSON.stringify({ weekly_hours: hours })
             });
-            if (ok && data.success) toast(`Weekly availability set to ${hours} hours 🌿`);
-            else toast(data.message || "Could not save your availability.");
+            if (ok && data.success) {
+                toast(`Weekly availability set to ${hours} hours 🌿`);
+                updateCapacityRing(hours);
+            } else {
+                toast(data.message || "Could not save your availability.");
+            }
         });
     }
 }
@@ -1093,6 +1352,14 @@ async function renderSettings() {
      "prioritise_skills", "consider_interests", "consider_experience",
      "consider_availability", "application_alerts", "team_alerts", "gap_alerts",
      "weekly_hours"].forEach(k => set(k, s[k]));
+
+    // Update availability display numbers on settings page
+    if (s.weekly_hours !== undefined && s.weekly_hours !== null) {
+        const availText = $(".availability-number strong");
+        if (availText) availText.textContent = s.weekly_hours;
+        const capNote = $(".capacity-note strong");
+        if (capNote) capNote.textContent = `${Math.max(0, s.weekly_hours - 10)} hours`;
+    }
 
     // Interest chips
     const chips = $$("[data-interest-chip]");
@@ -1131,27 +1398,104 @@ async function saveInterestChips(notify = true) {
 
 function wireSettings() {
     const saveButton = $('[data-garden-action="save-settings"]');
-    if (!saveButton) return;
+    if (saveButton) {
+        saveButton.addEventListener("click", async () => {
+            const values = {};
+            $$("[data-setting]").forEach(field => {
+                values[field.dataset.setting] = field.type === "checkbox"
+                    ? (field.checked ? 1 : 0)
+                    : field.value;
+            });
 
-    saveButton.addEventListener("click", async () => {
-        const values = {};
-        $$("[data-setting]").forEach(field => {
-            values[field.dataset.setting] = field.type === "checkbox"
-                ? (field.checked ? 1 : 0)
-                : field.value;
+            const { ok, data } = await api("/student/settings", {
+                method: "PUT",
+                body: JSON.stringify(values)
+            });
+            if (ok && data.success) {
+                await saveInterestChips(false);
+                toast("Settings saved successfully 🌿");
+            } else {
+                toast(data.message || "Could not save your settings.");
+            }
+        });
+    }
+
+    // Availability slider live readout
+    const availSlider = $("#settingsWeeklyHours");
+    if (availSlider) {
+        const availText = $(".availability-number strong");
+        const capNote = $(".capacity-note strong");
+        availSlider.addEventListener("input", () => {
+            const val = parseInt(availSlider.value, 10) || 0;
+            if (availText) availText.textContent = val;
+            if (capNote) capNote.textContent = `${Math.max(0, val - 10)} hours`;
+        });
+    }
+
+    // Change Password Modal & Action
+    const cpBtn = $("#changePasswordBtn");
+    const cpModal = $("#changePasswordModal");
+    const closeCpModal = $("#closeChangePasswordModal");
+    const cancelCp = $("#cancelChangePassword");
+    const cpForm = $("#changePasswordForm");
+
+    if (cpBtn && cpModal) {
+        const openModal = () => cpModal.classList.add("active");
+        const closeModal = () => {
+            cpModal.classList.remove("active");
+            if (cpForm) cpForm.reset();
+        };
+        cpBtn.addEventListener("click", openModal);
+        if (closeCpModal) closeCpModal.addEventListener("click", closeModal);
+        if (cancelCp) cancelCp.addEventListener("click", closeModal);
+        cpModal.addEventListener("click", (e) => {
+            if (e.target === cpModal) closeModal();
         });
 
-        const { ok, data } = await api("/student/settings", {
-            method: "PUT",
-            body: JSON.stringify(values)
-        });
-        if (ok && data.success) {
-            await saveInterestChips(false);
-            toast("Settings saved successfully 🌿");
-        } else {
-            toast(data.message || "Could not save your settings.");
+        if (cpForm) {
+            cpForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const current_password = $("#currentPassword").value;
+                const new_password = $("#newPassword").value;
+                const confirm_password = $("#confirmNewPassword").value;
+
+                if (new_password.length < 8) {
+                    toast("New password must be at least 8 characters.");
+                    return;
+                }
+                if (new_password !== confirm_password) {
+                    toast("New passwords do not match.");
+                    return;
+                }
+
+                const { ok, data } = await api("/auth/change-password", {
+                    method: "POST",
+                    body: JSON.stringify({ current_password, new_password, confirm_password })
+                });
+                if (ok && data.success) {
+                    toast("Password changed successfully 🌿");
+                    closeModal();
+                } else {
+                    toast(data.message || "Failed to change password.");
+                }
+            });
         }
-    });
+    }
+
+    // Reset Preferences
+    const resetBtn = $("#resetPreferencesBtn");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", async () => {
+            if (!confirm("Are you sure you want to reset your matching and notification preferences to defaults?")) return;
+            const { ok, data } = await api("/student/reset-settings", { method: "POST" });
+            if (ok && data.success) {
+                toast("Preferences reset to defaults 🌿");
+                renderSettings();
+            } else {
+                toast(data.message || "Could not reset preferences.");
+            }
+        });
+    }
 }
 
 /* ------------------------------------------------------------
@@ -1220,9 +1564,12 @@ async function wireProjectPicker() {
 
     const { ok, data } = await api("/projects");
     const projects = (ok && data.projects) || [];
-    if (!projects.length) return;
+    if (!projects.length) {
+        picker.innerHTML = "<option value=''>No projects available</option>";
+        return;
+    }
 
-    const current = currentProjectId();
+    const current = await resolveProjectId();
     picker.innerHTML = "";
     projects.forEach(p => {
         const option = document.createElement("option");

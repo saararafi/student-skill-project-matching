@@ -164,15 +164,39 @@ def compute_match(student_id, project_id):
         project_data['required_availability']
     )
 
-    # 5. Final Weighted Match (using the student's chosen factors)
-    weights = student_data.get('preferences', {}).get('weights')
-    final_score = calculate_weighted_match(
-        skill_score,
-        interest_score,
-        experience_score,
-        availability_score,
-        weights=weights
-    )
+    # 5. Final Weighted Match (using the student's chosen factors, renormalized for active project categories)
+    weights = dict(student_data.get('preferences', {}).get('weights') or DEFAULT_WEIGHTS)
+
+    # Check if project defines each category
+    has_skills = bool(project_data.get('required_skills'))
+    has_interests = bool(project_data.get('interests'))
+    has_experiences = bool(project_data.get('experiences'))
+    has_availability = bool(project_data.get('required_availability'))
+
+    # If project lacks specific categories, drop that category so the student isn't penalized
+    active_weights = dict(weights)
+    if not has_skills:
+        active_weights['skill'] = 0.0
+    if not has_interests:
+        active_weights['interest'] = 0.0
+    if not has_experiences:
+        active_weights['experience'] = 0.0
+    if not has_availability:
+        active_weights['availability'] = 0.0
+
+    total_w = sum(active_weights.values())
+    if total_w > 0:
+        norm_weights = {k: v / total_w for k, v in active_weights.items()}
+        final_score = calculate_weighted_match(
+            skill_score,
+            interest_score,
+            experience_score,
+            availability_score,
+            weights=active_weights
+        )
+    else:
+        norm_weights = dict(DEFAULT_WEIGHTS)
+        final_score = 100.0 if not any([has_skills, has_interests, has_experiences]) else 0.0
 
     # Enrich skill breakdown with certificate information
     enriched_skills = []
@@ -196,10 +220,10 @@ def compute_match(student_id, project_id):
         "domain": project_data['project']['domain'],
         "final_score": final_score,
         "weights": {
-            "skill_weight": "50%",
-            "interest_weight": "20%",
-            "experience_weight": "20%",
-            "availability_weight": "10%"
+            "skill_weight": f"{int(round(norm_weights.get('skill', 0.5) * 100))}%",
+            "interest_weight": f"{int(round(norm_weights.get('interest', 0.2) * 100))}%",
+            "experience_weight": f"{int(round(norm_weights.get('experience', 0.2) * 100))}%",
+            "availability_weight": f"{int(round(norm_weights.get('availability', 0.1) * 100))}%"
         },
         "scores": {
             "skill_score": skill_score,

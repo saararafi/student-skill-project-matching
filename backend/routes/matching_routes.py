@@ -1,7 +1,7 @@
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
-from backend.database import fetch_all
+from backend.database import fetch_all, fetch_one, execute_query
 from backend.auth_utils import get_current_student_id
 from backend.services.matching_service import (
     get_ranked_project_recommendations,
@@ -111,6 +111,37 @@ def get_teammates(project_id):
         "success": True,
         "project_id": project_id,
         "teammates": teammates
+    }), 200
+
+
+@matching_bp.route("/projects/<int:project_id>/invite", methods=["POST"])
+def invite_teammate(project_id):
+    student_id, error = student_login_required()
+    if error:
+        return error
+
+    data = request.get_json(silent=True) or {}
+    target_student_id = data.get("student_id")
+    target_name = data.get("student_name")
+
+    project = fetch_one("SELECT title FROM projects WHERE id = %s", (project_id,))
+    p_title = project["title"] if project else "Project"
+
+    target_user_id = None
+    if target_student_id:
+        st = fetch_one("SELECT user_id FROM students WHERE id = %s", (target_student_id,))
+        if st:
+            target_user_id = st.get("user_id")
+
+    if target_user_id:
+        execute_query(
+            "INSERT INTO notifications (user_id, title, message, type) VALUES (%s, %s, %s, %s)",
+            (target_user_id, "Team Invitation 🌿", f"You have been invited to join the team for {p_title}!", "invite")
+        )
+
+    return jsonify({
+        "success": True,
+        "message": f"Invitation sent to {target_name or 'teammate'}!"
     }), 200
 
 

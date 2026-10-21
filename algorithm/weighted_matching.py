@@ -1,3 +1,26 @@
+import math
+
+
+def _clean_score(val):
+    try:
+        f = float(val)
+        if math.isnan(f) or math.isinf(f):
+            return 0.0
+        return max(0.0, min(100.0, f))
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _clean_weight(val, default):
+    try:
+        f = float(val)
+        if math.isnan(f) or math.isinf(f) or f < 0:
+            return 0.0
+        return f
+    except (TypeError, ValueError):
+        return default
+
+
 def calculate_weighted_match(
     skill_score,
     interest_score,
@@ -25,8 +48,14 @@ def calculate_weighted_match(
         final_score: Overall weighted compatibility percentage
     """
 
+    # Clean and validate input scores
+    skill_score = _clean_score(skill_score)
+    interest_score = _clean_score(interest_score)
+    experience_score = _clean_score(experience_score)
+    availability_score = _clean_score(availability_score)
+
     # Define weights
-    if weights is None:
+    if not isinstance(weights, dict):
         weights = {
             "skill": 0.50,
             "interest": 0.20,
@@ -34,10 +63,10 @@ def calculate_weighted_match(
             "availability": 0.10
         }
 
-    skill_weight = weights.get("skill", 0.50)
-    interest_weight = weights.get("interest", 0.20)
-    experience_weight = weights.get("experience", 0.20)
-    availability_weight = weights.get("availability", 0.10)
+    skill_weight = _clean_weight(weights.get("skill"), 0.50)
+    interest_weight = _clean_weight(weights.get("interest"), 0.20)
+    experience_weight = _clean_weight(weights.get("experience"), 0.20)
+    availability_weight = _clean_weight(weights.get("availability"), 0.10)
 
     # Normalise so the weights always add up to 1.0
     total_weight = skill_weight + interest_weight + experience_weight + availability_weight
@@ -64,6 +93,8 @@ def calculate_weighted_match(
         + experience_contribution
         + availability_contribution
     )
+
+    final_score = max(0.0, min(100.0, final_score))
 
     return round(final_score, 2)
 

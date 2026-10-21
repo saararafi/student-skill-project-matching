@@ -1,6 +1,8 @@
 import os
+import re
 import sqlite3
 import pymysql
+from contextlib import contextmanager
 from pymysql.cursors import DictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 from backend.config import Config
@@ -37,17 +39,21 @@ _mysql_conn_params = None
 def get_connection():
     global active_engine, _mysql_conn_params
 
-    # PostgreSQL is preferred when a DATABASE_URL is provided (Render).
-    if Config.DATABASE_URL and PSYCOPG2_AVAILABLE:
+    # 1. PostgreSQL is preferred when DATABASE_URL is provided or DB_ENGINE is postgres
+    if (Config.DATABASE_URL or Config.DB_ENGINE == ENGINE_POSTGRES) and PSYCOPG2_AVAILABLE:
         try:
             conn = psycopg2.connect(Config.DATABASE_URL)
             conn.autocommit = True
+            active_engine = ENGINE_POSTGRES
             return conn, ENGINE_POSTGRES
-        except Exception:
-            pass
+        except Exception as e:
+            # In production, never silently switch database engines
+            if Config.IS_PRODUCTION or Config.DB_ENGINE == ENGINE_POSTGRES:
+                raise RuntimeError(f"Database Connection Error: Failed to connect to PostgreSQL in production: {e}")
+            print(f"[Database Notice] PostgreSQL could not be reached ({e}).")
 
-    # Try MySQL first if configured or available
-    if active_engine == ENGINE_MYSQL or _mysql_conn_params is not None:
+    # 2. MySQL (when explicitly chosen or configured)
+    if Config.DB_ENGINE == ENGINE_MYSQL or (active_engine == ENGINE_MYSQL and Config.DB_ENGINE != ENGINE_SQLITE) or _mysql_conn_params is not None:
         try:
             conn = pymysql.connect(
                 host=Config.MYSQL_HOST,
@@ -58,14 +64,23 @@ def get_connection():
                 cursorclass=DictCursor,
                 autocommit=True
             )
+            active_engine = ENGINE_MYSQL
+            _mysql_conn_params = True
             return conn, ENGINE_MYSQL
-        except Exception:
-            pass
+        except Exception as e:
+            _mysql_conn_params = None
+            if Config.IS_PRODUCTION or Config.DB_ENGINE == ENGINE_MYSQL:
+                raise RuntimeError(f"Database Connection Error: Failed to connect to MySQL in production: {e}")
+            print(f"[Database Notice] MySQL connection could not be established ({e}). Falling back to SQLite.")
 
-    # SQLite fallback
+    # 3. SQLite (local development / testing / intentional fallback)
+    if Config.IS_PRODUCTION and Config.DB_ENGINE not in ('', ENGINE_SQLITE) and (Config.DATABASE_URL or Config.MYSQL_PASSWORD):
+        raise RuntimeError("Database Connection Error: Configured production database failed and fallback is disabled in production.")
+
     os.makedirs(os.path.dirname(Config.SQLITE_DB_PATH), exist_ok=True)
     conn = sqlite3.connect(Config.SQLITE_DB_PATH)
     conn.row_factory = sqlite3.Row
+    active_engine = ENGINE_SQLITE
     return conn, ENGINE_SQLITE
 
 
@@ -77,11 +92,50 @@ def _make_cursor(conn, engine):
 
 
 def adapt_sql(sql, target_engine):
-    """Adapts %s placeholders to ? when the target is SQLite."""
-    if target_engine == ENGINE_SQLITE:
-        # Replace %s placeholder with ? placeholder for sqlite3
-        return sql.replace('%s', '?')
-    return sql
+    """
+    Adapts %s placeholders to ? when the target is SQLite.
+    Preserves %s characters that appear inside string literals or identifiers.
+    """
+    if target_engine != ENGINE_SQLITE or not sql:
+        return sql
+
+    # Split into quoted string segments and unquoted SQL segments
+    parts = re.split(r"('(?:''|[^'])*'|\"(?:\"\"|[^\"])*\")", sql)
+    for i in range(0, len(parts), 2):
+        if parts[i]:
+            parts[i] = parts[i].replace('%s', '?')
+    return "".join(parts)
+
+
+@contextmanager
+def db_transaction():
+    """
+    Context manager for atomic multi-statement database operations.
+    Commits on block exit; automatically rolls back changes on any exception.
+    Yields (cursor, engine).
+    """
+    conn, engine = get_connection()
+    prev_autocommit = getattr(conn, 'autocommit', False)
+    if hasattr(conn, 'autocommit'):
+        conn.autocommit = False
+    cursor = _make_cursor(conn, engine)
+    try:
+        yield cursor, engine
+        conn.commit()
+    except Exception as exc:
+        try:
+            conn.rollback()
+        except Exception:
+            pass
+        raise exc
+    finally:
+        try:
+            cursor.close()
+        except Exception:
+            pass
+        if hasattr(conn, 'autocommit'):
+            conn.autocommit = prev_autocommit
+        conn.close()
 
 
 def execute_query(sql, params=None):
@@ -267,6 +321,9 @@ def ensure_demo_passwords():
     parameters. When that happens the seeded demo accounts would become
     unusable, so the hash is regenerated for the demo accounts only.
     """
+    if not Config.SEED_DEMO_DATA:
+        return 0
+
     repaired = 0
     for email in DEMO_EMAILS:
         user = fetch_one(
@@ -291,13 +348,57 @@ def ensure_demo_passwords():
     return repaired
 
 
-def _run_sql_script(conn, path, skip_prefixes=()):
-    """Runs a .sql file statement by statement."""
-    with open(path, 'r', encoding='utf-8') as f:
-        for statement in f.read().split(';'):
-            stmt = statement.strip()
-            if not stmt:
+def _split_sql_statements(sql_text):
+    """
+    Splits an SQL script into discrete statements, properly respecting
+    single-quoted strings, double-quoted identifiers, and comments.
+    """
+    statements = []
+    current = []
+    in_single_quote = False
+    in_double_quote = False
+    i = 0
+    n = len(sql_text)
+    while i < n:
+        c = sql_text[i]
+        if not in_single_quote and not in_double_quote:
+            # Skip single-line comments
+            if c == '-' and i + 1 < n and sql_text[i + 1] == '-':
+                end = sql_text.find('\n', i)
+                i = n if end == -1 else end
                 continue
+            # Skip multi-line comments
+            elif c == '/' and i + 1 < n and sql_text[i + 1] == '*':
+                end = sql_text.find('*/', i + 2)
+                i = n if end == -1 else end + 2
+                continue
+
+        if c == "'" and not in_double_quote:
+            in_single_quote = not in_single_quote
+            current.append(c)
+        elif c == '"' and not in_single_quote:
+            in_double_quote = not in_double_quote
+            current.append(c)
+        elif c == ';' and not in_single_quote and not in_double_quote:
+            stmt = ''.join(current).strip()
+            if stmt:
+                statements.append(stmt)
+            current = []
+        else:
+            current.append(c)
+        i += 1
+
+    rem = ''.join(current).strip()
+    if rem:
+        statements.append(rem)
+    return statements
+
+
+def _run_sql_script(conn, path, skip_prefixes=()):
+    """Runs a .sql file statement by statement safely."""
+    with open(path, 'r', encoding='utf-8') as f:
+        statements = _split_sql_statements(f.read())
+        for stmt in statements:
             if any(stmt.upper().startswith(p) for p in skip_prefixes):
                 continue
             conn.cursor().execute(stmt)
@@ -326,7 +427,8 @@ def init_db():
                 seed_path = os.path.join(
                     Config.BASE_DIR, 'database', 'seed_data.sql')
                 _run_sql_script(conn, schema_path)
-                _run_sql_script(conn, seed_path, skip_prefixes=('USE ',))
+                if Config.SEED_DEMO_DATA:
+                    _run_sql_script(conn, seed_path, skip_prefixes=('USE ',))
             cur.close()
             conn.close()
             active_engine = ENGINE_POSTGRES
@@ -364,11 +466,12 @@ def init_db():
                             if stmt and not stmt.upper().startswith("CREATE DATABASE") and not stmt.upper().startswith("USE"):
                                 cur.execute(stmt)
 
-                    with open(seed_path, 'r', encoding='utf-8') as f:
-                        for statement in f.read().split(';'):
-                            stmt = statement.strip()
-                            if stmt and not stmt.upper().startswith("USE"):
-                                cur.execute(stmt)
+                    if Config.SEED_DEMO_DATA:
+                        with open(seed_path, 'r', encoding='utf-8') as f:
+                            for statement in f.read().split(';'):
+                                stmt = statement.strip()
+                                if stmt and not stmt.upper().startswith("USE"):
+                                    cur.execute(stmt)
 
             conn.close()
             active_engine = ENGINE_MYSQL
@@ -385,167 +488,183 @@ def init_db():
         conn = sqlite3.connect(Config.SQLITE_DB_PATH)
         cur = conn.cursor()
         
-        # Check if tables exist
+        # Check if users table already exists to avoid duplicate demo seeding
         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users';")
-        if not cur.fetchone():
-            # Create SQLite Schema
-            cur.executescript("""
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                role TEXT DEFAULT 'student',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
+        has_users_table = cur.fetchone() is not None
 
-            CREATE TABLE IF NOT EXISTS students (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL UNIQUE,
-                department TEXT DEFAULT 'Computer Science Engineering',
-                year TEXT DEFAULT '3rd Year',
-                semester TEXT DEFAULT '5th Semester',
-                availability TEXT DEFAULT 'Full-time',
-                bio TEXT,
-                github_url TEXT DEFAULT '',
-                linkedin_url TEXT DEFAULT '',
-                email_notifications INTEGER DEFAULT 1,
-                match_alerts INTEGER DEFAULT 1,
-                weekly_digest INTEGER DEFAULT 0,
-                profile_visibility TEXT DEFAULT 'team',
-                prioritise_skills INTEGER DEFAULT 1,
-                consider_interests INTEGER DEFAULT 1,
-                consider_experience INTEGER DEFAULT 1,
-                consider_availability INTEGER DEFAULT 1,
-                application_alerts INTEGER DEFAULT 1,
-                team_alerts INTEGER DEFAULT 1,
-                gap_alerts INTEGER DEFAULT 1,
-                weekly_hours INTEGER DEFAULT 20,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            );
+        # Always ensure all tables in schema exist
+        cur.executescript("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            role TEXT DEFAULT 'student',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
 
-            CREATE TABLE IF NOT EXISTS skills (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL UNIQUE,
-                category TEXT DEFAULT 'General'
-            );
+        CREATE TABLE IF NOT EXISTS students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL UNIQUE,
+            department TEXT DEFAULT 'Computer Science Engineering',
+            year TEXT DEFAULT '3rd Year',
+            semester TEXT DEFAULT '5th Semester',
+            availability TEXT DEFAULT 'Full-time',
+            bio TEXT,
+            github_url TEXT DEFAULT '',
+            linkedin_url TEXT DEFAULT '',
+            email_notifications INTEGER DEFAULT 1,
+            match_alerts INTEGER DEFAULT 1,
+            weekly_digest INTEGER DEFAULT 0,
+            profile_visibility TEXT DEFAULT 'team',
+            prioritise_skills INTEGER DEFAULT 1,
+            consider_interests INTEGER DEFAULT 1,
+            consider_experience INTEGER DEFAULT 1,
+            consider_availability INTEGER DEFAULT 1,
+            application_alerts INTEGER DEFAULT 1,
+            team_alerts INTEGER DEFAULT 1,
+            gap_alerts INTEGER DEFAULT 1,
+            weekly_hours INTEGER DEFAULT 20,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS student_skills (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                student_id INTEGER NOT NULL,
-                skill_id INTEGER NOT NULL,
-                proficiency_level INTEGER NOT NULL CHECK (proficiency_level BETWEEN 1 AND 5),
-                certificate_filename TEXT DEFAULT NULL,
-                certificate_original_name TEXT DEFAULT NULL,
-                certificate_status TEXT DEFAULT 'None',
-                uploaded_at TIMESTAMP NULL DEFAULT NULL,
-                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-                FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
-                UNIQUE (student_id, skill_id)
-            );
+        CREATE TABLE IF NOT EXISTS skills (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            category TEXT DEFAULT 'General'
+        );
 
-            CREATE TABLE IF NOT EXISTS student_interests (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                student_id INTEGER NOT NULL,
-                interest TEXT NOT NULL,
-                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
-            );
+        CREATE TABLE IF NOT EXISTS student_skills (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            skill_id INTEGER NOT NULL,
+            proficiency_level INTEGER NOT NULL CHECK (proficiency_level BETWEEN 1 AND 5),
+            certificate_filename TEXT DEFAULT NULL,
+            certificate_original_name TEXT DEFAULT NULL,
+            certificate_status TEXT DEFAULT 'None',
+            uploaded_at TIMESTAMP NULL DEFAULT NULL,
+            FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+            FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
+            UNIQUE (student_id, skill_id)
+        );
 
-            CREATE TABLE IF NOT EXISTS student_experiences (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                student_id INTEGER NOT NULL,
-                experience_title TEXT NOT NULL,
-                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
-            );
+        CREATE TABLE IF NOT EXISTS student_interests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            interest TEXT NOT NULL,
+            FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS projects (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                faculty_id INTEGER NOT NULL,
-                title TEXT NOT NULL,
-                description TEXT NOT NULL,
-                domain TEXT NOT NULL,
-                required_availability TEXT DEFAULT 'Part-time',
-                team_size INTEGER DEFAULT 4,
-                status TEXT DEFAULT 'Open',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (faculty_id) REFERENCES users(id) ON DELETE CASCADE
-            );
+        CREATE TABLE IF NOT EXISTS student_experiences (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            experience_title TEXT NOT NULL,
+            FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS project_skills (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                project_id INTEGER NOT NULL,
-                skill_id INTEGER NOT NULL,
-                required_level INTEGER NOT NULL CHECK (required_level BETWEEN 1 AND 5),
-                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-                FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
-                UNIQUE (project_id, skill_id)
-            );
+        CREATE TABLE IF NOT EXISTS projects (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            faculty_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT NOT NULL,
+            domain TEXT NOT NULL,
+            required_availability TEXT DEFAULT 'Part-time',
+            team_size INTEGER DEFAULT 4,
+            status TEXT DEFAULT 'Open',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (faculty_id) REFERENCES users(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS project_interests (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                project_id INTEGER NOT NULL,
-                interest TEXT NOT NULL,
-                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-            );
+        CREATE TABLE IF NOT EXISTS project_skills (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            skill_id INTEGER NOT NULL,
+            required_level INTEGER NOT NULL CHECK (required_level BETWEEN 1 AND 5),
+            FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+            FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
+            UNIQUE (project_id, skill_id)
+        );
 
-            CREATE TABLE IF NOT EXISTS project_experiences (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                project_id INTEGER NOT NULL,
-                experience_title TEXT NOT NULL,
-                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-            );
+        CREATE TABLE IF NOT EXISTS project_interests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            interest TEXT NOT NULL,
+            FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS teams (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                project_id INTEGER NOT NULL,
-                name TEXT NOT NULL,
-                leader_id INTEGER NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-                FOREIGN KEY (leader_id) REFERENCES students(id) ON DELETE CASCADE
-            );
+        CREATE TABLE IF NOT EXISTS project_experiences (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            experience_title TEXT NOT NULL,
+            FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS team_members (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                team_id INTEGER NOT NULL,
-                student_id INTEGER NOT NULL,
-                role TEXT DEFAULT 'Contributor',
-                joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-                UNIQUE (team_id, student_id)
-            );
+        CREATE TABLE IF NOT EXISTS teams (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            leader_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+            FOREIGN KEY (leader_id) REFERENCES students(id) ON DELETE CASCADE
+        );
 
-            CREATE TABLE IF NOT EXISTS applications (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                project_id INTEGER NOT NULL,
-                student_id INTEGER NOT NULL,
-                status TEXT DEFAULT 'Pending',
-                message TEXT,
-                match_score REAL DEFAULT 0.00,
-                applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                reviewed_at TIMESTAMP NULL DEFAULT NULL,
-                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-                FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-                UNIQUE (project_id, student_id)
-            );
+        CREATE TABLE IF NOT EXISTS team_members (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            team_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            role TEXT DEFAULT 'Contributor',
+            joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
+            FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+            UNIQUE (team_id, student_id)
+        );
 
-            CREATE TABLE IF NOT EXISTS notifications (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                title TEXT NOT NULL,
-                message TEXT NOT NULL,
-                type TEXT DEFAULT 'info',
-                link TEXT DEFAULT '',
-                is_read INTEGER DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            );
-            """)
+        CREATE TABLE IF NOT EXISTS applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            status TEXT DEFAULT 'Pending',
+            message TEXT,
+            match_score REAL DEFAULT 0.00,
+            applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            reviewed_at TIMESTAMP NULL DEFAULT NULL,
+            FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+            FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+            UNIQUE (project_id, student_id)
+        );
 
-            # Seed SQLite Data
-            # Generate the demo password hash at runtime so it always matches
-            # the installed Werkzeug version (hard-coded hashes go stale).
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            message TEXT NOT NULL,
+            type TEXT DEFAULT 'info',
+            link TEXT DEFAULT '',
+            is_read INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        """)
+
+        # Master Skills Catalog (always available for selection and matching)
+        cur.executemany("INSERT OR IGNORE INTO skills (id, name, category) VALUES (?, ?, ?)", [
+            (1, 'Python', 'Programming Languages'),
+            (2, 'Java', 'Programming Languages'),
+            (3, 'HTML', 'Frontend Development'),
+            (4, 'CSS', 'Frontend Development'),
+            (5, 'JavaScript', 'Frontend Development'),
+            (6, 'MySQL', 'Database Systems'),
+            (7, 'Flask', 'Backend Frameworks'),
+            (8, 'React', 'Frontend Frameworks'),
+            (9, 'Machine Learning', 'Artificial Intelligence'),
+            (10, 'UI/UX Design', 'Design & Prototyping'),
+            (11, 'C++', 'Programming Languages'),
+            (12, 'Docker', 'DevOps & Deployment')
+        ])
+
+        # Seed SQLite Demo Data ONLY if SEED_DEMO_DATA is enabled and database was fresh
+        if (not has_users_table) and Config.SEED_DEMO_DATA:
             pwd_hash = generate_password_hash(DEMO_PASSWORD)
             
             cur.executemany("INSERT INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [
@@ -564,21 +683,6 @@ def init_db():
                 (3, 3, 'Computer Science Engineering', '3rd Year', '5th Semester', 'Full-time', 'Backend specialist focusing on Flask, databases, and microservices.', 'https://github.com/rahul-v', 'https://linkedin.com/in/rahul-v'),
                 (4, 4, 'Computer Science Engineering', '3rd Year', '5th Semester', 'Part-time', 'Frontend & UI/UX specialist who loves modern responsive interfaces and user experience.', 'https://github.com/meera-p', 'https://linkedin.com/in/meera-p'),
                 (5, 5, 'Electronics & Communication', '3rd Year', '5th Semester', 'Full-time', 'Systems programmer passionate about C++, IoT, and real-time processing.', 'https://github.com/arjun-n', 'https://linkedin.com/in/arjun-n')
-            ])
-
-            cur.executemany("INSERT INTO skills (id, name, category) VALUES (?, ?, ?)", [
-                (1, 'Python', 'Programming Languages'),
-                (2, 'Java', 'Programming Languages'),
-                (3, 'HTML', 'Frontend Development'),
-                (4, 'CSS', 'Frontend Development'),
-                (5, 'JavaScript', 'Frontend Development'),
-                (6, 'MySQL', 'Database Systems'),
-                (7, 'Flask', 'Backend Frameworks'),
-                (8, 'React', 'Frontend Frameworks'),
-                (9, 'Machine Learning', 'Artificial Intelligence'),
-                (10, 'UI/UX Design', 'Design & Prototyping'),
-                (11, 'C++', 'Programming Languages'),
-                (12, 'Docker', 'DevOps & Deployment')
             ])
 
             cur.executemany("INSERT INTO student_skills (student_id, skill_id, proficiency_level, certificate_filename, certificate_original_name, certificate_status, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))", [
@@ -723,8 +827,8 @@ def init_db():
                 (1, 'New Project Matching You', 'Campus Resource System has a 91% match with your profile.', 'info', 'projects.html')
             ])
 
-            conn.commit()
-            print("[Database] Successfully initialized and seeded SQLite database at database/skillmatch.db.")
+        conn.commit()
+        print("[Database] Successfully initialized SQLite database schema at database/skillmatch.db.")
         conn.close()
 
     # Make sure the seeded demo accounts can still be logged into.
@@ -732,3 +836,76 @@ def init_db():
 
     # Bring existing databases up to date with the current schema.
     run_migrations()
+
+
+def reset_clean_db():
+    """
+    Clears all user-created and demo records from the database,
+    preserving table schemas and the master skills catalog.
+    Ensures the platform operates purely on live user inputs.
+    """
+    tables = [
+        'notifications',
+        'applications',
+        'team_members',
+        'teams',
+        'project_experiences',
+        'project_interests',
+        'project_skills',
+        'projects',
+        'student_experiences',
+        'student_interests',
+        'student_skills',
+        'students',
+        'users'
+    ]
+    conn, engine = get_connection()
+    try:
+        cur = _make_cursor(conn, engine)
+        for t in tables:
+            try:
+                cur.execute(f"DELETE FROM {t}")
+            except Exception as e:
+                print(f"[Database Clean Notice] Could not clear table {t}: {e}")
+        if engine == ENGINE_SQLITE:
+            try:
+                cur.execute("DELETE FROM sqlite_sequence WHERE name IN ('" + "','".join(tables) + "')")
+            except Exception:
+                pass
+            conn.commit()
+        elif engine == ENGINE_MYSQL:
+            for t in tables:
+                try:
+                    cur.execute(f"ALTER TABLE {t} AUTO_INCREMENT = 1")
+                except Exception:
+                    pass
+
+        # Re-ensure master skills catalog exists
+        master_skills = [
+            (1, 'Python', 'Programming Languages'),
+            (2, 'Java', 'Programming Languages'),
+            (3, 'HTML', 'Frontend Development'),
+            (4, 'CSS', 'Frontend Development'),
+            (5, 'JavaScript', 'Frontend Development'),
+            (6, 'MySQL', 'Database Systems'),
+            (7, 'Flask', 'Backend Frameworks'),
+            (8, 'React', 'Frontend Frameworks'),
+            (9, 'Machine Learning', 'Artificial Intelligence'),
+            (10, 'UI/UX Design', 'Design & Prototyping'),
+            (11, 'C++', 'Programming Languages'),
+            (12, 'Docker', 'DevOps & Deployment')
+        ]
+        for sk_id, name, cat in master_skills:
+            if engine == ENGINE_SQLITE:
+                cur.execute("INSERT OR IGNORE INTO skills (id, name, category) VALUES (?, ?, ?)", (sk_id, name, cat))
+            elif engine == ENGINE_MYSQL:
+                cur.execute("INSERT IGNORE INTO skills (id, name, category) VALUES (%s, %s, %s)", (sk_id, name, cat))
+            elif engine == ENGINE_POSTGRES:
+                cur.execute("INSERT INTO skills (id, name, category) VALUES (%s, %s, %s) ON CONFLICT (name) DO NOTHING", (sk_id, name, cat))
+
+        if engine == ENGINE_SQLITE:
+            conn.commit()
+        cur.close()
+        print("[Database] Cleaned database successfully: all demo and previous records wiped. System is ready for live user inputs.")
+    finally:
+        conn.close()
