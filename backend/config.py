@@ -41,6 +41,9 @@ _load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 class Config:
+    # The project root, used to find the schema and seed files.
+    BASE_DIR = BASE_DIR
+
     SECRET_KEY = os.environ.get('SECRET_KEY', 'skillmatch-secret-key-2026')
 
     # Render.com (and most hosts) provide a PostgreSQL DATABASE_URL.

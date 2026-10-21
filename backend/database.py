@@ -10,6 +10,9 @@ try:
     import psycopg2.extras
     PSYCOPG2_AVAILABLE = True
 except ImportError:
+    # The driver is optional: without it the app falls back to MySQL
+    # or SQLite. Keeping the name defined makes the fallback explicit.
+    psycopg2 = None
     PSYCOPG2_AVAILABLE = False
 
 ENGINE_MYSQL = 'mysql'
@@ -68,7 +71,7 @@ def get_connection():
 
 def _make_cursor(conn, engine):
     """Returns a cursor that yields dict-like rows on every engine."""
-    if engine == ENGINE_POSTGRES:
+    if engine == ENGINE_POSTGRES and psycopg2 is not None:
         return conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     return conn.cursor()
 
@@ -97,11 +100,20 @@ def execute_query(sql, params=None):
             return cursor.lastrowid
 
         if engine == ENGINE_POSTGRES:
-            # psycopg2 has no cursor.lastrowid; lastval() gives the last
-            # sequence value generated in this session.
-            cursor.execute("SELECT lastval() AS id")
-            row = cursor.fetchone()
-            return row['id'] if row else None
+            # psycopg2 has no cursor.lastrowid. lastval() gives the last
+            # sequence value used in this session - but it only exists
+            # after an INSERT, and each call here opens its own session,
+            # so it is only safe to ask for after one.
+            if not adapted.strip().upper().startswith('INSERT'):
+                return None
+
+            try:
+                cursor.execute("SELECT lastval() AS id")
+                row = cursor.fetchone()
+                return row['id'] if row else None
+            except Exception:
+                # The row was written; only the id lookup failed.
+                return None
 
         return cursor.lastrowid
     finally:
@@ -211,7 +223,8 @@ def run_migrations():
 
     conn, engine = get_connection()
     try:
-        cur = conn.cursor()
+        # A dict cursor, so the column names can be read on every engine.
+        cur = _make_cursor(conn, engine)
         for table, column, sqlite_def, mysql_def, pg_def in migrations:
             if engine == ENGINE_SQLITE:
                 definition = sqlite_def
