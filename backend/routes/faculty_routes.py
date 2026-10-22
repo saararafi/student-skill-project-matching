@@ -8,7 +8,7 @@ and student certificate verification.
 from flask import Blueprint, jsonify, request
 
 from backend.database import fetch_one, fetch_all, execute_query
-from backend.auth_utils import get_current_user_id, faculty_required
+from backend.auth_utils import get_current_user_id, get_current_user, faculty_required
 from backend.services.faculty_service import get_faculty_overview
 
 
@@ -46,34 +46,61 @@ def faculty_overview():
 @faculty_bp.route("/applications", methods=["GET"])
 @faculty_required
 def faculty_applications():
-    """Return applications for projects owned by this faculty member."""
+    """Return applications for projects owned by this faculty member (or all if admin)."""
 
     user_id = get_current_user_id()
+    user = get_current_user()
+    is_admin = user and str(user.get("role", "")).lower() == "admin"
 
-    applications = fetch_all("""
-        SELECT
-            a.id,
-            a.project_id,
-            a.student_id,
-            a.status,
-            a.message,
-            a.match_score,
-            a.applied_at,
-            p.title AS project_title,
-            p.domain,
-            u.name AS student_name,
-            u.email AS student_email,
-            s.department,
-            s.year
-        FROM applications a
-        JOIN projects p ON a.project_id = p.id
-        JOIN students s ON a.student_id = s.id
-        JOIN users u ON s.user_id = u.id
-        WHERE p.faculty_id = %s
-        ORDER BY
-            CASE WHEN a.status = 'Pending' THEN 0 ELSE 1 END,
-            a.applied_at DESC
-    """, (user_id,))
+    if is_admin:
+        applications = fetch_all("""
+            SELECT
+                a.id,
+                a.project_id,
+                a.student_id,
+                a.status,
+                a.message,
+                a.match_score,
+                a.applied_at,
+                p.title AS project_title,
+                p.domain,
+                u.name AS student_name,
+                u.email AS student_email,
+                s.department,
+                s.year
+            FROM applications a
+            JOIN projects p ON a.project_id = p.id
+            JOIN students s ON a.student_id = s.id
+            JOIN users u ON s.user_id = u.id
+            ORDER BY
+                CASE WHEN a.status = 'Pending' THEN 0 ELSE 1 END,
+                a.applied_at DESC
+        """)
+    else:
+        applications = fetch_all("""
+            SELECT
+                a.id,
+                a.project_id,
+                a.student_id,
+                a.status,
+                a.message,
+                a.match_score,
+                a.applied_at,
+                p.title AS project_title,
+                p.domain,
+                u.name AS student_name,
+                u.email AS student_email,
+                s.department,
+                s.year
+            FROM applications a
+            JOIN projects p ON a.project_id = p.id
+            JOIN students s ON a.student_id = s.id
+            JOIN users u ON s.user_id = u.id
+            WHERE p.faculty_id = %s
+            ORDER BY
+                CASE WHEN a.status = 'Pending' THEN 0 ELSE 1 END,
+                a.applied_at DESC
+        """, (user_id,))
 
     return jsonify({
         "success": True,
@@ -84,9 +111,12 @@ def faculty_applications():
 @faculty_bp.route("/applications/<int:app_id>/status", methods=["PUT"])
 @faculty_required
 def update_application_status(app_id):
-    """Allow faculty to review applications for their own projects."""
+    """Allow faculty to review applications for their own projects (or any project if admin)."""
 
     user_id = get_current_user_id()
+    user = get_current_user()
+    is_admin = user and str(user.get("role", "")).lower() == "admin"
+
     data = request.get_json(silent=True) or {}
     new_status = data.get("status")
 
@@ -96,18 +126,31 @@ def update_application_status(app_id):
             "message": "Invalid application status."
         }), 400
 
-    application = fetch_one("""
-        SELECT
-            a.id,
-            a.project_id,
-            a.student_id,
-            a.status,
-            p.title AS project_title
-        FROM applications a
-        JOIN projects p ON a.project_id = p.id
-        WHERE a.id = %s
-          AND p.faculty_id = %s
-    """, (app_id, user_id))
+    if is_admin:
+        application = fetch_one("""
+            SELECT
+                a.id,
+                a.project_id,
+                a.student_id,
+                a.status,
+                p.title AS project_title
+            FROM applications a
+            JOIN projects p ON a.project_id = p.id
+            WHERE a.id = %s
+        """, (app_id,))
+    else:
+        application = fetch_one("""
+            SELECT
+                a.id,
+                a.project_id,
+                a.student_id,
+                a.status,
+                p.title AS project_title
+            FROM applications a
+            JOIN projects p ON a.project_id = p.id
+            WHERE a.id = %s
+              AND p.faculty_id = %s
+        """, (app_id, user_id))
 
     if not application:
         return jsonify({
@@ -240,25 +283,29 @@ def update_certificate_status(student_id, skill_id):
             "message": "Status must be Verified or Rejected."
         }), 400
 
-    # Confirm that the student applied to one of this faculty member's projects.
-    eligible_student = fetch_one("""
-        SELECT s.id
-        FROM students s
-        WHERE s.id = %s
-          AND EXISTS (
-              SELECT 1
-              FROM applications a
-              JOIN projects p ON p.id = a.project_id
-              WHERE a.student_id = s.id
-                AND p.faculty_id = %s
-          )
-    """, (student_id, user_id))
+    user = get_current_user()
+    is_admin = user and str(user.get("role", "")).lower() == "admin"
 
-    if not eligible_student:
-        return jsonify({
-            "success": False,
-            "message": "This student is not an applicant to your projects."
-        }), 403
+    # Confirm that the student applied to one of this faculty member's projects (unless admin).
+    if not is_admin:
+        eligible_student = fetch_one("""
+            SELECT s.id
+            FROM students s
+            WHERE s.id = %s
+              AND EXISTS (
+                  SELECT 1
+                  FROM applications a
+                  JOIN projects p ON p.id = a.project_id
+                  WHERE a.student_id = s.id
+                    AND p.faculty_id = %s
+              )
+        """, (student_id, user_id))
+
+        if not eligible_student:
+            return jsonify({
+                "success": False,
+                "message": "This student is not an applicant to your projects."
+            }), 403
 
     # Confirm that the requested skill record exists.
     certificate = fetch_one("""

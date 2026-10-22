@@ -230,7 +230,9 @@ class TestOriginalThemePreserved(unittest.TestCase):
         for name in ['dashboard.html', 'growth.html', 'profile.html', 'projects.html',
                      'project-details.html', 'team.html', 'gaps.html',
                      'applications.html', 'notifications.html',
-                     'settings.html', 'faculty.html']:
+                     'settings.html', 'faculty.html', 'faculty-applications.html',
+                     'faculty-certificates.html', 'faculty-projects.html',
+                     'faculty-new-project.html']:
             raw = read(os.path.join(FRONTEND, name))
             with self.subTest(page=name):
                 self.assertIn('app-body', raw)

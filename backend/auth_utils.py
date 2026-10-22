@@ -133,6 +133,12 @@ def faculty_required(view_function):
 
     @wraps(view_function)
     def wrapped_view(*args, **kwargs):
+        if not is_logged_in():
+            return jsonify({
+                "success": False,
+                "message": "Please log in to continue."
+            }), 401
+
         if not is_faculty():
             return jsonify({
                 "success": False,

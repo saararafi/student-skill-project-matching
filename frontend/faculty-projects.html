@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Projects | SkillMatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/design-system.css?v=3">
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
+</head>
+
+<body class="app-body" data-page="faculty">
+
+<div class="app-layout">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            ❧ Skill<span>Match</span>
+        </div>
+
+        <div class="sidebar-caption">
+            FACULTY DESK
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="faculty.html">
+                <span class="nav-icon">❧</span>
+                Overview
+            </a>
+
+            <a href="faculty-applications.html">
+                <span class="nav-icon">✉</span>
+                Applications
+            </a>
+
+            <a href="faculty-certificates.html">
+                <span class="nav-icon">📜</span>
+                Certificates
+            </a>
+
+            <a href="faculty-projects.html" class="active">
+                <span class="nav-icon">🌿</span>
+                My Projects
+            </a>
+
+            <a href="faculty-new-project.html">
+                <span class="nav-icon">✿</span>
+                New Project
+            </a>
+        </nav>
+
+        <div class="sidebar-caption sidebar-caption-bottom">
+            ACCOUNT
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="projects.html">
+                <span class="nav-icon">🌱</span>
+                Student View
+            </a>
+
+            <a href="#" data-logout>
+                <span class="nav-icon">↪</span>
+                Leave Garden
+            </a>
+        </nav>
+    </aside>
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main class="app-main">
+
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="app-welcome">
+                <small>PROJECT GUIDE DESK</small>
+                <h1>
+                    Guided
+                    <em>Projects</em>
+                </h1>
+                <p>
+                    Oversee all active and planned project beds under your guidance, manage team capacity, and monitor incoming applications.
+                </p>
+            </div>
+
+            <div class="app-header-meta">
+                <a href="faculty-new-project.html" class="garden-button primary">
+                    + Publish Project ✿
+                </a>
+            </div>
+        </header>
+
+        <!-- =========================
+             PROJECTS LIST
+        ========================== -->
+        <section class="garden-section">
+            <div class="garden-section-title">
+                <div>
+                    <span>YOUR PROJECTS</span>
+                    <h2>
+                        Gardens you
+                        <em>guide.</em>
+                    </h2>
+                </div>
+            </div>
+
+            <div id="facultyProjectsList" class="projects-list">
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/main.js?v=3"></script>
+<script src="js/live.js?v=3"></script>
+
+</body>
+</html>

@@ -2,46 +2,30 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Faculty Console | SkillMatch</title>
+    <title>Faculty Overview | SkillMatch</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
         rel="stylesheet"
     >
 
     <link rel="stylesheet" href="css/style.css?v=3">
-
-
     <link rel="stylesheet" href="css/design-system.css?v=3">
-    
-<link rel="stylesheet" href="css/style.css?v=3">
-<link rel="stylesheet" href="css/design-system.css?v=3">
-<link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
-
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
 </head>
-
 
 <body class="app-body" data-page="faculty">
 
-
 <div class="app-layout">
-
 
     <!-- =========================
          SIDEBAR
     ========================== -->
-
     <aside class="sidebar">
-
         <div class="sidebar-logo">
             ❧ Skill<span>Match</span>
         </div>
@@ -51,42 +35,37 @@
         </div>
 
         <nav class="sidebar-nav">
-
             <a href="faculty.html" class="active">
                 <span class="nav-icon">❧</span>
                 Overview
             </a>
 
-            <a href="faculty.html#applications">
+            <a href="faculty-applications.html">
                 <span class="nav-icon">✉</span>
                 Applications
             </a>
 
-            <a href="faculty.html#certificates">
+            <a href="faculty-certificates.html">
                 <span class="nav-icon">📜</span>
                 Certificates
             </a>
 
-            <a href="faculty.html#projects">
+            <a href="faculty-projects.html">
                 <span class="nav-icon">🌿</span>
                 My Projects
             </a>
 
-            <a href="faculty.html#new-project">
+            <a href="faculty-new-project.html">
                 <span class="nav-icon">✿</span>
                 New Project
             </a>
-
         </nav>
-
 
         <div class="sidebar-caption sidebar-caption-bottom">
             ACCOUNT
         </div>
 
-
         <nav class="sidebar-nav">
-
             <a href="projects.html">
                 <span class="nav-icon">🌱</span>
                 Student View
@@ -96,315 +75,137 @@
                 <span class="nav-icon">↪</span>
                 Leave Garden
             </a>
-
         </nav>
-
     </aside>
-
-
 
     <!-- =========================
          MAIN
     ========================== -->
-
     <main class="app-main">
 
-
         <!-- HEADER -->
-
         <header class="app-header">
-
             <div class="app-welcome">
-
-                <small>
-                    PROJECT GUIDE DESK
-                </small>
-
+                <small>PROJECT GUIDE DESK</small>
                 <h1>
                     Good day,
                     <em data-faculty-name>Guide</em>
                 </h1>
-
                 <p>
-                    Review applications, verify student certificates and
-                    guide your projects towards completion.
+                    Review student proposals, verify academic certificates, and guide your research projects towards completion.
                 </p>
-
             </div>
 
             <div class="app-header-meta">
-
-                <span class="botanical-badge"
-                      id="facultyPendingBadge">
+                <span class="botanical-badge" id="facultyPendingBadge">
                     0 AWAITING REVIEW
                 </span>
-
             </div>
-
         </header>
-
-
 
         <!-- =========================
              STATISTICS
         ========================== -->
-
         <section class="dashboard-grid">
-
             <div class="dashboard-card stat-card garden-card">
                 <h3>Projects</h3>
                 <p>Guided by you</p>
-                <div class="stat-number"
-                     data-faculty-stat="projects">00</div>
+                <div class="stat-number" data-faculty-stat="projects">00</div>
                 <div class="stat-label">OPEN PROJECTS</div>
             </div>
 
             <div class="dashboard-card stat-card garden-card">
                 <h3>Applications</h3>
                 <p>Received in total</p>
-                <div class="stat-number"
-                     data-faculty-stat="applications">00</div>
+                <div class="stat-number" data-faculty-stat="applications">00</div>
                 <div class="stat-label">APPLICATIONS</div>
             </div>
 
             <div class="dashboard-card stat-card garden-card">
                 <h3>Pending</h3>
                 <p>Needing your decision</p>
-                <div class="stat-number"
-                     data-faculty-stat="pending_applications">00</div>
+                <div class="stat-number" data-faculty-stat="pending_applications">00</div>
                 <div class="stat-label">AWAITING REVIEW</div>
             </div>
-
         </section>
-
-
 
         <!-- =========================
-             APPLICATIONS
+             MODULE NAVIGATION CARDS
         ========================== -->
-
-        <section class="garden-section"
-                 id="applications">
-
+        <section class="garden-section">
             <div class="garden-section-title">
-
                 <div>
-
-                    <span>
-                        APPLICATIONS
-                    </span>
-
+                    <span>FACULTY PORTALS</span>
                     <h2>
-                        Students waiting
-                        <em>for your verdict.</em>
+                        Dedicated
+                        <em>workspaces.</em>
                     </h2>
-
                 </div>
-
-                <div class="garden-filter-bar">
-
-                    <select class="garden-filter"
-                            id="facultyStatusFilter"
-                            data-faculty-filter="status">
-
-                        <option value="all">All applications</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Accepted">Accepted</option>
-                        <option value="Rejected">Rejected</option>
-
-                    </select>
-
-                </div>
-
             </div>
 
-            <div id="facultyApplicationsList"
-                 class="applications-list">
-            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card garden-card" style="padding:24px;">
+                    <h3>Applications Desk</h3>
+                    <p class="muted-text" style="margin: 8px 0 16px;">
+                        Evaluate incoming student requests, check skill match scores, and accept or reject candidates.
+                    </p>
+                    <a href="faculty-applications.html" class="garden-button">Open Applications →</a>
+                </div>
 
+                <div class="dashboard-card garden-card" style="padding:24px;">
+                    <h3>Certificate Desk</h3>
+                    <p class="muted-text" style="margin: 8px 0 16px;">
+                        Verify student credentials, validate certificates, and confirm reported skill levels.
+                    </p>
+                    <a href="faculty-certificates.html" class="garden-button">Verify Credentials →</a>
+                </div>
+
+                <div class="dashboard-card garden-card" style="padding:24px;">
+                    <h3>Guided Projects</h3>
+                    <p class="muted-text" style="margin: 8px 0 16px;">
+                        Monitor your open projects, view team capacity, and check enrollment status.
+                    </p>
+                    <a href="faculty-projects.html" class="garden-button">View Projects →</a>
+                </div>
+
+                <div class="dashboard-card garden-card" style="padding:24px;">
+                    <h3>Publish Project</h3>
+                    <p class="muted-text" style="margin: 8px 0 16px;">
+                        Launch a new project bed with custom domain, required skills, and team size limits.
+                    </p>
+                    <a href="faculty-new-project.html" class="garden-button primary">Publish Project ✿</a>
+                </div>
+            </div>
         </section>
-
-
 
         <!-- =========================
-             CERTIFICATES
+             IMMEDIATE ATTENTION
         ========================== -->
-
-        <section class="garden-section"
-                 id="certificates">
-
+        <section class="garden-section">
             <div class="garden-section-title">
-
                 <div>
-
-                    <span>
-                        CREDENTIALS
-                    </span>
-
+                    <span>ACTION ITEMS</span>
                     <h2>
-                        Certificates to
-                        <em>verify.</em>
+                        Items awaiting
+                        <em>your decision.</em>
                     </h2>
+                </div>
+            </div>
 
+            <div class="dashboard-grid">
+                <div>
+                    <h3 style="margin-bottom: 12px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">Recent Applications</h3>
+                    <div id="facultyOverviewApplicationsList" class="applications-list">
+                    </div>
                 </div>
 
-            </div>
-
-            <div id="facultyCertificatesList"
-                 class="certificates-list">
-            </div>
-
-        </section>
-
-
-
-        <!-- =========================
-             PROJECTS
-        ========================== -->
-
-        <section class="garden-section"
-                 id="projects">
-
-            <div class="garden-section-title">
-
                 <div>
-
-                    <span>
-                        YOUR PROJECTS
-                    </span>
-
-                    <h2>
-                        Gardens you
-                        <em>guide.</em>
-                    </h2>
-
+                    <h3 style="margin-bottom: 12px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">Pending Certificates</h3>
+                    <div id="facultyOverviewCertificatesList" class="certificates-list">
+                    </div>
                 </div>
-
             </div>
-
-            <div id="facultyProjectsList"
-                 class="projects-list">
-            </div>
-
         </section>
-
-
-
-        <!-- =========================
-             NEW PROJECT
-        ========================== -->
-
-        <section class="garden-section"
-                 id="new-project">
-
-            <div class="garden-section-title">
-
-                <div>
-
-                    <span>
-                        OPEN A NEW BED
-                    </span>
-
-                    <h2>
-                        Publish a
-                        <em>project.</em>
-                    </h2>
-
-                </div>
-
-            </div>
-
-            <section class="garden-card"
-                     style="padding:25px;">
-
-                <form id="facultyProjectForm">
-
-                    <div class="input-group">
-                        <label>Project Title</label>
-                        <div class="input-wrapper">
-                            <span>✿</span>
-                            <input type="text"
-                                   id="facultyProjectTitle"
-                                   placeholder="e.g. Smart Attendance System"
-                                   required>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Description</label>
-                        <div class="input-wrapper">
-                            <span>✦</span>
-                            <textarea id="facultyProjectDescription"
-                                      rows="4"
-                                      placeholder="What should students build?"
-                                      required></textarea>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-grid"
-                         style="margin-bottom: 18px;">
-
-                        <div class="input-group">
-                            <label>Domain</label>
-                            <div class="input-wrapper">
-                                <span>🌿</span>
-                                <input type="text"
-                                       id="facultyProjectDomain"
-                                       placeholder="e.g. Healthcare">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Availability</label>
-                            <div class="input-wrapper">
-                                <span>◷</span>
-                                <select id="facultyProjectAvailability">
-                                    <option value="Part-time">Part-time</option>
-                                    <option value="Full-time">Full-time</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Team Size</label>
-                            <div class="input-wrapper">
-                                <span>👥</span>
-                                <input type="number"
-                                       id="facultyProjectTeamSize"
-                                       min="1"
-                                       max="20"
-                                       value="4">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="input-group">
-                        <label>Required Skills</label>
-                        <div class="input-wrapper">
-                            <span>🌱</span>
-                            <input type="text"
-                                   id="facultyProjectSkills"
-                                   placeholder="Python:5, Flask:3, MySQL:4">
-                        </div>
-                        <p class="muted-text"
-                           style="font-size:0.75rem; margin-top:6px;">
-                            Comma separated. Use <code>Skill:level</code> where
-                            level is 1-5, e.g. <code>Python:5, React:4</code>.
-                        </p>
-                    </div>
-
-                    <button type="submit"
-                            class="garden-button primary">
-                        Publish Project ✿
-                    </button>
-
-                </form>
-
-            </section>
-
-        </section>
-
 
     </main>
 
@@ -414,5 +215,4 @@
 <script src="js/live.js?v=3"></script>
 
 </body>
-
 </html>

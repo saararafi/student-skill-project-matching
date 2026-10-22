@@ -858,15 +858,32 @@ async function applyToProject(projectId, button) {
    ------------------------------------------------------------ */
 
 async function renderFacultyConsole() {
-    const apps = $("#facultyApplicationsList");
-    if (!apps) return;
+    const isFacultyPage = document.body.dataset.page === "faculty" ||
+        $("#facultyApplicationsList") ||
+        $("#facultyCertificatesList") ||
+        $("#facultyProjectsList") ||
+        $("#facultyProjectForm") ||
+        $("#facultyOverviewApplicationsList") ||
+        $("#facultyOverviewCertificatesList") ||
+        $("[data-faculty-stat]");
+    if (!isFacultyPage) return;
 
-    const { ok, data } = await api("/faculty/overview");
+    const { ok, status, data } = await api("/faculty/overview");
     // The payload is returned at the top level by some builds and nested
     // under "overview" by others.
-    const o = data.overview || data;
+    const o = (data && (data.overview || data)) || {};
     if (!ok || !o || !o.faculty) {
-        emptyState(apps, "Sign in with a faculty account to open the console.");
+        if (status === 401) {
+            window.location.href = "login.html";
+            return;
+        }
+        if (status === 403) {
+            toast("Faculty or Admin access required.");
+            setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
+            return;
+        }
+        const container = $("#facultyApplicationsList") || $("#facultyProjectsList") || $("#facultyCertificatesList") || $(".app-main");
+        if (container) emptyState(container, "Sign in with a faculty account to open the console.");
         return;
     }
 
@@ -874,9 +891,9 @@ async function renderFacultyConsole() {
     if (nameEl) nameEl.textContent = (o.faculty.name || "Guide").replace(/^Dr\.?\s+/, "");
 
     const statMap = {
-        projects: o.stats.projects,
-        applications: o.stats.applications,
-        pending_applications: o.stats.pending_applications
+        projects: (o.stats && o.stats.projects) || 0,
+        applications: (o.stats && o.stats.applications) || 0,
+        pending_applications: (o.stats && o.stats.pending_applications) || 0
     };
     $$("[data-faculty-stat]").forEach(el => {
         const key = el.dataset.facultyStat;
@@ -887,153 +904,231 @@ async function renderFacultyConsole() {
 
     const badge = $("#facultyPendingBadge");
     if (badge) {
-        const pending = o.stats.pending_applications + o.stats.pending_certificates;
+        const pending = ((o.stats && o.stats.pending_applications) || 0) + ((o.stats && o.stats.pending_certificates) || 0);
         badge.textContent = `${pending} AWAITING REVIEW`;
         badge.style.display = pending > 0 ? "" : "none";
     }
 
-    // Applications
-    const list = o.applications || [];
-    if (!list.length) {
-        emptyState(apps, "No applications have been submitted yet.");
-    } else {
-        apps.innerHTML = list.map(a => `
-            <article class="garden-card application-card">
-                <div class="application-card-top">
-                    <div>
-                        <span class="application-project-status open">${escapeHtml(a.domain || "Project")}</span>
-                        <h3>${escapeHtml(a.student_name)}</h3>
-                        <p>${escapeHtml(a.department || "")} · ${escapeHtml(a.year || "")} — applied to <strong>${escapeHtml(a.project_title)}</strong></p>
+    // Applications module
+    const apps = $("#facultyApplicationsList");
+    if (apps) {
+        const allApplications = o.applications || [];
+        const filterSelect = $("#facultyStatusFilter");
+
+        const renderApps = (statusFilter) => {
+            const list = (!statusFilter || statusFilter === "all")
+                ? allApplications
+                : allApplications.filter(a => a.status === statusFilter);
+
+            if (!list.length) {
+                emptyState(apps, statusFilter && statusFilter !== "all"
+                    ? `No ${statusFilter.toLowerCase()} applications found.`
+                    : "No applications have been submitted yet.");
+                return;
+            }
+
+            apps.innerHTML = list.map(a => `
+                <article class="garden-card application-card">
+                    <div class="application-card-top">
+                        <div>
+                            <span class="application-project-status open">${escapeHtml(a.domain || "Project")}</span>
+                            <h3>${escapeHtml(a.student_name)}</h3>
+                            <p>${escapeHtml(a.department || "")} · ${escapeHtml(a.year || "")} — applied to <strong>${escapeHtml(a.project_title)}</strong></p>
+                        </div>
+                        <div class="application-match">
+                            <small>MATCH</small>
+                            <strong>${Math.round(a.match_score || 0)}%</strong>
+                        </div>
                     </div>
-                    <div class="application-match">
-                        <small>MATCH</small>
-                        <strong>${Math.round(a.match_score || 0)}%</strong>
+                    ${a.message ? `<p class="muted-text" style="font-size:0.85rem;">"${escapeHtml(a.message)}"</p>` : ""}
+                    <div class="application-status-row">
+                        <div class="application-status ${a.status === "Accepted" ? "accepted" : a.status === "Rejected" ? "rejected" : "pending"}">
+                            <span class="status-dot"></span>${escapeHtml(a.status)}
+                        </div>
+                        <div class="application-actions">
+                            <button class="garden-button" type="button"
+                                    data-faculty-review="${a.id}" data-status="Accepted">Accept</button>
+                            <button class="garden-button secondary" type="button"
+                                    data-faculty-review="${a.id}" data-status="Rejected">Reject</button>
+                        </div>
                     </div>
-                </div>
-                ${a.message ? `<p class="muted-text" style="font-size:0.85rem;">"${escapeHtml(a.message)}"</p>` : ""}
-                <div class="application-status-row">
-                    <div class="application-status ${a.status === "Accepted" ? "accepted" : a.status === "Rejected" ? "rejected" : "pending"}">
-                        <span class="status-dot"></span>${escapeHtml(a.status)}
-                    </div>
-                    <div class="application-actions">
-                        <button class="garden-button" type="button"
-                                data-faculty-review="${a.id}" data-status="Accepted">Accept</button>
-                        <button class="garden-button secondary" type="button"
-                                data-faculty-review="${a.id}" data-status="Rejected">Reject</button>
-                    </div>
-                </div>
-            </article>`).join("");
+                </article>`).join("");
+
+            $$("[data-faculty-review]", apps).forEach(btn => {
+                btn.onclick = async () => {
+                    btn.disabled = true;
+                    const { ok, data } = await api(`/faculty/applications/${btn.dataset.facultyReview}/status`, {
+                        method: "PUT",
+                        body: JSON.stringify({ status: btn.dataset.status })
+                    });
+                    if (ok && data.success) {
+                        toast(`Application ${btn.dataset.status.toLowerCase()} ✓`);
+                        renderFacultyConsole();
+                    } else {
+                        toast(data.message || "Could not update the application.");
+                        btn.disabled = false;
+                    }
+                };
+            });
+        };
+
+        if (filterSelect && !filterSelect.dataset.wired) {
+            filterSelect.dataset.wired = "true";
+            filterSelect.addEventListener("change", (e) => {
+                renderApps(e.target.value);
+            });
+        }
+
+        renderApps(filterSelect ? filterSelect.value : "all");
     }
 
-    // Certificates
+    // Certificates module
     const certs = $("#facultyCertificatesList");
     if (certs) {
         const pending = o.pending_certificates || [];
-        certs.innerHTML = pending.length ? pending.map(c => `
-            <article class="garden-card application-card">
-                <div class="application-card-top">
-                    <div>
-                        <span class="application-project-status open">${escapeHtml(c.category || "Skill")}</span>
-                        <h3>${escapeHtml(c.skill_name)}</h3>
-                        <p>${escapeHtml(c.student_name)} — ${escapeHtml(c.student_email)}</p>
+        if (!pending.length) {
+            emptyState(certs, "No certificates are waiting for verification.");
+        } else {
+            certs.innerHTML = pending.map(c => `
+                <article class="garden-card application-card">
+                    <div class="application-card-top">
+                        <div>
+                            <span class="application-project-status open">${escapeHtml(c.category || "Skill")}</span>
+                            <h3>${escapeHtml(c.skill_name)}</h3>
+                            <p>${escapeHtml(c.student_name)} — ${escapeHtml(c.student_email)}</p>
+                        </div>
+                        <div class="application-match">
+                            <small>LEVEL</small>
+                            <strong>${c.proficiency_level}/5</strong>
+                        </div>
                     </div>
-                    <div class="application-match">
-                        <small>LEVEL</small>
-                        <strong>${c.proficiency_level}/5</strong>
+                    <div class="application-meta">
+                        <span>📄 ${escapeHtml(c.certificate_original_name || "Certificate")}</span>
                     </div>
-                </div>
-                <div class="application-meta">
-                    <span>📄 ${escapeHtml(c.certificate_original_name || "Certificate")}</span>
-                </div>
-                <div class="application-status-row">
-                    <div class="application-status pending">
-                        <span class="status-dot"></span>Awaiting verification
+                    <div class="application-status-row">
+                        <div class="application-status pending">
+                            <span class="status-dot"></span>Awaiting verification
+                        </div>
+                        <div class="application-actions">
+                            ${c.certificate_filename
+                                ? `<a class="garden-button secondary" target="_blank"
+                                      href="${API}/certificates/${encodeURIComponent(c.certificate_filename)}">View</a>` : ""}
+                            <button class="garden-button" type="button"
+                                    data-faculty-verify="${c.student_id}:${c.skill_id}"
+                                    data-status="Verified">Verify</button>
+                            <button class="garden-button secondary" type="button"
+                                    data-faculty-verify="${c.student_id}:${c.skill_id}"
+                                    data-status="Rejected">Reject</button>
+                        </div>
                     </div>
-                    <div class="application-actions">
-                        ${c.certificate_filename
-                            ? `<a class="garden-button secondary" target="_blank"
-                                  href="${API}/certificates/${encodeURIComponent(c.certificate_filename)}">View</a>` : ""}
-                        <button class="garden-button" type="button"
-                                data-faculty-verify="${c.student_id}:${c.skill_id}"
-                                data-status="Verified">Verify</button>
-                        <button class="garden-button secondary" type="button"
-                                data-faculty-verify="${c.student_id}:${c.skill_id}"
-                                data-status="Rejected">Reject</button>
-                    </div>
-                </div>
-            </article>`).join("")
-            : `<div class="empty-state"><p>No certificates are waiting for verification.</p></div>`;
+                </article>`).join("");
+
+            $$("[data-faculty-verify]", certs).forEach(btn => {
+                btn.onclick = async () => {
+                    btn.disabled = true;
+                    const [studentId, skillId] = btn.dataset.facultyVerify.split(":");
+                    const { ok, data } = await api(`/faculty/certificates/${studentId}/${skillId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({ status: btn.dataset.status })
+                    });
+                    if (ok && data.success) {
+                        toast(`Certificate ${btn.dataset.status.toLowerCase()} ✓`);
+                        renderFacultyConsole();
+                    } else {
+                        toast(data.message || "Could not update the certificate.");
+                        btn.disabled = false;
+                    }
+                };
+            });
+        }
     }
 
-    // Projects
+    // Projects module
     const projects = $("#facultyProjectsList");
     if (projects) {
         const list2 = o.projects || [];
-        projects.innerHTML = list2.length ? list2.map(p => `
-            <article class="garden-card application-card">
-                <div class="application-card-top">
-                    <div>
-                        <span class="application-project-status ${p.status === "Open" ? "open" : "closed"}">${escapeHtml(p.status)}</span>
-                        <h3>${escapeHtml(p.title)}</h3>
-                        <p>${escapeHtml(p.domain || "")} · ${escapeHtml(p.required_availability)}</p>
+        if (!list2.length) {
+            emptyState(projects, "You have not published any projects yet. Click '+ Publish Project' to create one.");
+        } else {
+            projects.innerHTML = list2.map(p => `
+                <article class="garden-card application-card">
+                    <div class="application-card-top">
+                        <div>
+                            <span class="application-project-status ${p.status === "Open" ? "open" : "closed"}">${escapeHtml(p.status)}</span>
+                            <h3>${escapeHtml(p.title)}</h3>
+                            <p>${escapeHtml(p.domain || "")} · ${escapeHtml(p.required_availability)}</p>
+                        </div>
+                        <div class="application-match">
+                            <small>TEAM</small>
+                            <strong>${p.member_count}/${p.team_size}</strong>
+                        </div>
                     </div>
-                    <div class="application-match">
-                        <small>TEAM</small>
-                        <strong>${p.member_count}/${p.team_size}</strong>
+                    <div class="application-meta">
+                        <span>✉ ${p.application_count} application(s)</span>
+                        <span>◷ ${p.pending_count} pending</span>
                     </div>
-                </div>
-                <div class="application-meta">
-                    <span>✉ ${p.application_count} application(s)</span>
-                    <span>◷ ${p.pending_count} pending</span>
-                </div>
-                <div class="application-status-row">
-                    <div class="application-status ${p.pending_count > 0 ? "pending" : "accepted"}">
-                        <span class="status-dot"></span>${p.pending_count > 0 ? "Needs attention" : "On track"}
+                    <div class="application-status-row">
+                        <div class="application-status ${p.pending_count > 0 ? "pending" : "accepted"}">
+                            <span class="status-dot"></span>${p.pending_count > 0 ? "Needs attention" : "On track"}
+                        </div>
+                        <div class="application-actions">
+                            <a href="project-details.html?id=${p.id}" class="garden-button">View</a>
+                        </div>
                     </div>
-                    <div class="application-actions">
-                        <a href="project-details.html?id=${p.id}" class="garden-button">View</a>
-                    </div>
-                </div>
-            </article>`).join("")
-            : `<div class="empty-state"><p>You have not published any projects yet.</p></div>`;
+                </article>`).join("");
+        }
     }
 
-    // Review buttons
-    $$("[data-faculty-review]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            btn.disabled = true;
-            const { ok, data } = await api(`/faculty/applications/${btn.dataset.facultyReview}/status`, {
-                method: "PUT",
-                body: JSON.stringify({ status: btn.dataset.status })
-            });
-            if (ok && data.success) {
-                toast(`Application ${btn.dataset.status.toLowerCase()} ✓`);
-                renderFacultyConsole();
-            } else {
-                toast(data.message || "Could not update the application.");
-                btn.disabled = false;
-            }
-        });
-    });
+    // Overview Quick Action Lists (on faculty.html)
+    const overviewApps = $("#facultyOverviewApplicationsList");
+    if (overviewApps) {
+        const pendingApps = (o.applications || []).filter(a => a.status === "Pending");
+        if (!pendingApps.length) {
+            overviewApps.innerHTML = `<div class="empty-state"><p>No pending applications. All caught up! ✿</p></div>`;
+        } else {
+            overviewApps.innerHTML = pendingApps.slice(0, 3).map(a => `
+                <article class="garden-card application-card">
+                    <div class="application-card-top">
+                        <div>
+                            <span class="application-project-status open">${escapeHtml(a.domain || "Project")}</span>
+                            <h3>${escapeHtml(a.student_name)}</h3>
+                            <p>${escapeHtml(a.project_title)} · Match ${Math.round(a.match_score || 0)}%</p>
+                        </div>
+                    </div>
+                    <div class="application-status-row">
+                        <div class="application-status pending"><span class="status-dot"></span>Pending</div>
+                        <div class="application-actions">
+                            <a href="faculty-applications.html" class="garden-button">Review →</a>
+                        </div>
+                    </div>
+                </article>`).join("");
+        }
+    }
 
-    // Verify buttons
-    $$("[data-faculty-verify]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            btn.disabled = true;
-            const [studentId, skillId] = btn.dataset.facultyVerify.split(":");
-            const { ok, data } = await api(`/faculty/certificates/${studentId}/${skillId}`, {
-                method: "PUT",
-                body: JSON.stringify({ status: btn.dataset.status })
-            });
-            if (ok && data.success) {
-                toast(`Certificate ${btn.dataset.status.toLowerCase()} ✓`);
-                renderFacultyConsole();
-            } else {
-                toast(data.message || "Could not update the certificate.");
-                btn.disabled = false;
-            }
-        });
-    });
+    const overviewCerts = $("#facultyOverviewCertificatesList");
+    if (overviewCerts) {
+        const pendingCerts = o.pending_certificates || [];
+        if (!pendingCerts.length) {
+            overviewCerts.innerHTML = `<div class="empty-state"><p>No pending certificates to verify. 🌿</p></div>`;
+        } else {
+            overviewCerts.innerHTML = pendingCerts.slice(0, 3).map(c => `
+                <article class="garden-card application-card">
+                    <div class="application-card-top">
+                        <div>
+                            <span class="application-project-status open">${escapeHtml(c.category || "Skill")}</span>
+                            <h3>${escapeHtml(c.skill_name)}</h3>
+                            <p>${escapeHtml(c.student_name)} (${c.proficiency_level}/5)</p>
+                        </div>
+                    </div>
+                    <div class="application-status-row">
+                        <div class="application-status pending"><span class="status-dot"></span>Pending</div>
+                        <div class="application-actions">
+                            <a href="faculty-certificates.html" class="garden-button">Verify →</a>
+                        </div>
+                    </div>
+                </article>`).join("");
+        }
+    }
 }
 
 /* ------------------------------------------------------------
@@ -1623,6 +1718,11 @@ function wireFacultyForm() {
             toast("Project published successfully ✿");
             form.reset();
             renderFacultyConsole();
+            if (window.location.pathname.includes("faculty-new-project")) {
+                setTimeout(() => {
+                    window.location.href = "faculty-projects.html";
+                }, 800);
+            }
         } else {
             toast(data.message || "Could not publish the project.");
         }

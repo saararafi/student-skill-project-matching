@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish Project | SkillMatch</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/design-system.css?v=3">
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=3">
+</head>
+
+<body class="app-body" data-page="faculty">
+
+<div class="app-layout">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            ❧ Skill<span>Match</span>
+        </div>
+
+        <div class="sidebar-caption">
+            FACULTY DESK
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="faculty.html">
+                <span class="nav-icon">❧</span>
+                Overview
+            </a>
+
+            <a href="faculty-applications.html">
+                <span class="nav-icon">✉</span>
+                Applications
+            </a>
+
+            <a href="faculty-certificates.html">
+                <span class="nav-icon">📜</span>
+                Certificates
+            </a>
+
+            <a href="faculty-projects.html">
+                <span class="nav-icon">🌿</span>
+                My Projects
+            </a>
+
+            <a href="faculty-new-project.html" class="active">
+                <span class="nav-icon">✿</span>
+                New Project
+            </a>
+        </nav>
+
+        <div class="sidebar-caption sidebar-caption-bottom">
+            ACCOUNT
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="projects.html">
+                <span class="nav-icon">🌱</span>
+                Student View
+            </a>
+
+            <a href="#" data-logout>
+                <span class="nav-icon">↪</span>
+                Leave Garden
+            </a>
+        </nav>
+    </aside>
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main class="app-main">
+
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="app-welcome">
+                <small>PROJECT GUIDE DESK</small>
+                <h1>
+                    Publish a
+                    <em>Project</em>
+                </h1>
+                <p>
+                    Open a new botanical project bed. Define required skill proficiencies, target domain, and student team size.
+                </p>
+            </div>
+        </header>
+
+        <!-- =========================
+             PROJECT PUBLICATION FORM
+        ========================== -->
+        <section class="garden-section">
+            <div class="garden-section-title">
+                <div>
+                    <span>OPEN A NEW BED</span>
+                    <h2>
+                        Publish a
+                        <em>project.</em>
+                    </h2>
+                </div>
+            </div>
+
+            <section class="garden-card" style="padding:25px;">
+                <form id="facultyProjectForm">
+                    <div class="input-group">
+                        <label>Project Title</label>
+                        <div class="input-wrapper">
+                            <span>✿</span>
+                            <input type="text"
+                                   id="facultyProjectTitle"
+                                   placeholder="e.g. Smart Attendance System"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Description</label>
+                        <div class="input-wrapper">
+                            <span>✦</span>
+                            <textarea id="facultyProjectDescription"
+                                      rows="4"
+                                      placeholder="What should students build?"
+                                      required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid" style="margin-bottom: 18px;">
+                        <div class="input-group">
+                            <label>Domain</label>
+                            <div class="input-wrapper">
+                                <span>🌿</span>
+                                <input type="text"
+                                       id="facultyProjectDomain"
+                                       placeholder="e.g. Healthcare">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Availability</label>
+                            <div class="input-wrapper">
+                                <span>◷</span>
+                                <select id="facultyProjectAvailability">
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Full-time">Full-time</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Team Size</label>
+                            <div class="input-wrapper">
+                                <span>👥</span>
+                                <input type="number"
+                                       id="facultyProjectTeamSize"
+                                       min="1"
+                                       max="20"
+                                       value="4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Required Skills</label>
+                        <div class="input-wrapper">
+                            <span>🌱</span>
+                            <input type="text"
+                                   id="facultyProjectSkills"
+                                   placeholder="Python:5, Flask:3, MySQL:4">
+                        </div>
+                        <p class="muted-text" style="font-size:0.75rem; margin-top:6px;">
+                            Comma separated. Use <code>Skill:level</code> where level is 1-5, e.g. <code>Python:5, React:4</code>.
+                        </p>
+                    </div>
+
+                    <button type="submit" class="garden-button primary">
+                        Publish Project ✿
+                    </button>
+                </form>
+            </section>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/main.js?v=3"></script>
+<script src="js/live.js?v=3"></script>
+
+</body>
+</html>
