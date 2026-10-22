@@ -120,6 +120,10 @@ class Config:
     # Predefined demo data seeding (0 = clean database for real user inputs; 1 = seed demo accounts)
     SEED_DEMO_DATA = os.environ.get('SEED_DEMO_DATA', '0') == '1'
 
+    # Optional AI Chatbot LLM API Keys (defaults to intelligent local botanical NLP engine)
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '').strip()
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '').strip()
+
     @classmethod
     def validate_production_keys(cls):
         env = os.environ.get('FLASK_ENV', os.environ.get('ENVIRONMENT', 'development')).strip().lower()

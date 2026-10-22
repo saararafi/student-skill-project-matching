@@ -21,6 +21,7 @@ from backend.routes.matching_routes import matching_bp
 from backend.routes.application_routes import application_bp
 from backend.routes.notification_routes import notification_bp
 from backend.routes.faculty_routes import faculty_bp
+from backend.routes.chat_routes import chat_bp
 
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 
@@ -56,6 +57,8 @@ def create_app():
     app.register_blueprint(application_bp, url_prefix='/api/applications')
     app.register_blueprint(notification_bp, url_prefix='/api/notifications')
     app.register_blueprint(faculty_bp, url_prefix='/api/faculty')
+    app.register_blueprint(chat_bp, url_prefix='/api/chat')
+    app.register_blueprint(chat_bp, url_prefix='/api/ai/chat', name='ai_chat')
 
     # Endpoint to retrieve fresh CSRF token
     @app.route('/api/auth/csrf-token', methods=['GET'])

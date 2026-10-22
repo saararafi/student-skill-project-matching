@@ -735,5 +735,43 @@ class TestWeeklyAvailability(ApiTestCase):
         self.assertEqual(res.status_code, 401)
 
 
+class TestChatbot(ApiTestCase):
+
+    def test_chat_requires_login(self):
+        res = self.client.post('/api/chat', json={'message': 'hello'})
+        self.assertEqual(res.status_code, 401)
+
+    def test_chat_empty_message_rejected(self):
+        self.login()
+        res = self.client.post('/api/chat', json={'message': '   '})
+        self.assertEqual(res.status_code, 400)
+
+    def test_chat_status_endpoint(self):
+        self.login()
+        res = self.client.get('/api/chat/status')
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['online'])
+        self.assertIn('greeting', data)
+        self.assertIsInstance(data['suggestions'], list)
+
+    def test_chat_student_recommendations(self):
+        self.login()
+        res = self.client.post('/api/chat', json={'message': 'What projects match my skills?'})
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['success'])
+        self.assertIn('reply', data)
+        self.assertIsInstance(data['suggestions'], list)
+
+    def test_chat_faculty(self):
+        self.login_faculty()
+        res = self.client.post('/api/chat', json={'message': 'Hello, what can you do?'})
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['context']['role'], 'faculty')
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
