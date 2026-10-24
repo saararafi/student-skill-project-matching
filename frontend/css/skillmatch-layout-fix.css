@@ -135,18 +135,18 @@ button:disabled {
 
 .sidebar-nav {
     display: flex;
-    flex: 1;
+    flex: 0 0 auto;
     flex-direction: column;
-    gap: 5px;
-    padding-top: 22px;
+    gap: 4px;
+    padding-top: 10px;
 }
 
 .sidebar-nav a {
     display: flex;
     align-items: center;
     gap: 11px;
-    min-height: 44px;
-    padding: 10px 12px;
+    min-height: 40px;
+    padding: 9px 12px;
     color: #5f6656;
     text-decoration: none;
     font-size: 12px;
