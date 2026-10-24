@@ -879,7 +879,7 @@ async function renderFacultyConsole() {
         }
         if (status === 403) {
             toast("Faculty or Admin access required.");
-            setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
+            setTimeout(() => { window.location.href = "projects.html"; }, 1200);
             return;
         }
         const container = $("#facultyApplicationsList") || $("#facultyProjectsList") || $("#facultyCertificatesList") || $(".app-main");

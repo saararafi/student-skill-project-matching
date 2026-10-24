@@ -121,7 +121,7 @@ function initializeLogin() {
                 showGardenToast(`Welcome back, ${data.user.name} 🌿`);
                 setTimeout(() => {
                     const isFaculty = data.user && (data.user.role === "faculty" || data.user.role === "admin");
-                window.location.href = isFaculty ? "faculty.html" : "dashboard.html";
+                    window.location.href = isFaculty ? "faculty.html" : "projects.html";
                 }, 600);
             } else {
                 showGardenToast(data.message || "Invalid credentials.");
@@ -130,7 +130,7 @@ function initializeLogin() {
             // Offline / fallback mode
             showGardenToast("Welcome to SkillMatch 🌿");
             setTimeout(() => {
-                window.location.href = "dashboard.html";
+                window.location.href = "projects.html";
             }, 600);
         }
     });
