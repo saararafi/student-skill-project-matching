@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify, request
 
 from backend.database import fetch_all, fetch_one, execute_query
-from backend.auth_utils import get_current_student_id
+from backend.auth_utils import get_current_student_id, get_current_user_id, is_faculty, is_admin
 from backend.services.matching_service import (
     get_ranked_project_recommendations,
     get_project_skill_gaps,
@@ -116,32 +116,73 @@ def get_teammates(project_id):
 
 @matching_bp.route("/projects/<int:project_id>/invite", methods=["POST"])
 def invite_teammate(project_id):
-    student_id, error = student_login_required()
-    if error:
-        return error
+    student_id = get_current_student_id()
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({
+            "success": False,
+            "message": "Please log in to send team invitations."
+        }), 401
+
+    project = fetch_one("SELECT id, title, faculty_id, status FROM projects WHERE id = %s", (project_id,))
+    if not project:
+        return jsonify({"success": False, "message": "Project not found."}), 404
+
+    if project.get("status") and str(project["status"]).lower() != "open":
+        return jsonify({"success": False, "message": "Cannot invite teammates to a closed project."}), 400
 
     data = request.get_json(silent=True) or {}
     target_student_id = data.get("student_id")
-    target_name = data.get("student_name")
 
-    project = fetch_one("SELECT title FROM projects WHERE id = %s", (project_id,))
-    p_title = project["title"] if project else "Project"
+    if not target_student_id:
+        return jsonify({"success": False, "message": "Target student ID is required."}), 400
 
-    target_user_id = None
-    if target_student_id:
-        st = fetch_one("SELECT user_id FROM students WHERE id = %s", (target_student_id,))
-        if st:
-            target_user_id = st.get("user_id")
+    target_student = fetch_one("""
+        SELECT s.id, s.user_id, s.profile_visibility, u.name
+        FROM students s
+        JOIN users u ON s.user_id = u.id
+        WHERE s.id = %s
+    """, (target_student_id,))
 
-    if target_user_id:
-        execute_query(
-            "INSERT INTO notifications (user_id, title, message, type) VALUES (%s, %s, %s, %s)",
-            (target_user_id, "Team Invitation 🌿", f"You have been invited to join the team for {p_title}!", "invite")
+    if not target_student:
+        return jsonify({"success": False, "message": "Target student not found."}), 404
+
+    if target_student.get("profile_visibility") == "private":
+        return jsonify({
+            "success": False,
+            "message": "This student has a private profile and cannot receive team invitations."
+        }), 403
+
+    already_in_team = fetch_one("""
+        SELECT 1 FROM team_members tm
+        JOIN teams t ON tm.team_id = t.id
+        WHERE t.project_id = %s AND tm.student_id = %s
+    """, (project_id, target_student_id))
+    already_accepted = fetch_one("""
+        SELECT 1 FROM applications
+        WHERE project_id = %s AND student_id = %s AND status = 'Accepted'
+    """, (project_id, target_student_id))
+
+    if already_in_team or already_accepted:
+        return jsonify({
+            "success": False,
+            "message": f"{target_student['name']} is already on the team for this project."
+        }), 400
+
+    execute_query(
+        "INSERT INTO notifications (user_id, title, message, type, link) VALUES (%s, %s, %s, %s, %s)",
+        (
+            target_student["user_id"],
+            "Team Invitation 🌿",
+            f"You have been invited to join the team for {project['title']}!",
+            "invite",
+            "applications.html"
         )
+    )
 
     return jsonify({
         "success": True,
-        "message": f"Invitation sent to {target_name or 'teammate'}!"
+        "message": f"Invitation sent to {target_student['name']}!"
     }), 200
 
 

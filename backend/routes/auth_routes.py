@@ -3,30 +3,42 @@ from flask import Blueprint, request, jsonify, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from backend.database import fetch_one, execute_query, db_transaction, adapt_sql
 from backend.auth_utils import get_current_user_id, login_required
+from backend.rate_limiter import is_rate_limited, record_attempt, reset_attempts, get_client_ip
 
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
+    client_ip = get_client_ip()
+    limited, retry_after = is_rate_limited(f"login:{client_ip}", max_attempts=5, window_seconds=300)
+    if limited:
+        return jsonify({
+            "success": False,
+            "message": f"Too many failed login attempts. Please try again in {retry_after} seconds."
+        }), 429
+
     data = request.get_json() or {}
     email = data.get('email', '').strip().lower()
-    password = data.get('password', '').strip()
+    password = data.get('password', '')  # Preserve exact password (no silent strip)
 
     if not email or not password:
         return jsonify({"success": False, "message": "Email and password are required."}), 400
 
     user = fetch_one("SELECT * FROM users WHERE LOWER(email) = %s", (email,))
-    if not user:
-        return jsonify({"success": False, "message": "No account found with this email."}), 404
+    valid = False
+    if user and user.get('password_hash'):
+        try:
+            valid = check_password_hash(user['password_hash'], password)
+        except Exception:
+            valid = False
 
-    # Verify the password against the stored hash.
-    try:
-        valid = check_password_hash(user['password_hash'], password)
-    except Exception:
-        valid = False
+    # Prevent user enumeration: use consistent 401 message whether account exists or not
+    if not user or not valid:
+        record_attempt(f"login:{client_ip}")
+        return jsonify({"success": False, "message": "Invalid email or password."}), 401
 
-    if not valid:
-        return jsonify({"success": False, "message": "Invalid password."}), 401
+    # Reset failed attempts upon successful login
+    reset_attempts(f"login:{client_ip}")
 
     session['user_id'] = user['id']
     session['role'] = user['role']
@@ -51,11 +63,20 @@ def login():
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    client_ip = get_client_ip()
+    limited, retry_after = is_rate_limited(f"register:{client_ip}", max_attempts=10, window_seconds=600)
+    if limited:
+        return jsonify({
+            "success": False,
+            "message": f"Too many registration attempts. Please try again in {retry_after} seconds."
+        }), 429
+
     data = request.get_json() or {}
     name = data.get('name', '').strip()
     email = data.get('email', '').strip().lower()
-    password = data.get('password', '').strip()
-    role = data.get('role', 'student').strip().lower()
+    password = data.get('password', '')  # Preserve exact password (no silent strip)
+    # Public registration MUST always create a student account (Issue 19)
+    role = 'student'
     department = data.get('department', 'Computer Science Engineering').strip()
     year = data.get('year', '3rd Year').strip()
 
@@ -67,9 +88,6 @@ def register():
 
     if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
         return jsonify({"success": False, "message": "Please provide a valid email address."}), 400
-
-    if role not in ('student', 'faculty'):
-        role = 'student'
 
     existing = fetch_one("SELECT id FROM users WHERE LOWER(email) = %s", (email,))
     if existing:
@@ -88,22 +106,21 @@ def register():
             user_id = row['id'] if row else None
 
         student_id = None
-        if role == 'student':
-            sem = (data.get('semester') or '').strip()
-            avail = (data.get('availability') or 'Part-time').strip() or 'Part-time'
-            cur.execute(
-                adapt_sql(
-                    "INSERT INTO students (user_id, department, year, semester, availability, bio, weekly_hours) "
-                    "VALUES (%s, %s, %s, %s, %s, '', 0)",
-                    engine
-                ),
-                (user_id, department, year, sem, avail)
-            )
-            student_id = cur.lastrowid
-            if not student_id and engine == 'postgres':
-                cur.execute("SELECT lastval() AS id")
-                row = cur.fetchone()
-                student_id = row['id'] if row else None
+        sem = (data.get('semester') or '').strip()
+        avail = (data.get('availability') or 'Part-time').strip() or 'Part-time'
+        cur.execute(
+            adapt_sql(
+                "INSERT INTO students (user_id, department, year, semester, availability, bio, weekly_hours) "
+                "VALUES (%s, %s, %s, %s, %s, '', 0)",
+                engine
+            ),
+            (user_id, department, year, sem, avail)
+        )
+        student_id = cur.lastrowid
+        if not student_id and engine == 'postgres':
+            cur.execute("SELECT lastval() AS id")
+            row = cur.fetchone()
+            student_id = row['id'] if row else None
 
     session['user_id'] = user_id
     session['role'] = role
@@ -117,6 +134,59 @@ def register():
             "email": email,
             "role": role,
             "student_id": student_id
+        }
+    }), 201
+
+
+@auth_bp.route('/admin/create-user', methods=['POST'])
+@login_required
+def admin_create_user():
+    """Allows an administrator to securely create faculty or admin accounts."""
+    if session.get('role') != 'admin':
+        return jsonify({"success": False, "message": "Administrator access required."}), 403
+
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password', '')
+    role = (data.get('role') or 'faculty').strip().lower()
+
+    if not name or not email or not password:
+        return jsonify({"success": False, "message": "Name, email and password are required."}), 400
+
+    if len(password) < 8:
+        return jsonify({"success": False, "message": "Password must be at least 8 characters long."}), 400
+
+    if role not in ('faculty', 'admin'):
+        return jsonify({"success": False, "message": "Role must be 'faculty' or 'admin'."}), 400
+
+    if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return jsonify({"success": False, "message": "Please provide a valid email address."}), 400
+
+    existing = fetch_one("SELECT id FROM users WHERE LOWER(email) = %s", (email,))
+    if existing:
+        return jsonify({"success": False, "message": "An account with this email already exists."}), 409
+
+    pwd_hash = generate_password_hash(password)
+    with db_transaction() as (cur, engine):
+        cur.execute(
+            adapt_sql("INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s)", engine),
+            (name, email, pwd_hash, role)
+        )
+        user_id = cur.lastrowid
+        if not user_id and engine == 'postgres':
+            cur.execute("SELECT lastval() AS id")
+            row = cur.fetchone()
+            user_id = row['id'] if row else None
+
+    return jsonify({
+        "success": True,
+        "message": f"Successfully created {role} account for {name}.",
+        "user": {
+            "id": user_id,
+            "name": name,
+            "email": email,
+            "role": role
         }
     }), 201
 

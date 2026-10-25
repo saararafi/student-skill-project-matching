@@ -182,9 +182,6 @@ def authorize_certificate_access(filename):
     )
 
     if not cert_row:
-        # Check if it's a valid demo sample file when demo data is enabled
-        if Config.SEED_DEMO_DATA and clean_name.startswith("cert_"):
-            return True, clean_name
         return False, (jsonify({"success": False, "message": "Certificate record not found."}), 404)
 
     # Student accessing their own certificate

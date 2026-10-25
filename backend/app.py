@@ -8,6 +8,7 @@ if BASE_DIR not in sys.path:
 
 from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 from backend.config import Config
 from backend.database import init_db
 from backend.csrf import check_csrf, get_or_create_csrf_token
@@ -36,6 +37,18 @@ def create_app():
 
     # Enable Cross-Origin Resource Sharing with explicit trusted origins
     CORS(app, origins=Config.CORS_ALLOWED_ORIGINS, supports_credentials=True)
+
+    # Configure ProxyFix for deployment behind trusted proxies (e.g. Render)
+    trusted_proxies = int(os.environ.get('TRUSTED_PROXIES', '1' if Config.IS_PRODUCTION else '0'))
+    if trusted_proxies > 0:
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app,
+            x_for=trusted_proxies,
+            x_proto=trusted_proxies,
+            x_host=trusted_proxies,
+            x_port=trusted_proxies,
+            x_prefix=trusted_proxies
+        )
 
     # CSRF Protection Hook on state-changing requests
     @app.before_request
@@ -97,6 +110,19 @@ def create_app():
             httponly=False,
             samesite=Config.SESSION_COOKIE_SAMESITE,
             path='/'
+        )
+
+        # Security hardening headers (Issue 1)
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com data:; "
+            "img-src 'self' data: https:; "
+            "connect-src 'self' http://127.0.0.1:5000 http://localhost:5000 ws://127.0.0.1:5000 ws://localhost:5000; "
+            "frame-ancestors 'none';"
         )
 
         if response.mimetype == 'text/html':

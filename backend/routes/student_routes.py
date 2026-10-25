@@ -8,6 +8,7 @@ from backend.services.matching_service import get_student_profile_data
 from backend.auth_utils import (
     is_logged_in,
     get_current_student_id,
+    get_current_user_id,
     login_required,
     faculty_required,
     is_faculty,
@@ -43,8 +44,9 @@ def get_profile():
     cur_student_id = get_current_student_id()
     requested_id = request.args.get('student_id', type=int)
 
+    is_self = (requested_id is None or requested_id == cur_student_id)
     # Prevent IDOR: students can only access their own profile; faculty/admin can inspect students
-    if requested_id and requested_id != cur_student_id:
+    if not is_self:
         if not (is_faculty() or is_admin()):
             return jsonify({
                 "success": False,
@@ -57,6 +59,20 @@ def get_profile():
     data = get_student_profile_data(student_id)
     if not data:
         return jsonify({"success": False, "message": "Student profile not found."}), 404
+
+    visibility = (data['student'].get('profile_visibility') or 'team').lower()
+    if not is_self and not is_admin() and visibility == 'private':
+        # Faculty can only see a private student if that student applied to one of their projects
+        has_applied = fetch_one("""
+            SELECT 1 FROM applications a
+            JOIN projects p ON a.project_id = p.id
+            WHERE a.student_id = %s AND p.faculty_id = %s
+        """, (student_id, get_current_user_id()))
+        if not has_applied:
+            return jsonify({
+                "success": False,
+                "message": "This student has a private profile."
+            }), 403
 
     # Calculate profile completeness purely based on actual completed fields (0% base)
     completeness = 0
@@ -104,12 +120,12 @@ def get_profile():
         "profile": {
             "student_id": data['student']['id'],
             "name": data['user']['name'],
-            "email": data['user']['email'],
+            "email": data['user']['email'] if (is_self or is_admin()) else "",
             "department": data['student']['department'],
             "year": data['student']['year'],
             "semester": data['student']['semester'],
             "availability": data['student']['availability'],
-            "bio": data['student']['bio'],
+            "bio": data['student']['bio'] if (is_self or is_admin() or visibility != 'private') else "",
             "github_url": data['student']['github_url'],
             "linkedin_url": data['student']['linkedin_url'],
             "completeness": completeness,
@@ -342,7 +358,7 @@ def upload_certificate():
 @student_bp.route('/verify-certificate', methods=['POST'])
 @faculty_required
 def verify_certificate():
-    """Allows Faculty/Admin to approve or reject a student certificate."""
+    """Allows authorized Faculty/Admin to approve or reject a student certificate."""
     data = request.get_json() or {}
     student_id = data.get('student_id')
     skill_id = data.get('skill_id')
@@ -354,6 +370,46 @@ def verify_certificate():
     if status not in ('Verified', 'Rejected', 'Pending', 'None'):
         return jsonify({"success": False, "message": "Invalid certificate status."}), 400
 
+    stu = fetch_one("SELECT user_id FROM students WHERE id = %s", (student_id,))
+    if not stu:
+        return jsonify({"success": False, "message": "Student record not found."}), 404
+
+    sk = fetch_one("SELECT name FROM skills WHERE id = %s", (skill_id,))
+    if not sk:
+        return jsonify({"success": False, "message": "Skill record not found."}), 404
+
+    cert = fetch_one("""
+        SELECT id, certificate_status, certificate_filename
+        FROM student_skills
+        WHERE student_id = %s AND skill_id = %s
+    """, (student_id, skill_id))
+
+    if not cert:
+        return jsonify({"success": False, "message": "Certificate or skill record not found."}), 404
+
+    if not cert.get("certificate_filename"):
+        return jsonify({"success": False, "message": "No certificate file has been uploaded for this skill."}), 400
+
+    if not is_admin():
+        user_id = get_current_user_id()
+        eligible = fetch_one("""
+            SELECT s.id
+            FROM students s
+            WHERE s.id = %s
+              AND EXISTS (
+                  SELECT 1
+                  FROM applications a
+                  JOIN projects p ON p.id = a.project_id
+                  WHERE a.student_id = s.id
+                    AND p.faculty_id = %s
+              )
+        """, (student_id, user_id))
+        if not eligible:
+            return jsonify({
+                "success": False,
+                "message": "This student is not an applicant to your projects."
+            }), 403
+
     execute_query("""
         UPDATE student_skills
         SET certificate_status = %s
@@ -361,18 +417,15 @@ def verify_certificate():
     """, (status, student_id, skill_id))
 
     # Notify student
-    stu = fetch_one("SELECT user_id FROM students WHERE id = %s", (student_id,))
-    sk = fetch_one("SELECT name FROM skills WHERE id = %s", (skill_id,))
-    if stu and sk:
-        execute_query("""
-            INSERT INTO notifications (user_id, title, message, type, link)
-            VALUES (%s, %s, %s, %s, 'profile.html')
-        """, (
-            stu['user_id'], 
-            f'Certificate {status}', 
-            f'Your certificate for {sk["name"]} has been {status.lower()} by faculty.',
-            'success' if status == 'Verified' else 'warning'
-        ))
+    execute_query("""
+        INSERT INTO notifications (user_id, title, message, type, link)
+        VALUES (%s, %s, %s, %s, 'profile.html')
+    """, (
+        stu['user_id'], 
+        f'Certificate {status}', 
+        f'Your certificate for {sk["name"]} has been {status.lower()} by faculty.',
+        'success' if status == 'Verified' else 'warning'
+    ))
 
     return jsonify({"success": True, "message": f"Certificate has been {status}."})
 

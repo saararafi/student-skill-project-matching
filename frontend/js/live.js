@@ -188,7 +188,7 @@ async function renderDashboard() {
         const tags = $(".project-tags", card);
         if (tags) {
             tags.innerHTML = (m.skill_details || [])
-                .map(s => `<span>${s.skill}</span>`).join("");
+                .map(s => `<span>${escapeHtml(s.skill)}</span>`).join("");
         }
 
         const badge = $(".botanical-badge", card);
@@ -273,7 +273,7 @@ async function renderDashboard() {
                 return `
                     <div class="skill-plant">
                         <div class="skill-plant-flower">${flowers[i % flowers.length]}</div>
-                        <div class="skill-plant-name">${sk.name}</div>
+                        <div class="skill-plant-name">${escapeHtml(sk.name)}</div>
                         <div class="skill-plant-level">${sk.proficiency_level} / 5 · ${pct}% · ${stage}</div>
                         ${cert}
                     </div>`;
@@ -326,8 +326,8 @@ async function renderDashboard() {
                 <div class="growth-item">
                     <div class="growth-year">${ev.when}</div>
                     <div>
-                        <h3>${ev.title}</h3>
-                        <p>${ev.body}</p>
+                        <h3>${escapeHtml(ev.title)}</h3>
+                        <p>${escapeHtml(ev.body)}</p>
                     </div>
                 </div>`).join("");
         }
@@ -362,14 +362,14 @@ async function renderApplications() {
         const withdraw = app.status === "Accepted" ? "" : `
             <button class="garden-button secondary" type="button"
                     data-withdraw-app="${app.id}"
-                    data-project-title="${app.project_title}">Withdraw</button>`;
+                    data-project-title="${escapeHtml(app.project_title)}">Withdraw</button>`;
         return `
             <article class="garden-card application-card">
                 <div class="application-card-top">
                     <div>
-                        <span class="application-project-status open">${app.domain || "Open Project"}</span>
-                        <h3>${app.project_title}</h3>
-                        <p>${app.message || "Application submitted for academic project matching."}</p>
+                        <span class="application-project-status open">${escapeHtml(app.domain || "Open Project")}</span>
+                        <h3>${escapeHtml(app.project_title)}</h3>
+                        <p>${escapeHtml(app.message || "Application submitted for academic project matching.")}</p>
                     </div>
                     <div class="application-match">
                         <small>MATCH</small>
@@ -433,11 +433,11 @@ async function renderNotifications() {
             <div class="notification-icon ${n.type || "info"}">🔔</div>
             <div class="notification-content">
                 <div class="notification-top">
-                    <h3>${n.title}</h3>
+                    <h3>${escapeHtml(n.title)}</h3>
                     <span>${n.created_at ? new Date(n.created_at).toLocaleDateString() : ""}</span>
                 </div>
-                <p>${n.message}</p>
-                ${n.link ? `<a href="${n.link}" class="notification-link">View →</a>` : ""}
+                <p>${escapeHtml(n.message)}</p>
+                ${n.link ? `<a href="${safeUrl(n.link)}" class="notification-link">View →</a>` : ""}
             </div>
             ${n.is_read ? "" : `<span class="unread-dot"></span>`}
         </article>`).join("");
@@ -501,7 +501,7 @@ async function renderGaps() {
                 <div class="gap-item-content">
                     <div class="gap-item-heading">
                         <div>
-                            <h4>${item.skill}</h4>
+                            <h4>${escapeHtml(item.skill)}</h4>
                             <p>Required level ${item.required_level}/5 · team has ${item.available_level}/5</p>
                         </div>
                         <span class="gap-percentage">${Math.min(pct, 100)}%</span>
@@ -549,7 +549,7 @@ async function renderGaps() {
                     <article class="team-gap-card garden-card">
                         <div class="team-gap-icon">${item.status === "Missing" ? "🌧" : "🌱"}</div>
                         <div>
-                            <h4>${item.skill}</h4>
+                            <h4>${escapeHtml(item.skill)}</h4>
                             <p>Current team coverage: <strong>${pct}%</strong></p>
                             <div class="gap-progress-track">
                                 <div class="gap-progress-fill" style="width:${pct}%;"></div>
@@ -723,7 +723,7 @@ async function renderTeam() {
                 const pct = Math.min(100, Math.round((item.available_level / item.required_level) * 100));
                 return `
                     <div class="coverage-item">
-                        <span>${item.skill}</span>
+                        <span>${escapeHtml(item.skill)}</span>
                         <strong>${pct}%</strong>
                         <div class="match-component-track">
                             <div class="match-component-fill" style="width:${pct}%;"></div>
@@ -786,7 +786,7 @@ async function renderProjectDetails() {
             return `
                 <div class="required-skill">
                     <div>
-                        <strong>${s.name}</strong>
+                        <strong>${escapeHtml(s.name)}</strong>
                         <span>Required Level: ${s.required_level}/5</span>
                         <span class="muted-text">Your level: ${level}/5 ${covered ? "✓" : ""}</span>
                     </div>
@@ -806,7 +806,7 @@ async function renderProjectDetails() {
                 <div class="skill-gap-detail">
                     <div class="gap-detail-flower">🌱</div>
                     <div>
-                        <h3>${s.skill}</h3>
+                        <h3>${escapeHtml(s.skill)}</h3>
                         <p>Your current level: ${s.student_level}/5</p>
                         <div class="skill-level-bar">
                             <div class="skill-level-fill" style="width:${pct}%;"></div>
@@ -1165,7 +1165,7 @@ async function renderProfileManagement() {
             <div class="growth-item">
                 <div class="growth-year">EXPERIENCE</div>
                 <div>
-                    <h3>${e.title}</h3>
+                    <h3>${escapeHtml(e.title)}</h3>
                     <p>Previous work</p>
                     <button class="chip-remove" type="button" data-remove-exp="${e.id}" title="Remove">×</button>
                 </div>
@@ -1623,8 +1623,8 @@ function wireRegistration() {
             toast("Please fill in all required fields.");
             return;
         }
-        if (password.length < 6) {
-            toast("Password must be at least 6 characters.");
+        if (password.length < 8) {
+            toast("Password must be at least 8 characters.");
             return;
         }
 

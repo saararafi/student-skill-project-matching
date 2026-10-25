@@ -309,7 +309,7 @@ def update_certificate_status(student_id, skill_id):
 
     # Confirm that the requested skill record exists.
     certificate = fetch_one("""
-        SELECT id, certificate_status
+        SELECT id, certificate_status, certificate_filename
         FROM student_skills
         WHERE student_id = %s
           AND skill_id = %s
@@ -320,11 +320,6 @@ def update_certificate_status(student_id, skill_id):
             "success": False,
             "message": "Certificate or skill record not found."
         }), 404
-
-    if not certificate.get("certificate_filename"):
-        # This branch is intentionally not used: the filename is not
-        # selected above. Certificate existence is checked below instead.
-        pass
 
     # Update the certificate status.
     execute_query("""

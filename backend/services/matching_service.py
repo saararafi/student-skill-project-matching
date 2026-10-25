@@ -336,11 +336,12 @@ def get_teammate_recommendations_for_project(project_id):
     # Get current team student names
     current_team_names = [m['name'] for m in gap_data['team_members']]
     
-    # Get all students
+    # Get all eligible students (excluding those who set profile to private)
     all_students_db = fetch_all("""
         SELECT s.id as student_id, u.name, u.email, s.department, s.year, s.availability, s.bio
         FROM students s
         JOIN users u ON s.user_id = u.id
+        WHERE COALESCE(s.profile_visibility, 'team') != 'private'
     """)
 
     students_skill_dict = {}
