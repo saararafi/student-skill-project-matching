@@ -13,7 +13,7 @@ INSERT INTO users (id, name, email, password_hash, role) VALUES
 (3, 'Rahul Verma', 'rahul@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
 (4, 'Meera Patel', 'meera@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
 (5, 'Arjun Nair', 'arjun@example.com', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'student'),
-(6, 'Dr. Priya Sharma', 'priya.sharma@faculty.edu', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'faculty'),
+(6, 'Faculty Coordinator', 'faculty@skillmatch.edu', 'scrypt:32768:8:1$RF07XyXQG0mQX4DG$7335d376ea707e5e33f570e1dc783ba0ab28c91319a3a6a5477fd5038e5ec6d5eb2933c58e95d8d7150264742502225dbcb0896b46160a9577871511ed135164', 'faculty'),
 (7, 'Prof. Ramesh Kumar', 'ramesh.kumar@faculty.edu', 'scrypt:32768:8:1$TbxMANlovhpg2mzO$048cf4accf3c5ad539ee79ebb99508d46cce65e2151a8856bbc8a0776ea26f939baa9199cff480f2b8abeb70d77c20254c41c83f2132556bd8fc0077cd6f9a54', 'faculty');
 
 -- 2. Students

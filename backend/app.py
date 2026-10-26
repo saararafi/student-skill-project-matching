@@ -11,6 +11,7 @@ from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 from backend.config import Config
 from backend.database import init_db
+from backend.rate_limiter import clear_all_rate_limits
 from backend.csrf import check_csrf, get_or_create_csrf_token
 from backend.auth_utils import authorize_certificate_access
 
@@ -26,6 +27,7 @@ from backend.routes.faculty_routes import faculty_bp
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 
 def create_app():
+    clear_all_rate_limits()
     app = Flask(__name__, static_folder=FRONTEND_DIR)
     app.config.from_object(Config)
 

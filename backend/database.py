@@ -663,11 +663,21 @@ def init_db():
             (12, 'Docker', 'DevOps & Deployment')
         ])
 
-        # Seed SQLite Demo Data ONLY if SEED_DEMO_DATA is enabled and database was fresh
-        if (not has_users_table) and Config.SEED_DEMO_DATA:
+        # Ensure active faculty account exists
+        cur.execute("SELECT COUNT(id) FROM users WHERE email = 'faculty@skillmatch.edu';")
+        if cur.fetchone()[0] == 0:
+            cur.execute(
+                "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)",
+                ('Faculty Coordinator', 'faculty@skillmatch.edu', generate_password_hash('faculty@123'), 'faculty')
+            )
+
+        # Seed SQLite Demo Data if SEED_DEMO_DATA is enabled and demo users are missing
+        cur.execute("SELECT COUNT(id) FROM users WHERE email = 'saara@example.com';")
+        has_demo_users = (cur.fetchone()[0] > 0)
+        if (not has_demo_users) and Config.SEED_DEMO_DATA:
             pwd_hash = generate_password_hash(DEMO_PASSWORD)
             
-            cur.executemany("INSERT INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO users (id, name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)", [
                 (1, 'Saara Rafi', 'saara@example.com', pwd_hash, 'student'),
                 (2, 'Aisha Khan', 'aisha@example.com', pwd_hash, 'student'),
                 (3, 'Rahul Verma', 'rahul@example.com', pwd_hash, 'student'),
@@ -677,7 +687,7 @@ def init_db():
                 (7, 'Prof. Ramesh Kumar', 'ramesh.kumar@faculty.edu', pwd_hash, 'faculty')
             ])
 
-            cur.executemany("INSERT INTO students (id, user_id, department, year, semester, availability, bio, github_url, linkedin_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO students (id, user_id, department, year, semester, availability, bio, github_url, linkedin_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
                 (1, 1, 'Computer Science Engineering', '3rd Year', '5th Semester', 'Full-time', 'CSE student passionate about intelligent systems, full-stack web architectures, and algorithms. Looking for impactful multidisciplinary projects.', 'https://github.com/saararafi', 'https://linkedin.com/in/saararafi'),
                 (2, 2, 'Information Science', '3rd Year', '5th Semester', 'Part-time', 'Enthusiastic web and backend developer with expertise in Python and data engineering.', 'https://github.com/aisha-k', 'https://linkedin.com/in/aisha-k'),
                 (3, 3, 'Computer Science Engineering', '3rd Year', '5th Semester', 'Full-time', 'Backend specialist focusing on Flask, databases, and microservices.', 'https://github.com/rahul-v', 'https://linkedin.com/in/rahul-v'),
