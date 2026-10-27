@@ -353,75 +353,211 @@ async function renderDashboard() {
 
 async function renderApplications() {
     const container = $("#applicationsListItems");
-    if (!container) return;
+    const closedContainer = $("#closedApplicationsList");
+    const totalEl = $("#totalApplicationsCount");
+    const pendingEl = $("#pendingApplicationsCount");
+    const acceptedEl = $("#acceptedApplicationsCount");
+    const closedEl = $("#closedApplicationsCount");
+    const activeBadge = $("#activeApplicationsBadge");
+    const closedBadge = $("#closedApplicationsBadge");
 
-    const { ok, data } = await api("/applications");
-    if (!ok || !data.applications) {
-        emptyState(container, "Your applications will appear here.");
+    const flowStep1 = $("#flowStep1");
+    const flowStep2 = $("#flowStep2");
+    const flowStep3 = $("#flowStep3");
+    const flowStep4 = $("#flowStep4");
+    const flowLine1 = $("#flowLine1");
+    const flowLine2 = $("#flowLine2");
+    const flowLine3 = $("#flowLine3");
+
+    if (!container && !totalEl) return;
+
+    const { ok, status, data } = await api("/applications");
+
+    if (!ok || !data || !Array.isArray(data.applications)) {
+        if (totalEl) totalEl.textContent = "00";
+        if (pendingEl) pendingEl.textContent = "00";
+        if (acceptedEl) acceptedEl.textContent = "00";
+        if (closedEl) closedEl.textContent = "00";
+        if (activeBadge) activeBadge.textContent = "0 ACTIVE";
+        if (closedBadge) closedBadge.textContent = "0 CLOSED";
+
+        if (container) {
+            container.innerHTML = `
+                <div class="garden-card empty-state" id="applicationsEmptyState" style="padding: 40px 20px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 36px; margin-bottom: 12px;">🌱</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--olive-deep); font-weight: 600;">
+                        ${status === 401 ? "Sign in to see your applications." : "No active applications yet."}
+                    </h3>
+                    <p style="color: var(--muted); margin: 8px auto 18px; font-size: 14px; max-width: 480px; line-height: 1.6;">
+                        ${status === 401 ? "Log in as a student to track your submitted project applications in real time." : "You have not applied to any project beds yet. Browse the open projects in bloom, review required skills, and apply to begin your project journey."}
+                    </p>
+                    <a href="${status === 401 ? 'login.html' : 'projects.html'}" class="garden-button">${status === 401 ? 'Sign In ✿' : 'Explore Projects in Bloom 🌿'}</a>
+                </div>`;
+        }
+        if (closedContainer) {
+            closedContainer.innerHTML = `
+                <div class="garden-card empty-state" id="closedEmptyState" style="padding: 36px 20px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🍂</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--olive-deep); font-weight: 600;">
+                        No previous or closed applications.
+                    </h3>
+                    <p style="color: var(--muted); margin: 6px auto 0; font-size: 14px; max-width: 460px; line-height: 1.5;">
+                        Completed projects, past reviews, or archived applications will appear here.
+                    </p>
+                </div>`;
+        }
         return;
     }
-    if (!data.applications.length) {
-        emptyState(container, "You have not applied to any project yet.");
-        return;
+
+    const apps = data.applications;
+    const total = apps.length;
+    const pendingApps = apps.filter(a => (a.status || "").toLowerCase() === "pending");
+    const acceptedApps = apps.filter(a => (a.status || "").toLowerCase() === "accepted");
+    const closedApps = apps.filter(a => (a.status || "").toLowerCase() === "rejected" || (a.status || "").toLowerCase() === "closed");
+    const activeApps = apps.filter(a => (a.status || "").toLowerCase() !== "rejected" && (a.status || "").toLowerCase() !== "closed");
+
+    if (totalEl) totalEl.textContent = String(total).padStart(2, "0");
+    if (pendingEl) pendingEl.textContent = String(pendingApps.length).padStart(2, "0");
+    if (acceptedEl) acceptedEl.textContent = String(acceptedApps.length).padStart(2, "0");
+    if (closedEl) closedEl.textContent = String(closedApps.length).padStart(2, "0");
+    if (activeBadge) activeBadge.textContent = `${activeApps.length} ACTIVE`;
+    if (closedBadge) closedBadge.textContent = `${closedApps.length} CLOSED`;
+
+    // Dynamic journey flow progression based on real user actions
+    const hasApplied = total > 0;
+    const hasReview = pendingApps.length > 0 || acceptedApps.length > 0 || closedApps.length > 0;
+    const hasAccepted = acceptedApps.length > 0;
+
+    if (flowStep1) flowStep1.classList.toggle("active", true);
+    if (flowLine1) flowLine1.classList.toggle("active", hasApplied);
+    if (flowStep2) flowStep2.classList.toggle("active", hasApplied);
+    if (flowLine2) flowLine2.classList.toggle("active", hasApplied && hasReview);
+    if (flowStep3) flowStep3.classList.toggle("active", hasReview);
+    if (flowLine3) flowLine3.classList.toggle("active", hasAccepted);
+    if (flowStep4) flowStep4.classList.toggle("active", hasAccepted);
+
+    // Active applications
+    if (container) {
+        if (!activeApps.length) {
+            container.innerHTML = `
+                <div class="garden-card empty-state" id="applicationsEmptyState" style="padding: 40px 20px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 36px; margin-bottom: 12px;">🌱</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--olive-deep); font-weight: 600;">
+                        No active applications yet.
+                    </h3>
+                    <p style="color: var(--muted); margin: 8px auto 18px; font-size: 14px; max-width: 480px; line-height: 1.6;">
+                        You have not applied to any project beds yet. Browse the open projects in bloom, review required skills, and apply to begin your project journey.
+                    </p>
+                    <a href="projects.html" class="garden-button">Explore Projects in Bloom 🌿</a>
+                </div>`;
+        } else {
+            container.innerHTML = activeApps.map(app => {
+                const isAccepted = (app.status || "").toLowerCase() === "accepted";
+                const cls = isAccepted ? "accepted" : "pending";
+                const label = isAccepted ? "Accepted ✓" : "Pending Review";
+                const applied = app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "—";
+                const actionBtn = isAccepted
+                    ? `<a href="team.html?id=${app.project_id}" class="garden-button">Go to Team Bed 🌳</a>`
+                    : `<button class="garden-button secondary" type="button"
+                               data-withdraw-app="${app.id}"
+                               data-project-title="${escapeHtml(app.project_title)}">Withdraw</button>`;
+
+                return `
+                    <article class="garden-card application-card ${isAccepted ? 'accepted-application' : ''}">
+                        <div class="application-card-top">
+                            <div>
+                                <span class="application-project-status ${isAccepted ? 'accepted' : 'open'}">${escapeHtml(app.domain || "Open Project")}</span>
+                                <h3>${escapeHtml(app.project_title)}</h3>
+                                <p>${escapeHtml(app.message || "Application submitted for academic project matching.")}</p>
+                            </div>
+                            <div class="application-match">
+                                <small>MATCH</small>
+                                <strong>${Math.round(app.match_score || 0)}%</strong>
+                            </div>
+                        </div>
+                        <div class="application-meta">
+                            <span>📅 Applied ${applied}</span>
+                            <span>👥 ${escapeHtml(String(app.team_size || 4))} students</span>
+                            <span>✿ ${escapeHtml(app.status)}</span>
+                        </div>
+                        <div class="application-status-row">
+                            <div class="application-status ${cls}">
+                                <span class="status-dot"></span>${label}
+                            </div>
+                            <div class="application-actions">
+                                <a href="project-details.html?id=${app.project_id}" class="garden-button secondary">View Project</a>
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    </article>`;
+            }).join("");
+
+            // Wire withdraw buttons
+            $$("[data-withdraw-app]", container).forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    const id = btn.dataset.withdrawApp;
+                    const title = btn.dataset.projectTitle || "this project";
+                    if (!window.confirm(`Withdraw your application for ${title}?`)) return;
+                    btn.disabled = true;
+                    const { ok, data } = await api(`/applications/${id}/withdraw`, { method: "POST" });
+                    if (ok && data.success) {
+                        toast("Application withdrawn.");
+                        renderApplications();
+                    } else {
+                        toast(data.message || "Could not withdraw the application.");
+                        btn.disabled = false;
+                    }
+                });
+            });
+        }
     }
 
-    container.innerHTML = data.applications.map(app => {
-        const cls = app.status === "Accepted" ? "accepted"
-            : app.status === "Rejected" ? "rejected" : "pending";
-        const label = app.status === "Accepted" ? "Accepted ✓"
-            : app.status === "Rejected" ? "Rejected" : "Pending Review";
-        const applied = app.applied_at
-            ? new Date(app.applied_at).toLocaleDateString() : "—";
-        const withdraw = app.status === "Accepted" ? "" : `
-            <button class="garden-button secondary" type="button"
-                    data-withdraw-app="${app.id}"
-                    data-project-title="${escapeHtml(app.project_title)}">Withdraw</button>`;
-        return `
-            <article class="garden-card application-card">
-                <div class="application-card-top">
-                    <div>
-                        <span class="application-project-status open">${escapeHtml(app.domain || "Open Project")}</span>
-                        <h3>${escapeHtml(app.project_title)}</h3>
-                        <p>${escapeHtml(app.message || "Application submitted for academic project matching.")}</p>
-                    </div>
-                    <div class="application-match">
-                        <small>MATCH</small>
-                        <strong>${Math.round(app.match_score || 0)}%</strong>
-                    </div>
-                </div>
-                <div class="application-meta">
-                    <span>📅 Applied ${applied}</span>
-                    <span>✿ ${app.status}</span>
-                </div>
-                <div class="application-status-row">
-                    <div class="application-status ${cls}">
-                        <span class="status-dot"></span>${label}
-                    </div>
-                    <div class="application-actions">
-                        <a href="project-details.html?id=${app.project_id}" class="garden-button">View Project</a>
-                        ${withdraw}
-                    </div>
-                </div>
-            </article>`;
-    }).join("");
-
-    // Withdraw buttons
-    $$("[data-withdraw-app]", container).forEach(btn => {
-        btn.addEventListener("click", async () => {
-            const id = btn.dataset.withdrawApp;
-            const title = btn.dataset.projectTitle || "this project";
-            if (!window.confirm(`Withdraw your application for ${title}?`)) return;
-            btn.disabled = true;
-            const { ok, data } = await api(`/applications/${id}/withdraw`, { method: "POST" });
-            if (ok && data.success) {
-                toast("Application withdrawn.");
-                renderApplications();
-            } else {
-                toast(data.message || "Could not withdraw the application.");
-                btn.disabled = false;
-            }
-        });
-    });
+    // Closed applications
+    if (closedContainer) {
+        if (!closedApps.length) {
+            closedContainer.innerHTML = `
+                <div class="garden-card empty-state" id="closedEmptyState" style="padding: 36px 20px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🍂</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--olive-deep); font-weight: 600;">
+                        No previous or closed applications.
+                    </h3>
+                    <p style="color: var(--muted); margin: 6px auto 0; font-size: 14px; max-width: 460px; line-height: 1.5;">
+                        Completed projects, past reviews, or archived applications will appear here.
+                    </p>
+                </div>`;
+        } else {
+            closedContainer.innerHTML = closedApps.map(app => {
+                const applied = app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "—";
+                return `
+                    <article class="garden-card application-card closed-application">
+                        <div class="application-card-top">
+                            <div>
+                                <span class="application-project-status closed">CLOSED</span>
+                                <h3>${escapeHtml(app.project_title)}</h3>
+                                <p>${escapeHtml(app.message || "Application concluded.")}</p>
+                            </div>
+                            <div class="application-match">
+                                <small>MATCH</small>
+                                <strong>${Math.round(app.match_score || 0)}%</strong>
+                            </div>
+                        </div>
+                        <div class="application-meta">
+                            <span>🌿 ${escapeHtml(app.domain || "Project")}</span>
+                            <span>👥 ${escapeHtml(String(app.team_size || 4))} students</span>
+                            <span>📅 Applied ${applied}</span>
+                        </div>
+                        <div class="application-status-row">
+                            <div class="application-status rejected">
+                                <span class="status-dot"></span>Not Selected
+                            </div>
+                            <div class="application-actions">
+                                <a href="projects.html" class="garden-button secondary">Explore Other Projects</a>
+                            </div>
+                        </div>
+                    </article>`;
+            }).join("");
+        }
+    }
 }
 
 /* ------------------------------------------------------------
@@ -974,6 +1110,12 @@ async function renderProjectDetails() {
             applyBtn.textContent = p.application.status === "Accepted" ? "Accepted ✓" : "Applied ✓";
             applyBtn.classList.add("applied");
         }
+    }
+
+    const appCountEl = $("#detailApplicationCount");
+    if (appCountEl) {
+        const count = p.application_count || 0;
+        appCountEl.textContent = `${count} received`;
     }
 }
 

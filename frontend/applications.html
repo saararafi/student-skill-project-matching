@@ -141,8 +141,8 @@
             </div>
 
 
-            <div class="user-avatar">
-                S
+            <div class="user-avatar" data-user-avatar>
+                ?
             </div>
 
         </header>
@@ -155,88 +155,60 @@
 
         <section class="application-summary-grid">
 
-
             <div class="garden-card application-summary-card">
-
                 <span class="application-summary-icon">
                     🌱
                 </span>
-
                 <div>
-
                     <small>
                         TOTAL APPLICATIONS
                     </small>
-
-                    <strong>
-                        04
+                    <strong id="totalApplicationsCount">
+                        00
                     </strong>
-
                 </div>
-
             </div>
 
-
             <div class="garden-card application-summary-card">
-
                 <span class="application-summary-icon">
                     ⏳
                 </span>
-
                 <div>
-
                     <small>
                         PENDING
                     </small>
-
-                    <strong>
-                        02
+                    <strong id="pendingApplicationsCount">
+                        00
                     </strong>
-
                 </div>
-
             </div>
 
-
             <div class="garden-card application-summary-card">
-
                 <span class="application-summary-icon">
                     ✿
                 </span>
-
                 <div>
-
                     <small>
                         ACCEPTED
                     </small>
-
-                    <strong>
-                        01
+                    <strong id="acceptedApplicationsCount">
+                        00
                     </strong>
-
                 </div>
-
             </div>
 
-
             <div class="garden-card application-summary-card">
-
                 <span class="application-summary-icon">
                     🍂
                 </span>
-
                 <div>
-
                     <small>
                         CLOSED
                     </small>
-
-                    <strong>
-                        01
+                    <strong id="closedApplicationsCount">
+                        00
                     </strong>
-
                 </div>
-
             </div>
 
         </section>
@@ -249,101 +221,71 @@
 
         <section class="garden-card application-flow-card">
 
-
             <div class="garden-section-title">
-
                 <div>
-
                     <span>
                         APPLICATION JOURNEY
                     </span>
-
                     <h2>
                         From seed to project
                     </h2>
-
                 </div>
-
             </div>
-
 
             <div class="application-flow">
 
-
-                <div class="application-flow-step active">
-
+                <div class="application-flow-step" id="flowStep1">
                     <span>
                         01
                     </span>
-
                     <strong>
                         Recommended
                     </strong>
-
                     <small>
                         A project matches your profile.
                     </small>
-
                 </div>
 
+                <div class="application-flow-line" id="flowLine1"></div>
 
-                <div class="application-flow-line"></div>
-
-
-                <div class="application-flow-step active">
-
+                <div class="application-flow-step" id="flowStep2">
                     <span>
                         02
                     </span>
-
                     <strong>
                         Applied
                     </strong>
-
                     <small>
                         Your application is submitted.
                     </small>
-
                 </div>
 
+                <div class="application-flow-line" id="flowLine2"></div>
 
-                <div class="application-flow-line"></div>
-
-
-                <div class="application-flow-step">
-
+                <div class="application-flow-step" id="flowStep3">
                     <span>
                         03
                     </span>
-
                     <strong>
                         Faculty Review
                     </strong>
-
                     <small>
                         Your application is reviewed.
                     </small>
-
                 </div>
 
+                <div class="application-flow-line" id="flowLine3"></div>
 
-                <div class="application-flow-line"></div>
-
-
-                <div class="application-flow-step">
-
+                <div class="application-flow-step" id="flowStep4">
                     <span>
                         04
                     </span>
-
                     <strong>
                         Team Formation
                     </strong>
-
                     <small>
                         Selected students form a team.
                     </small>
-
                 </div>
 
             </div>
@@ -358,28 +300,32 @@
 
         <section>
 
-
             <div class="garden-section-title">
-
                 <div>
-
                     <span>
                         CURRENTLY GROWING
                     </span>
-
                     <h2>
                         Active Applications
                     </h2>
-
                 </div>
 
-                <span class="botanical-badge">
-                    03 ACTIVE
+                <span class="botanical-badge" id="activeApplicationsBadge">
+                    0 ACTIVE
                 </span>
-
             </div>
 
             <div id="applicationsListItems">
+                <div class="garden-card empty-state" id="applicationsEmptyState" style="padding: 40px 20px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 36px; margin-bottom: 12px;">🌱</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--olive-deep); font-weight: 600;">
+                        No active applications yet.
+                    </h3>
+                    <p style="color: var(--muted); margin: 8px auto 18px; font-size: 14px; max-width: 480px; line-height: 1.6;">
+                        You have not applied to any project beds yet. Browse the open projects in bloom, review required skills, and apply to begin your project journey.
+                    </p>
+                    <a href="projects.html" class="garden-button">Explore Projects in Bloom 🌿</a>
+                </div>
             </div>
 
         </section>
@@ -392,109 +338,32 @@
 
         <section>
 
-
             <div class="garden-section-title">
-
                 <div>
-
                     <span>
                         RESTING SEEDS
                     </span>
-
                     <h2>
                         Previous Applications
                     </h2>
-
                 </div>
 
+                <span class="botanical-badge" id="closedApplicationsBadge">
+                    0 CLOSED
+                </span>
             </div>
 
-
-            <article class="garden-card application-card closed-application">
-
-
-                <div class="application-card-top">
-
-                    <div>
-
-                        <span class="application-project-status closed">
-                            CLOSED
-                        </span>
-
-                        <h3>
-                            AI Study Assistant
-                        </h3>
-
-                        <p>
-                            An academic assistant designed to help
-                            students organise learning resources and
-                            study plans.
-                        </p>
-
-                    </div>
-
-
-                    <div class="application-match">
-
-                        <small>
-                            MATCH
-                        </small>
-
-                        <strong>
-                            74%
-                        </strong>
-
-                    </div>
-
+            <div id="closedApplicationsList">
+                <div class="garden-card empty-state" id="closedEmptyState" style="padding: 36px 20px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🍂</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--olive-deep); font-weight: 600;">
+                        No previous or closed applications.
+                    </h3>
+                    <p style="color: var(--muted); margin: 6px auto 0; font-size: 14px; max-width: 460px; line-height: 1.5;">
+                        Completed projects, past reviews, or archived applications will appear here.
+                    </p>
                 </div>
-
-
-                <div class="application-meta">
-
-                    <span>
-                        🌿 Artificial Intelligence
-                    </span>
-
-                    <span>
-                        👥 4 students
-                    </span>
-
-                    <span>
-                        ◷ 6 weeks
-                    </span>
-
-                    <span>
-                        📅 Applied 10 Sep 2026
-                    </span>
-
-                </div>
-
-
-                <div class="application-status-row">
-
-                    <div class="application-status rejected">
-
-                        <span class="status-dot"></span>
-
-                        Not Selected
-
-                    </div>
-
-
-                    <div class="application-actions">
-
-                        <a
-                            href="projects.html"
-                            class="garden-button secondary"
-                        >
-                            Explore Projects
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </article>
+            </div>
 
         </section>
 
