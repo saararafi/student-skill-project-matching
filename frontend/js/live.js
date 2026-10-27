@@ -207,7 +207,7 @@ async function renderDashboard() {
         if (title) title.textContent = "No Projects Available Yet";
 
         const desc = $(".project-match-description", card);
-        if (desc) desc.textContent = "Add your skills in My Growth, or publish a project from the Faculty desk to start matching!";
+        if (desc) desc.textContent = "Add your skills and interests in My Growth to get matched with projects as soon as faculty publish them!";
 
         const score = $("[data-score]", card);
         if (score) {

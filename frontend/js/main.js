@@ -374,8 +374,7 @@ async function initializeLiveProjects() {
                     No projects have been published by faculty yet. As soon as a faculty member adds a project from the Faculty Console, it will appear here with live compatibility matching.
                 </p>
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <a href="growth.html" class="garden-button garden-button-secondary">Tend Your Skills (My Growth) →</a>
-                    <a href="faculty-new-project.html" class="garden-button">Faculty: Publish a Project ✿</a>
+                    <a href="growth.html" class="garden-button">Tend Your Skills (My Growth) →</a>
                 </div>
             </div>
         `;
