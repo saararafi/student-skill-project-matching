@@ -1289,6 +1289,403 @@ async function applyToProject(projectId, button) {
    Faculty console
    ------------------------------------------------------------ */
 
+async function renderFacultyProjectDetail(projectId) {
+    const section = $("#facultyProjectDetailSection");
+    const listSection = $("#facultyProjectsSection");
+    const content = $("#facultyProjectDetailContent");
+    if (!section || !content) return;
+
+    if (listSection) listSection.style.display = "none";
+    section.style.display = "";
+    content.innerHTML = `<div class="empty-state" style="padding: 40px; text-align: center;"><p>Loading project analytics... ⏳</p></div>`;
+
+    const { ok, data } = await api(`/faculty/projects/${projectId}`);
+    if (!ok || !data || !data.project) {
+        content.innerHTML = `
+            <div class="garden-card empty-state" style="padding: 30px; text-align: center;">
+                <p>Could not load project details. Please try again.</p>
+                <button type="button" class="garden-button secondary" id="backToProjectsBtn">← Back to Guided Projects</button>
+            </div>`;
+        const backBtn = $("#backToProjectsBtn", content);
+        if (backBtn) {
+            backBtn.onclick = () => {
+                section.style.display = "none";
+                if (listSection) listSection.style.display = "";
+                history.pushState(null, "", "faculty-projects.html");
+            };
+        }
+        return;
+    }
+
+    const p = data.project;
+    const stats = data.stats || {};
+    const teamMembers = data.team_members || [];
+    const applications = data.applications || [];
+    const skills = data.required_skills || [];
+
+    // Calculations for Pie/Donut Chart 1: Team Capacity
+    const teamSize = stats.team_size || 4;
+    const memberCount = stats.member_count || 0;
+    const openSpots = stats.open_spots !== undefined ? stats.open_spots : Math.max(0, teamSize - memberCount);
+    const fillPct = stats.fill_percentage || (teamSize > 0 ? Math.round((memberCount / teamSize) * 100) : 0);
+    const circumference = 263.89; // 2 * PI * 42
+    const strokeDashoffset = circumference - (fillPct / 100 * circumference);
+
+    // Calculations for Pie/Donut Chart 2: Application Pipeline
+    const totalApps = stats.total_applications || applications.length;
+    const pendingApps = stats.pending_applications || applications.filter(a => a.status === "Pending").length;
+    const acceptedApps = stats.accepted_applications || applications.filter(a => a.status === "Accepted").length;
+    const rejectedApps = stats.rejected_applications || applications.filter(a => a.status === "Rejected").length;
+
+    // SVG donut segments for applications
+    let appSegments = "";
+    if (totalApps === 0) {
+        appSegments = `<circle cx="60" cy="60" r="42" fill="none" stroke="#e8ede0" stroke-width="14" />`;
+    } else {
+        const pAcc = (acceptedApps / totalApps) * circumference;
+        const pPen = (pendingApps / totalApps) * circumference;
+        const pRej = (rejectedApps / totalApps) * circumference;
+
+        let offset = 0;
+        if (acceptedApps > 0) {
+            appSegments += `<circle cx="60" cy="60" r="42" fill="none" stroke="#c6a15b" stroke-width="14"
+                stroke-dasharray="${pAcc} ${circumference}" stroke-dashoffset="${-offset}"
+                transform="rotate(-90 60 60)" />`;
+            offset += pAcc;
+        }
+        if (pendingApps > 0) {
+            appSegments += `<circle cx="60" cy="60" r="42" fill="none" stroke="#536b32" stroke-width="14"
+                stroke-dasharray="${pPen} ${circumference}" stroke-dashoffset="${-offset}"
+                transform="rotate(-90 60 60)" />`;
+            offset += pPen;
+        }
+        if (rejectedApps > 0) {
+            appSegments += `<circle cx="60" cy="60" r="42" fill="none" stroke="#a9927d" stroke-width="14"
+                stroke-dasharray="${pRej} ${circumference}" stroke-dashoffset="${-offset}"
+                transform="rotate(-90 60 60)" />`;
+        }
+    }
+
+    // Milestones / Process stage
+    const currentStage = stats.current_stage || 1;
+    const stages = [
+        { num: "01", title: "Project Published", desc: "Project bed configured and open for student discovery", icon: "🌱", done: currentStage >= 1 },
+        { num: "02", title: "Candidate Review", desc: `${totalApps} application(s) received · ${pendingApps} pending evaluation`, icon: "✉", done: currentStage >= 2 },
+        { num: "03", title: "Team Assembly", desc: `${memberCount} of ${teamSize} members accepted into team bed`, icon: "🌳", done: currentStage >= 3 },
+        { num: "04", title: "Active Bloom", desc: memberCount >= teamSize ? "Full team assembled & underway" : "Forming final team complement", icon: "✿", done: currentStage >= 4 }
+    ];
+
+    content.innerHTML = `
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <button type="button" class="garden-button secondary" id="backToProjectsBtn">
+                ← Back to All Guided Projects
+            </button>
+            <span class="botanical-badge">
+                ${escapeHtml(p.status || "Open")} Project Bed
+            </span>
+        </div>
+
+        <!-- Project Hero Card -->
+        <article class="garden-card" style="padding: 28px; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
+                <div>
+                    <span class="application-project-status open" style="margin-bottom: 8px;">${escapeHtml(p.domain || "Academic Project")}</span>
+                    <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin: 6px 0 10px; color: var(--olive-deep);">
+                        ${escapeHtml(p.title)}
+                    </h2>
+                    <p style="color: var(--muted); font-size: 0.95rem; max-width: 720px; line-height: 1.6;">
+                        ${escapeHtml(p.description || "Guided academic project for student skill development and cross-functional team matching.")}
+                    </p>
+                </div>
+                <div style="text-align: right; min-width: 140px;">
+                    <small style="display: block; font-size: 0.7rem; color: var(--muted); letter-spacing: 1px;">COMMITMENT</small>
+                    <strong style="font-size: 1.1rem; color: var(--olive-deep);">${escapeHtml(p.required_availability || "Medium commitment")}</strong>
+                    <small style="display: block; margin-top: 6px; font-size: 0.7rem; color: var(--muted); letter-spacing: 1px;">DIFFICULTY</small>
+                    <span style="font-size: 0.9rem; color: var(--gold-deep);">${escapeHtml(p.difficulty || "Intermediate")}</span>
+                </div>
+            </div>
+
+            <div class="application-meta" style="margin-top: 18px;">
+                <span>👥 Target Team: ${teamSize} Students</span>
+                <span>📅 Published: ${p.created_at ? new Date(p.created_at).toLocaleDateString() : "Active"}</span>
+                <span>✿ Status: ${escapeHtml(p.status)}</span>
+            </div>
+        </article>
+
+        <!-- Process / Progress Milestones -->
+        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+            <div class="garden-section-title" style="margin-bottom: 18px;">
+                <div>
+                    <span>PROJECT PROGRESS & MILESTONES</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;">How Much Progress Has Been Made</h3>
+                </div>
+                <span class="botanical-badge">Stage ${currentStage} of 4</span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="width: 100%; height: 8px; background: #e8ede0; border-radius: 4px; overflow: hidden; margin-bottom: 22px;">
+                <div style="width: ${(currentStage / 4) * 100}%; height: 100%; background: linear-gradient(90deg, var(--olive, #536b32), var(--gold, #c6a15b)); transition: width 0.4s ease;"></div>
+            </div>
+
+            <!-- Milestone Steps -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+                ${stages.map((st, i) => `
+                    <div style="padding: 16px; border-radius: 12px; border: 1px solid ${st.done ? 'rgba(83, 107, 50, 0.3)' : 'rgba(0,0,0,0.06)'}; background: ${st.done ? 'rgba(83, 107, 50, 0.05)' : '#faf8f5'};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">${st.icon}</span>
+                            <span style="font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: ${st.done ? '#536b32' : '#bbb'}; color: white;">
+                                ${st.done ? '✓ Done' : '○ Upcoming'}
+                            </span>
+                        </div>
+                        <h4 style="margin: 4px 0 6px; font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--olive-deep);">
+                            ${st.title}
+                        </h4>
+                        <p style="margin: 0; font-size: 0.78rem; color: var(--muted); line-height: 1.4;">
+                            ${escapeHtml(st.desc)}
+                        </p>
+                    </div>
+                `).join("")}
+            </div>
+        </section>
+
+        <!-- Pie / Donut Charts Section -->
+        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+            <div class="garden-section-title" style="margin-bottom: 20px;">
+                <div>
+                    <span>PROJECT ANALYTICS</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;">Capacity & Applications Breakdown</h3>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: center;">
+                
+                <!-- Chart 1: Team Capacity Donut -->
+                <div style="display: flex; align-items: center; gap: 20px; padding: 20px; border-radius: 14px; background: rgba(247, 242, 229, 0.4); border: 1px solid rgba(120, 110, 70, 0.12);">
+                    <div style="position: relative; width: 120px; height: 120px; flex-shrink: 0;">
+                        <svg viewBox="0 0 120 120" width="120" height="120">
+                            <!-- Background track (open spots) -->
+                            <circle cx="60" cy="60" r="42" fill="none" stroke="#e1e7d4" stroke-width="14" />
+                            <!-- Filled track -->
+                            <circle cx="60" cy="60" r="42" fill="none" stroke="#536b32" stroke-width="14"
+                                    stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}"
+                                    stroke-linecap="round" transform="rotate(-90 60 60)" />
+                            <!-- Center text -->
+                            <text x="60" y="56" text-anchor="middle" font-size="20" font-family="'Cormorant Garamond', serif" font-weight="bold" fill="#26351b">${memberCount}/${teamSize}</text>
+                            <text x="60" y="73" text-anchor="middle" font-size="9" fill="#7c8274" letter-spacing="0.8">MEMBERS</text>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0 0 6px; font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--olive-deep);">
+                            Team Capacity
+                        </h4>
+                        <div style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">
+                            ${fillPct}% filled · ${openSpots} spot(s) remaining
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem;">
+                            <span style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #536b32;"></span>
+                                Active Members: <strong>${memberCount}</strong>
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #e1e7d4;"></span>
+                                Open Seats: <strong>${openSpots}</strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Applications Pipeline Donut -->
+                <div style="display: flex; align-items: center; gap: 20px; padding: 20px; border-radius: 14px; background: rgba(247, 242, 229, 0.4); border: 1px solid rgba(120, 110, 70, 0.12);">
+                    <div style="position: relative; width: 120px; height: 120px; flex-shrink: 0;">
+                        <svg viewBox="0 0 120 120" width="120" height="120">
+                            ${appSegments}
+                            <text x="60" y="56" text-anchor="middle" font-size="20" font-family="'Cormorant Garamond', serif" font-weight="bold" fill="#26351b">${totalApps}</text>
+                            <text x="60" y="73" text-anchor="middle" font-size="9" fill="#7c8274" letter-spacing="0.8">APPLIED</text>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0 0 6px; font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--olive-deep);">
+                            Applications Funnel
+                        </h4>
+                        <div style="font-size: 0.82rem; color: var(--muted); margin-bottom: 8px;">
+                            ${pendingApps} awaiting your review
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem;">
+                            <span style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #c6a15b;"></span>
+                                Accepted: <strong>${acceptedApps}</strong>
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #536b32;"></span>
+                                Pending: <strong>${pendingApps}</strong>
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 6px;">
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #a9927d;"></span>
+                                Rejected: <strong>${rejectedApps}</strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Active Team Members Section -->
+        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+            <div class="garden-section-title" style="margin-bottom: 18px;">
+                <div>
+                    <span>WORKING ON PROJECT</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;">Active Team Members (${memberCount}/${teamSize})</h3>
+                </div>
+            </div>
+
+            ${teamMembers.length === 0 ? `
+                <div class="empty-state" style="padding: 25px; text-align: center;">
+                    <p style="color: var(--muted); margin: 0 0 10px;">No students have joined this team bed yet.</p>
+                    <small>Review pending candidate applications below and click "Accept into Team" to fill your project team.</small>
+                </div>
+            ` : `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;">
+                    ${teamMembers.map(m => `
+                        <div style="padding: 16px; border-radius: 12px; border: 1px solid rgba(83, 107, 50, 0.2); background: white;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: #536b32; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
+                                    ${escapeHtml((m.student_name || "S")[0].toUpperCase())}
+                                </div>
+                                <div>
+                                    <strong style="display: block; font-size: 0.95rem; color: var(--olive-deep);">${escapeHtml(m.student_name)}</strong>
+                                    <span style="font-size: 0.72rem; color: var(--muted);">${escapeHtml(m.department || "")} · ${escapeHtml(m.year || "")}</span>
+                                </div>
+                            </div>
+                            <span class="application-project-status accepted" style="font-size: 0.65rem; margin-bottom: 8px;">
+                                ${escapeHtml(m.role || "Team Member")}
+                            </span>
+                            <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px;">
+                                ${(m.skills || []).map(sk => `
+                                    <span style="font-size: 0.68rem; padding: 2px 7px; border-radius: 10px; background: #e8ede0; color: #444;">
+                                        ${escapeHtml(sk.name)} (${sk.proficiency_level}/5)
+                                    </span>
+                                `).join("")}
+                            </div>
+                        </div>
+                    `).join("")}
+                </div>
+            `}
+        </section>
+
+        <!-- Candidate Applications Section -->
+        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+            <div class="garden-section-title" style="margin-bottom: 18px;">
+                <div>
+                    <span>APPLICATIONS</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;">Candidate Applicants (${applications.length})</h3>
+                </div>
+            </div>
+
+            ${applications.length === 0 ? `
+                <div class="empty-state" style="padding: 25px; text-align: center;">
+                    <p style="color: var(--muted); margin: 0;">No student applications received for this project bed yet.</p>
+                </div>
+            ` : `
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    ${applications.map(a => `
+                        <article class="garden-card application-card" style="margin-bottom: 0;">
+                            <div class="application-card-top">
+                                <div>
+                                    <span class="application-project-status ${a.status === 'Accepted' ? 'accepted' : a.status === 'Rejected' ? 'closed' : 'open'}">
+                                        ${escapeHtml(a.status)}
+                                    </span>
+                                    <h3 style="margin: 6px 0 4px;">${escapeHtml(a.student_name)}</h3>
+                                    <p>${escapeHtml(a.department || "")} · ${escapeHtml(a.year || "")} — Applied ${a.applied_at ? new Date(a.applied_at).toLocaleDateString() : ""}</p>
+                                </div>
+                                <div class="application-match">
+                                    <small>MATCH</small>
+                                    <strong>${Math.round(a.match_score || 0)}%</strong>
+                                </div>
+                            </div>
+                            ${a.message ? `<p class="muted-text" style="font-size: 0.85rem; margin: 8px 0; font-style: italic;">"${escapeHtml(a.message)}"</p>` : ""}
+                            <div class="application-status-row" style="margin-top: 12px;">
+                                <div class="application-status ${a.status === 'Accepted' ? 'accepted' : a.status === 'Rejected' ? 'rejected' : 'pending'}">
+                                    <span class="status-dot"></span>${escapeHtml(a.status)}
+                                </div>
+                                <div class="application-actions">
+                                    ${a.status === 'Pending' ? `
+                                        <button class="garden-button" type="button"
+                                                data-project-review="${a.id}" data-status="Accepted">Accept into Team ✓</button>
+                                        <button class="garden-button secondary" type="button"
+                                                data-project-review="${a.id}" data-status="Rejected">Reject</button>
+                                    ` : `
+                                        <span style="font-size: 0.8rem; color: var(--muted);">Verdict recorded</span>
+                                    `}
+                                </div>
+                            </div>
+                        </article>
+                    `).join("")}
+                </div>
+            `}
+        </section>
+
+        <!-- Required Skills Coverage Section -->
+        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+            <div class="garden-section-title" style="margin-bottom: 14px;">
+                <div>
+                    <span>SKILL REQUIREMENTS</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;">Target Competencies</h3>
+                </div>
+            </div>
+
+            ${skills.length === 0 ? `
+                <p class="muted-text">No specific required skills listed for this project.</p>
+            ` : `
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${skills.map(s => `
+                        <span style="padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; background: #e8ede0; border: 1px solid rgba(83, 107, 50, 0.2); color: var(--olive-deep);">
+                            🌿 ${escapeHtml(s.name)} · Level ${s.required_level}/5
+                        </span>
+                    `).join("")}
+                </div>
+            `}
+        </section>
+
+        <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+            <button type="button" class="garden-button secondary" id="backToProjectsBtnBottom">
+                ← Back to All Guided Projects
+            </button>
+        </div>
+    `;
+
+    // Wire back buttons
+    const handleBack = () => {
+        section.style.display = "none";
+        if (listSection) listSection.style.display = "";
+        history.pushState(null, "", "faculty-projects.html");
+        renderFacultyConsole();
+    };
+    const bTop = $("#backToProjectsBtn", content);
+    const bBottom = $("#backToProjectsBtnBottom", content);
+    if (bTop) bTop.onclick = handleBack;
+    if (bBottom) bBottom.onclick = handleBack;
+
+    // Wire in-place Accept/Reject reviews
+    $$("[data-project-review]", content).forEach(btn => {
+        btn.onclick = async () => {
+            btn.disabled = true;
+            const newStatus = btn.dataset.status;
+            const { ok, data: resData } = await api(`/faculty/applications/${btn.dataset.projectReview}/status`, {
+                method: "PUT",
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (ok && resData.success) {
+                toast(`Application ${newStatus.toLowerCase()} ✓`);
+                renderFacultyProjectDetail(projectId);
+            } else {
+                toast(resData.message || "Could not update application.");
+                btn.disabled = false;
+            }
+        };
+    });
+}
+
 async function renderFacultyConsole() {
     const isFacultyPage = document.body.dataset.page === "faculty" ||
         $("#facultyApplicationsList") ||
@@ -1312,6 +1709,10 @@ async function renderFacultyConsole() {
         if (status === 403) {
             toast("Faculty or Admin access required.");
             setTimeout(() => { window.location.href = "projects.html"; }, 1200);
+            return;
+        }
+        if (status >= 500) {
+            toast("Server error loading faculty console.");
             return;
         }
         const container = $("#facultyApplicationsList") || $("#facultyProjectsList") || $("#facultyCertificatesList") || $(".app-main");
@@ -1504,10 +1905,19 @@ async function renderFacultyConsole() {
                             <span class="status-dot"></span>${p.pending_count > 0 ? "Needs attention" : "On track"}
                         </div>
                         <div class="application-actions">
-                            <a href="project-details.html?id=${p.id}" class="garden-button">View</a>
+                            <button type="button" class="garden-button" data-faculty-view-project="${p.id}">View Project & Progress ✿</button>
                         </div>
                     </div>
                 </article>`).join("");
+
+            $$("[data-faculty-view-project]", projects).forEach(btn => {
+                btn.onclick = () => renderFacultyProjectDetail(btn.dataset.facultyViewProject);
+            });
+
+            const urlProjId = new URLSearchParams(window.location.search).get("id");
+            if (urlProjId && $("#facultyProjectDetailSection")) {
+                renderFacultyProjectDetail(urlProjId);
+            }
         }
     }
 
@@ -2197,7 +2607,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProfileManagement();
     renderSettings();
     renderNotifications();
-    renderFacultyConsole();
 
     // Page specific panels
     if ($(".project-match-card") && $(".dashboard-grid")) renderDashboard();

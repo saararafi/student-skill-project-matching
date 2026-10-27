@@ -29,6 +29,7 @@ def get_faculty_overview(user_id):
             SELECT
                 p.id,
                 p.title,
+                p.description,
                 p.domain,
                 p.status,
                 p.team_size,
@@ -63,6 +64,7 @@ def get_faculty_overview(user_id):
             SELECT
                 p.id,
                 p.title,
+                p.description,
                 p.domain,
                 p.status,
                 p.team_size,

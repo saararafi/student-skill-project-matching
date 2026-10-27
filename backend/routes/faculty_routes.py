@@ -242,6 +242,117 @@ def update_application_status(app_id):
 
 
 # --------------------------------------------------
+# FACULTY PROJECT DETAIL & ANALYTICS
+# --------------------------------------------------
+
+@faculty_bp.route("/projects/<int:project_id>", methods=["GET"])
+@faculty_required
+def get_faculty_project_detail(project_id):
+    """Return comprehensive project analytics, process stage, team members and applicants for faculty."""
+    user_id = get_current_user_id()
+    user = get_current_user()
+    is_admin = user and str(user.get("role", "")).lower() == "admin"
+
+    if is_admin:
+        project = fetch_one("SELECT * FROM projects WHERE id = %s", (project_id,))
+    else:
+        project = fetch_one("SELECT * FROM projects WHERE id = %s AND faculty_id = %s", (project_id, user_id))
+
+    if not project:
+        return jsonify({"success": False, "message": "Project not found or unauthorized."}), 404
+
+    # Required skills
+    skills = fetch_all("""
+        SELECT s.id, s.name, s.category, ps.required_level
+        FROM project_skills ps
+        JOIN skills s ON ps.skill_id = s.id
+        WHERE ps.project_id = %s
+    """, (project_id,))
+
+    # Team and members
+    team = fetch_one("SELECT * FROM teams WHERE project_id = %s", (project_id,))
+    team_members = []
+    if team:
+        team_members = fetch_all("""
+            SELECT tm.id as member_id, tm.role, tm.joined_at,
+                   s.id as student_id, s.department, s.year,
+                   u.name as student_name, u.email as student_email
+            FROM team_members tm
+            JOIN students s ON tm.student_id = s.id
+            JOIN users u ON s.user_id = u.id
+            WHERE tm.team_id = %s
+            ORDER BY tm.joined_at ASC
+        """, (team['id'],))
+
+        for m in team_members:
+            m_skills = fetch_all("""
+                SELECT sk.name, ss.proficiency_level
+                FROM student_skills ss
+                JOIN skills sk ON ss.skill_id = sk.id
+                WHERE ss.student_id = %s
+                ORDER BY ss.proficiency_level DESC
+                LIMIT 4
+            """, (m['student_id'],))
+            m['skills'] = m_skills
+
+    # Applications
+    applications = fetch_all("""
+        SELECT a.id, a.status, a.message, a.match_score, a.applied_at, a.reviewed_at,
+               s.id as student_id, s.department, s.year,
+               u.name as student_name, u.email as student_email
+        FROM applications a
+        JOIN students s ON a.student_id = s.id
+        JOIN users u ON s.user_id = u.id
+        WHERE a.project_id = %s
+        ORDER BY
+            CASE WHEN a.status = 'Pending' THEN 0 WHEN a.status = 'Accepted' THEN 1 ELSE 2 END,
+            a.applied_at DESC
+    """, (project_id,))
+
+    team_size = int(project.get('team_size') or 4)
+    member_count = len(team_members)
+    open_spots = max(0, team_size - member_count)
+    pending_apps = sum(1 for a in applications if a['status'] == 'Pending')
+    accepted_apps = sum(1 for a in applications if a['status'] == 'Accepted')
+    rejected_apps = sum(1 for a in applications if a['status'] == 'Rejected')
+
+    fill_pct = round((member_count / team_size) * 100) if team_size > 0 else 0
+
+    # Determine process stage (1 to 4)
+    # Stage 1: Published
+    # Stage 2: Applications In Review
+    # Stage 3: Team Bed Formed
+    # Stage 4: In Bloom & Active
+    current_stage = 1
+    if len(applications) > 0:
+        current_stage = 2
+    if member_count > 0:
+        current_stage = 3
+    if member_count >= team_size or project.get('status') == 'Completed':
+        current_stage = 4
+
+    return jsonify({
+        "success": True,
+        "project": project,
+        "team": team,
+        "team_members": team_members,
+        "applications": applications,
+        "required_skills": skills,
+        "stats": {
+            "team_size": team_size,
+            "member_count": member_count,
+            "open_spots": open_spots,
+            "total_applications": len(applications),
+            "pending_applications": pending_apps,
+            "accepted_applications": accepted_apps,
+            "rejected_applications": rejected_apps,
+            "fill_percentage": fill_pct,
+            "current_stage": current_stage
+        }
+    })
+
+
+# --------------------------------------------------
 # CERTIFICATE VERIFICATION
 # --------------------------------------------------
 
