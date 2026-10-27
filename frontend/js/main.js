@@ -889,17 +889,20 @@ async function initializeLiveNotifications() {
    REVEAL ANIMATIONS
 ========================================================= */
 
-function initializeRevealAnimations() {
-    const elements = document.querySelectorAll(
-        ".reveal, .garden-card, .project-card, .team-member, .notification-item, .application-card"
+function initializeRevealAnimations(root = document) {
+    const elements = root.querySelectorAll(
+        ".app-main > header, .app-main > section, .reveal"
     );
 
     if (!elements.length) return;
 
-    elements.forEach((element, index) => {
-        element.style.animationDelay = `${Math.min(index * 0.05, 0.4)}s`;
+    const uniqueElements = Array.from(new Set(elements));
+
+    uniqueElements.forEach((element, index) => {
+        element.style.animationDelay = `${Math.min(index * 0.05, 0.45)}s`;
     });
 }
+window.initializeRevealAnimations = initializeRevealAnimations;
 
 
 /* =========================================================

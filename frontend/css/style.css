@@ -5857,7 +5857,9 @@ body {
 
 /* Elements fade up into place on load. The animation-delay is staggered
    from JavaScript, so this never depends on a scroll observer to fire. */
-.reveal {
+.reveal,
+.app-main > header,
+.app-main > section {
     animation: revealUp 0.7s ease both;
 }
 

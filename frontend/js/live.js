@@ -1386,7 +1386,7 @@ async function renderFacultyProjectDetail(projectId) {
         </div>
 
         <!-- Project Hero Card -->
-        <article class="garden-card" style="padding: 28px; margin-bottom: 24px;">
+        <article class="garden-card reveal" style="padding: 28px; margin-bottom: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
                 <div>
                     <span class="application-project-status open" style="margin-bottom: 8px;">${escapeHtml(p.domain || "Academic Project")}</span>
@@ -1413,7 +1413,7 @@ async function renderFacultyProjectDetail(projectId) {
         </article>
 
         <!-- Process / Progress Milestones -->
-        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+        <section class="garden-card reveal" style="padding: 26px; margin-bottom: 24px;">
             <div class="garden-section-title" style="margin-bottom: 18px;">
                 <div>
                     <span>PROJECT PROGRESS & MILESTONES</span>
@@ -1449,7 +1449,7 @@ async function renderFacultyProjectDetail(projectId) {
         </section>
 
         <!-- Pie / Donut Charts Section -->
-        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+        <section class="garden-card reveal" style="padding: 26px; margin-bottom: 24px;">
             <div class="garden-section-title" style="margin-bottom: 20px;">
                 <div>
                     <span>PROJECT ANALYTICS</span>
@@ -1626,7 +1626,7 @@ async function renderFacultyProjectDetail(projectId) {
         </section>
 
         <!-- Required Skills Coverage Section -->
-        <section class="garden-card" style="padding: 26px; margin-bottom: 24px;">
+        <section class="garden-card reveal" style="padding: 26px; margin-bottom: 24px;">
             <div class="garden-section-title" style="margin-bottom: 14px;">
                 <div>
                     <span>SKILL REQUIREMENTS</span>
@@ -1661,6 +1661,10 @@ async function renderFacultyProjectDetail(projectId) {
         history.pushState(null, "", "faculty-projects.html");
         renderFacultyConsole();
     };
+    if (window.initializeRevealAnimations) {
+        window.initializeRevealAnimations(content);
+    }
+
     const bTop = $("#backToProjectsBtn", content);
     const bBottom = $("#backToProjectsBtnBottom", content);
     if (bTop) bTop.onclick = handleBack;
