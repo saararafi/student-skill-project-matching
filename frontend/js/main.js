@@ -361,29 +361,46 @@ async function initializeLiveProjects() {
     const projectGrid = document.querySelector(".project-match-grid");
     if (!projectGrid) return;
 
-    try {
-        const res = await fetch(`${API_BASE}/projects`);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.success) return;
+    const renderEmptyProjects = () => {
+        const badge = document.querySelector("#projectCountBadge") || document.querySelector(".garden-section-title .botanical-badge");
+        if (badge) {
+            badge.textContent = "00 Matches";
+        }
+        projectGrid.innerHTML = `
+            <div class="garden-card empty-state" id="projectEmptyBed" style="grid-column: 1 / -1; padding: 48px 25px; text-align: center; border-radius: 16px;">
+                <div style="font-size: 38px; margin-bottom: 12px;">🌱</div>
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--olive-deep); font-weight: 600;">Nothing has bloomed here yet.</h3>
+                <p style="color: var(--muted); margin: 8px auto 20px; font-size: 14px; max-width: 520px; line-height: 1.6;">
+                    No projects have been published by faculty yet. As soon as a faculty member adds a project from the Faculty Console, it will appear here with live compatibility matching.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a href="growth.html" class="garden-button garden-button-secondary">Tend Your Skills (My Growth) →</a>
+                    <a href="faculty-new-project.html" class="garden-button">Faculty: Publish a Project ✿</a>
+                </div>
+            </div>
+        `;
+    };
 
-        // Update matches count badge
-        const badge = document.querySelector(".botanical-badge");
-        if (badge && badge.textContent.includes("Matches")) {
-            badge.textContent = `${(data.projects || []).length} Matches`;
+    try {
+        const res = await fetch(`${API_BASE}/projects`, { credentials: "include" });
+        if (!res.ok) {
+            renderEmptyProjects();
+            return;
+        }
+        const data = await res.json();
+        if (!data.success) {
+            renderEmptyProjects();
+            return;
+        }
+
+        const count = (data.projects || []).length;
+        const badge = document.querySelector("#projectCountBadge") || document.querySelector(".garden-section-title .botanical-badge");
+        if (badge) {
+            badge.textContent = `${count < 10 ? '0' + count : count} ${count === 1 ? 'Match' : 'Matches'}`;
         }
 
         if (!data.projects || data.projects.length === 0) {
-            projectGrid.innerHTML = `
-                <div class="garden-card" style="grid-column: 1 / -1; padding: 40px 25px; text-align: center;">
-                    <div style="font-size: 32px; margin-bottom: 12px;">🌱</div>
-                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--olive-deep);">No Projects Available Yet</h3>
-                    <p style="color: var(--muted); margin: 8px 0 16px; font-size: 14px;">
-                        No project beds have been planted yet. Log in with a Faculty account to publish your first academic project, or add skills in My Growth to prepare for matching!
-                    </p>
-                    <a href="growth.html" class="garden-button">Tend Your Skills →</a>
-                </div>
-            `;
+            renderEmptyProjects();
             return;
         }
 
@@ -519,7 +536,7 @@ window.applyToProjectLive = async function(projectId, buttonElement) {
             }
         }
     } catch (err) {
-        showGardenToast("Application sent in demo mode 🌿");
+        showGardenToast("Unable to submit application. Please check your connection.");
         if (buttonElement) {
             buttonElement.textContent = "Applied ✓";
         }
@@ -531,11 +548,27 @@ async function initializeLiveProjectDetails() {
     if (!heroTitle) return;
 
     const urlParams = new URLSearchParams(window.location.search);
-    const projectId = urlParams.get('id') || '1';
+    const projectId = urlParams.get('id');
+
+    if (!projectId) {
+        heroTitle.textContent = "No Project Selected";
+        const heroDesc = document.querySelector(".project-detail-heading p");
+        if (heroDesc) heroDesc.textContent = "Please select a project from Projects in Bloom to view its details.";
+        const applyBtn = document.querySelector(".project-detail-actions button, button[data-apply]");
+        if (applyBtn) applyBtn.style.display = "none";
+        return;
+    }
 
     try {
-        const res = await fetch(`${API_BASE}/projects/${projectId}`);
-        if (!res.ok) return;
+        const res = await fetch(`${API_BASE}/projects/${projectId}`, { credentials: "include" });
+        if (!res.ok) {
+            heroTitle.textContent = "Project Not Found";
+            const heroDesc = document.querySelector(".project-detail-heading p");
+            if (heroDesc) heroDesc.textContent = "The requested project could not be found or has not bloomed yet.";
+            const applyBtn = document.querySelector(".project-detail-actions button, button[data-apply]");
+            if (applyBtn) applyBtn.style.display = "none";
+            return;
+        }
         const json = await res.json();
         if (!json.success || !json.project) return;
         const p = json.project;
@@ -571,6 +604,9 @@ async function initializeLiveProjectDetails() {
 ========================================================= */
 
 async function initializeLiveGaps() {
+    // gaps.html is managed dynamically with project picker and full summary in live.js (renderGaps)
+    if (typeof renderGaps === "function") return;
+
     // Match the actual container used in gaps.html.
     const gapList = document.querySelector(
         ".gap-list, .gap-item-list, .skill-gap-list"

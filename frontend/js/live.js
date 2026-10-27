@@ -283,24 +283,37 @@ async function renderDashboard() {
 
     // Garden team
     const team = $(".team-branch");
-    if (team) {
+    const dashCov = $("[data-dashboard-team-coverage]");
+    if (team || dashCov) {
         const pid = (d.top_match && d.top_match.project_id) || await resolveProjectId();
         if (!pid) {
-            team.innerHTML = `<p class="muted-text">Explore projects to join a garden team.</p>`;
+            if (team) team.innerHTML = `<p class="muted-text">Explore projects to join a garden team.</p>`;
+            if (dashCov) dashCov.textContent = "0%";
         } else {
             const { ok, data } = await api(`/projects/${pid}`);
             const members = (ok && data.project && data.project.team_members) || [];
-            if (!members.length) {
-                team.innerHTML = `<p class="muted-text">No team members yet.</p>`;
-            } else {
-                team.innerHTML = members.map(m => `
-                    <div class="team-member">
-                        <div class="team-member-avatar">${escapeHtml((m.name || "?").charAt(0).toUpperCase())}</div>
-                        <div>
-                            <div class="team-member-name">${escapeHtml((m.name || "").split(" ")[0])}</div>
-                            <div class="team-member-role">${escapeHtml(m.role || "Contributor")}</div>
-                        </div>
-                    </div>`).join("");
+            if (team) {
+                if (!members.length) {
+                    team.innerHTML = `<p class="muted-text">No team members yet.</p>`;
+                } else {
+                    team.innerHTML = members.map(m => `
+                        <div class="team-member">
+                            <div class="team-member-avatar">${escapeHtml((m.name || "?").charAt(0).toUpperCase())}</div>
+                            <div>
+                                <div class="team-member-name">${escapeHtml((m.name || "").split(" ")[0])}</div>
+                                <div class="team-member-role">${escapeHtml(m.role || "Contributor")}</div>
+                            </div>
+                        </div>`).join("");
+                }
+            }
+            if (dashCov) {
+                const { ok: covOk, data: covData } = await api(`/matching/projects/${pid}/gaps`);
+                const gapsPayload = covOk && (covData.gaps || covData.data);
+                const breakdown = (gapsPayload && gapsPayload.skill_breakdown) || [];
+                const covered = breakdown.filter(i => i.status === "Covered").length;
+                const total = breakdown.length;
+                const covPct = total ? Math.round((covered / total) * 100) : 0;
+                dashCov.textContent = `${covPct}%`;
             }
         }
     }
@@ -476,21 +489,64 @@ async function renderGaps() {
     const projectId = await resolveProjectId();
     if (!projectId) {
         emptyState(list, "No projects available to analyze. Projects published by faculty will appear here.");
+        const badge = $("[data-gap-badge]") || $(".gap-overview .botanical-badge");
+        if (badge) badge.textContent = "0 areas to grow";
+        const statTracked = $('[data-gap-stat="tracked"]');
+        if (statTracked) statTracked.textContent = "0";
+        const statDeveloping = $('[data-gap-stat="developing"]');
+        if (statDeveloping) statDeveloping.textContent = "0";
+        const statPriority = $('[data-gap-stat="priority"]');
+        if (statPriority) statPriority.textContent = "0";
+        const sugTitle = $("[data-gap-suggestion-title]");
+        if (sugTitle) sugTitle.textContent = "Tend Your Garden Skills";
+        const sugBody = $("[data-gap-suggestion-body]");
+        if (sugBody) sugBody.textContent = "No projects are currently published. Head to My Growth to record your technical skills and prepare for future project matches.";
+        const sugLink = $("[data-gap-suggestion-link]");
+        if (sugLink) {
+            sugLink.textContent = "Tend Your Skills (My Growth) →";
+            sugLink.href = "growth.html";
+        }
+        const teamGrid = $(".team-gap-grid");
+        if (teamGrid) emptyState(teamGrid, "No project selected.");
         return;
     }
+
     const { ok, data } = await api(`/matching/projects/${projectId}/gaps`);
-    // The API returns the payload under "gaps"; older builds used "data".
-    const payload = data.gaps || data.data;
-    if (!ok || !payload) return;
+    const payload = ok && (data.gaps || data.data);
+    if (!ok || !payload) {
+        emptyState(list, "Could not load skill gap analysis for this project.");
+        return;
+    }
 
     const breakdown = payload.skill_breakdown || [];
     if (!breakdown.length) {
         emptyState(list, "This project does not list any required skills yet.");
+        const badge = $("[data-gap-badge]") || $(".gap-overview .botanical-badge");
+        if (badge) badge.textContent = "All skills covered ✓";
+        const statTracked = $('[data-gap-stat="tracked"]');
+        if (statTracked) statTracked.textContent = "0";
+        const statDeveloping = $('[data-gap-stat="developing"]');
+        if (statDeveloping) statDeveloping.textContent = "0";
+        const statPriority = $('[data-gap-stat="priority"]');
+        if (statPriority) statPriority.textContent = "0";
+        const sugTitle = $("[data-gap-suggestion-title]");
+        if (sugTitle) sugTitle.textContent = "No Gaps Identified";
+        const sugBody = $("[data-gap-suggestion-body]");
+        if (sugBody) sugBody.textContent = "This project does not define specific technical skill requirements.";
+        const sugLink = $("[data-gap-suggestion-link]");
+        if (sugLink) {
+            sugLink.textContent = "Explore Projects →";
+            sugLink.href = "projects.html";
+        }
+        const teamGrid = $(".team-gap-grid");
+        if (teamGrid) emptyState(teamGrid, "No team gaps.");
         return;
     }
 
     list.innerHTML = breakdown.map(item => {
-        const pct = Math.round((item.available_level / item.required_level) * 100);
+        const req = Math.max(1, item.required_level || 1);
+        const avail = Math.max(0, item.available_level || 0);
+        const pct = Math.min(100, Math.round((avail / req) * 100));
         const badge = item.status === "Missing" ? "Missing 💧"
             : item.status === "Insufficient" ? "Insufficient ⚠️" : "Covered ✓";
         const cls = item.status === "Missing" ? "missing"
@@ -502,13 +558,13 @@ async function renderGaps() {
                     <div class="gap-item-heading">
                         <div>
                             <h4>${escapeHtml(item.skill)}</h4>
-                            <p>Required level ${item.required_level}/5 · team has ${item.available_level}/5</p>
+                            <p>Required level ${req}/5 · team has ${avail}/5</p>
                         </div>
-                        <span class="gap-percentage">${Math.min(pct, 100)}%</span>
+                        <span class="gap-percentage">${pct}%</span>
                     </div>
                     <div class="gap-progress">
                         <div class="gap-progress-track">
-                            <div class="gap-progress-fill" style="width:${Math.min(pct, 100)}%;"></div>
+                            <div class="gap-progress-fill" style="width:${pct}%;"></div>
                         </div>
                     </div>
                     <div class="gap-item-footer">
@@ -519,15 +575,49 @@ async function renderGaps() {
     }).join("");
 
     // Summary counts
-    const counts = {
-        tracked: breakdown.length,
-        developing: breakdown.filter(i => i.status === "Insufficient").length,
-        priority: breakdown.filter(i => i.status === "Missing").length
-    };
-    Object.entries(counts).forEach(([key, value]) => {
-        const el = $(`[data-gap-stat="${key}"]`);
-        if (el) el.textContent = value;
-    });
+    const developing = breakdown.filter(i => i.status === "Insufficient");
+    const priority = breakdown.filter(i => i.status === "Missing");
+    const totalGaps = developing.length + priority.length;
+
+    const badge = $("[data-gap-badge]") || $(".gap-overview .botanical-badge");
+    if (badge) {
+        badge.textContent = totalGaps === 0 
+            ? "All skills covered ✓" 
+            : `${totalGaps} area${totalGaps === 1 ? '' : 's'} to grow`;
+    }
+
+    const statTracked = $('[data-gap-stat="tracked"]');
+    if (statTracked) statTracked.textContent = breakdown.length;
+    const statDeveloping = $('[data-gap-stat="developing"]');
+    if (statDeveloping) statDeveloping.textContent = developing.length;
+    const statPriority = $('[data-gap-stat="priority"]');
+    if (statPriority) statPriority.textContent = priority.length;
+
+    // Growth suggestion card
+    const sugTitle = $("[data-gap-suggestion-title]");
+    const sugBody = $("[data-gap-suggestion-body]");
+    const sugLink = $("[data-gap-suggestion-link]");
+
+    const topGap = priority[0] || developing[0];
+    if (topGap) {
+        if (sugTitle) sugTitle.textContent = `Start with ${topGap.skill}`;
+        if (sugBody) {
+            sugBody.textContent = `${topGap.skill} is a required competency for this project (requires level ${topGap.required_level}/5, team currently has ${topGap.available_level}/5). Leveling up this skill in My Growth will strengthen your team readiness and compatibility.`;
+        }
+        if (sugLink) {
+            sugLink.textContent = "Tend Your Skills (My Growth) →";
+            sugLink.href = "growth.html";
+        }
+    } else {
+        if (sugTitle) sugTitle.textContent = "All Project Skills Covered ✿";
+        if (sugBody) {
+            sugBody.textContent = "Every skill required for this project is fully covered by the team. Explore other projects to discover more learning opportunities!";
+        }
+        if (sugLink) {
+            sugLink.textContent = "Explore More Projects →";
+            sugLink.href = "projects.html";
+        }
+    }
 
     // Team coverage cards
     const teamGrid = $(".team-gap-grid");
@@ -544,7 +634,9 @@ async function renderGaps() {
                 </article>`;
         } else {
             teamGrid.innerHTML = gaps.map(item => {
-                const pct = Math.min(100, Math.round((item.available_level / item.required_level) * 100));
+                const req = Math.max(1, item.required_level || 1);
+                const avail = Math.max(0, item.available_level || 0);
+                const pct = Math.min(100, Math.round((avail / req) * 100));
                 return `
                     <article class="team-gap-card garden-card">
                         <div class="team-gap-icon">${item.status === "Missing" ? "🌧" : "🌱"}</div>
@@ -578,6 +670,34 @@ async function renderTeam() {
         if (coverage) coverage.innerHTML = `<div class="empty-state"><p>No project selected.</p></div>`;
         const heroTitle = $(".team-hero-card h2");
         if (heroTitle) heroTitle.textContent = "No Project Selected";
+        const covNumber = $("[data-team-coverage]") || $(".team-coverage-number");
+        if (covNumber) covNumber.textContent = "0%";
+        const covBar = $(".team-coverage-fill");
+        if (covBar) covBar.style.width = "0%";
+        const covSummary = $("[data-team-coverage-summary]") || $(".team-coverage-bar + p");
+        if (covSummary) covSummary.textContent = "No team skills recorded yet.";
+        const countBadge = $("[data-team-count-badge]") || $(".garden-section-title .botanical-badge");
+        if (countBadge) countBadge.textContent = "0 Members";
+        const gapNote = $("[data-team-gap-note]");
+        if (gapNote) gapNote.textContent = "Team skill requirements and missing areas will appear here when a project is active.";
+        const gapList = $("[data-team-gap-list]") || $(".watering-card .gap-list");
+        if (gapList) gapList.innerHTML = `<div class="empty-state"><p>No project gaps identified yet.</p></div>`;
+        const tree = $(".team-tree");
+        if (tree) {
+            tree.innerHTML = `
+                <div class="tree-trunk"></div>
+                <div class="tree-branch-line"></div>
+                <div class="team-center">
+                    <strong>Project<br>Team</strong>
+                    <small>PROJECT</small>
+                </div>
+                <div class="member-node member-one">
+                    <div class="member-avatar">?</div>
+                    <strong>Open</strong>
+                    <small>Awaiting team</small>
+                </div>
+            `;
+        }
         return;
     }
 
@@ -598,6 +718,10 @@ async function renderTeam() {
                 <span>👥 ${members.length} / ${project.team_size || 5} members</span>
                 <span>◷ ${escapeHtml(project.required_availability || "Regular")}</span>
             `;
+        }
+        const countBadge = $("[data-team-count-badge]") || $(".garden-section-title .botanical-badge");
+        if (countBadge && project) {
+            countBadge.textContent = `${members.length} Member${members.length === 1 ? '' : 's'}`;
         }
 
         // Update team tree visual
@@ -716,11 +840,22 @@ async function renderTeam() {
         const { ok, data } = await api(`/matching/projects/${projectId}/gaps`);
         const payload = data.gaps || data.data;
         const breakdown = (ok && payload && payload.skill_breakdown) || [];
+        const covNumber = $("[data-team-coverage]") || $(".team-coverage-number");
+        const covBar = $(".team-coverage-fill");
+        const covSummary = $("[data-team-coverage-summary]") || $(".team-coverage-bar + p");
+        const gapList = $("[data-team-gap-list]") || $(".watering-card .gap-list");
+        const note = $("[data-team-gap-note]");
+
         if (!breakdown.length) {
-            coverage.innerHTML = `<div class="empty-state"><p>No skill requirements listed.</p></div>`;
+            coverage.innerHTML = `<div class="empty-state"><p>No skill requirements listed for this project.</p></div>`;
+            if (covNumber) covNumber.textContent = "0%";
+            if (covBar) covBar.style.width = "0%";
+            if (covSummary) covSummary.textContent = "No skill requirements defined yet.";
+            if (note) note.textContent = "No skills required for this project.";
+            if (gapList) gapList.innerHTML = `<div class="empty-state"><p>No project gaps identified.</p></div>`;
         } else {
             coverage.innerHTML = breakdown.map(item => {
-                const pct = Math.min(100, Math.round((item.available_level / item.required_level) * 100));
+                const pct = item.required_level > 0 ? Math.min(100, Math.round((item.available_level / item.required_level) * 100)) : 100;
                 return `
                     <div class="coverage-item">
                         <span>${escapeHtml(item.skill)}</span>
@@ -731,27 +866,43 @@ async function renderTeam() {
                     </div>`;
             }).join("");
 
-            // Name the skills the team is still weak in.
-            const note = $("[data-team-gap-note]");
+            const weak = breakdown.filter(i => i.status !== "Covered");
+            const covered = breakdown.filter(i => i.status === "Covered").length;
+            const total = breakdown.length;
+            const pct = total ? Math.round((covered / total) * 100) : 0;
+
+            if (covNumber) covNumber.textContent = `${pct}%`;
+            if (covBar) covBar.style.width = `${pct}%`;
+            if (covSummary) {
+                if (pct === 0) {
+                    covSummary.textContent = "The team currently has 0% coverage of the skills required by this project.";
+                } else if (pct === 100) {
+                    covSummary.textContent = "The team covers 100% of the skills required by this project.";
+                } else {
+                    covSummary.textContent = `The team currently covers ${pct}% of the skills required by the project.`;
+                }
+            }
+
             if (note) {
-                const weak = breakdown
-                    .filter(i => i.status !== "Covered")
-                    .map(i => i.skill);
                 note.textContent = weak.length
-                    ? `The current team has weaker coverage in ` +
-                      `${weak.join(", ")}. ` +
-                      `Finding a teammate with these skills could improve ` +
-                      `the team's overall coverage.`
+                    ? `The current team has weaker coverage in ${weak.map(i => i.skill).join(", ")}. Finding a teammate with these skills could improve the team's overall coverage.`
                     : `The team covers every skill this project needs.`;
             }
 
-            const covered = breakdown.filter(i => i.status === "Covered").length;
-            const total = breakdown.length;
-            const pct = Math.round((covered / total) * 100);
-            const number = $("[data-team-coverage]");
-            if (number) number.textContent = `${pct}%`;
-            const bar = $(".team-coverage-fill");
-            if (bar) bar.style.width = `${pct}%`;
+            if (gapList) {
+                if (!weak.length) {
+                    gapList.innerHTML = `<div class="empty-state"><p>The team already covers every skill this project needs. 🌿</p></div>`;
+                } else {
+                    gapList.innerHTML = weak.map(item => {
+                        const pctSkill = item.required_level > 0 ? Math.min(100, Math.round((item.available_level / item.required_level) * 100)) : 100;
+                        return `
+                            <div class="gap-item">
+                                <span>${escapeHtml(item.skill)}</span>
+                                <strong>${pctSkill}%</strong>
+                            </div>`;
+                    }).join("");
+                }
+            }
         }
     }
 }
@@ -1769,8 +1920,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Page specific panels
     if ($(".project-match-card") && $(".dashboard-grid")) renderDashboard();
-    if ($(".gap-list")) renderGaps();
+    if ($(".gap-overview") || $(".team-gap-grid")) renderGaps();
     if ($(".team-members-grid") || $(".recommended-teammates-grid")) renderTeam();
-    if ($("[data-detail-skills]") || $("[data-apply]")) renderProjectDetails();
+    if ($("[data-detail-skills]") || $(".project-detail-hero")) renderProjectDetails();
     if ($("#applicationsListItems")) renderApplications();
 });

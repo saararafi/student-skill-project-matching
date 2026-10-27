@@ -239,20 +239,35 @@ def compute_match(student_id, project_id):
 
 def get_ranked_project_recommendations(student_id):
     """Calculates compatibility scores for all open projects and returns them sorted."""
-    projects = fetch_all("SELECT id, title, description, domain, team_size, required_availability, status FROM projects")
+    projects = fetch_all("SELECT id, title, description, domain, team_size, required_availability, status FROM projects WHERE LOWER(status) = 'open'")
+    if not projects:
+        return []
     
     scored_projects = []
     for p in projects:
-        match_res = compute_match(student_id, p['id'])
+        match_res = compute_match(student_id, p['id']) if student_id else None
+        p_data = dict(p)
         if match_res:
-            p_data = dict(p)
             p_data['match_score'] = match_res['final_score']
             p_data['skill_score'] = match_res['scores']['skill_score']
             p_data['interest_score'] = match_res['scores']['interest_score']
             p_data['experience_score'] = match_res['scores']['experience_score']
             p_data['availability_score'] = match_res['scores']['availability_score']
             p_data['skill_details'] = match_res['skill_details']
-            scored_projects.append(p_data)
+        else:
+            p_data['match_score'] = 0.0
+            p_data['skill_score'] = 0.0
+            p_data['interest_score'] = 0.0
+            p_data['experience_score'] = 0.0
+            p_data['availability_score'] = 0.0
+            p_skills = fetch_all("""
+                SELECT s.name as skill, ps.required_level, 0 as student_level
+                FROM project_skills ps
+                JOIN skills s ON ps.skill_id = s.id
+                WHERE ps.project_id = %s
+            """, (p['id'],))
+            p_data['skill_details'] = p_skills or []
+        scored_projects.append(p_data)
 
     # Sort descending by match_score
     scored_projects.sort(key=lambda x: x['match_score'], reverse=True)
