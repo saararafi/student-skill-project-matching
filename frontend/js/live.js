@@ -564,52 +564,191 @@ async function renderApplications() {
    Notifications
    ------------------------------------------------------------ */
 
+function formatTimeAgo(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return String(dateStr);
+    const now = new Date();
+    const diffSec = Math.floor((now - date) / 1000);
+    if (diffSec < 60) return "Just now";
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return `${diffHour}h ago`;
+    const diffDays = Math.floor(diffHour / 24);
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
+}
+
 async function renderNotifications() {
-    const container = $(".notification-list");
-    if (!container) return;
+    const container = $("#notificationsContainer") || $(".notification-feed") || $(".notification-list");
+    const summaryText = $("#unreadNotificationSummary");
+    const countEl = $("#unreadNotificationCount");
+    const unreadBadge = $("#notificationUnreadBadge") || $("[data-unread-count]");
+    const markAllBtn = $("#markAllRead");
 
-    const { ok, data } = await api("/notifications");
-    if (!ok || !data.notifications) return;
+    if (!container && !markAllBtn) return;
 
-    if (!data.notifications.length) {
-        emptyState(container, "No notifications yet.");
+    const { ok, status, data } = await api("/notifications");
+
+    if (!ok || !data || !Array.isArray(data.notifications)) {
+        if (countEl) countEl.textContent = "0 unread notifications";
+        if (unreadBadge) unreadBadge.style.display = "none";
+        if (container) {
+            container.innerHTML = `
+                <div class="garden-card empty-state" style="padding: 48px 24px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 38px; margin-bottom: 12px;">♧</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--olive-deep); font-weight: 600;">
+                        ${status === 401 ? "Sign in to view your notifications." : "Your garden is calm and peaceful."}
+                    </h3>
+                    <p style="color: var(--muted); margin: 8px auto 20px; font-size: 14px; max-width: 480px; line-height: 1.6;">
+                        ${status === 401 ? "Log in with your student or faculty account to track your latest garden messages." : "No notifications at the moment. When projects are recommended or applications reviewed, updates will bloom here."}
+                    </p>
+                    <a href="${status === 401 ? 'login.html' : 'projects.html'}" class="garden-button">${status === 401 ? 'Sign In ✿' : 'Explore Projects 🌿'}</a>
+                </div>`;
+        }
         return;
     }
 
-    container.innerHTML = data.notifications.map(n => `
-        <article class="garden-card notification-item ${n.is_read ? "read" : "unread"}"
-                 data-notification="${n.id}">
-            <div class="notification-icon ${n.type || "info"}">🔔</div>
-            <div class="notification-content">
-                <div class="notification-top">
-                    <h3>${escapeHtml(n.title)}</h3>
-                    <span>${n.created_at ? new Date(n.created_at).toLocaleDateString() : ""}</span>
-                </div>
-                <p>${escapeHtml(n.message)}</p>
-                ${n.link ? `<a href="${safeUrl(n.link)}" class="notification-link">View →</a>` : ""}
-            </div>
-            ${n.is_read ? "" : `<span class="unread-dot"></span>`}
-        </article>`).join("");
+    const notifs = data.notifications;
 
-    // Clicking marks as read
-    $$("[data-notification]", container).forEach(item => {
-        item.addEventListener("click", async () => {
-            if (item.classList.contains("read")) return;
-            item.classList.add("read");
-            const dot = $(".unread-dot", item);
-            if (dot) dot.remove();
-            await api(`/notifications/${item.dataset.notification}/read`, { method: "POST" });
-            updateUnreadBadge();
+    function refreshUnreadHeader() {
+        const remainingUnread = $$(".notification-item:not(.read)", container).length;
+        if (countEl) {
+            countEl.textContent = `${remainingUnread} unread notification${remainingUnread === 1 ? '' : 's'}`;
+        }
+        if (summaryText) {
+            if (remainingUnread === 0) {
+                summaryText.innerHTML = `You have <strong>0 unread notifications</strong>. All caught up! ✿`;
+            } else {
+                summaryText.innerHTML = `You have <strong id="unreadNotificationCount">${remainingUnread} unread notification${remainingUnread === 1 ? '' : 's'}</strong>. Here's what has been happening.`;
+            }
+        }
+        if (unreadBadge) {
+            if (remainingUnread > 0) {
+                unreadBadge.textContent = `${remainingUnread} UNREAD`;
+                unreadBadge.style.display = "";
+            } else {
+                unreadBadge.style.display = "none";
+            }
+        }
+    }
+
+    if (!notifs.length) {
+        refreshUnreadHeader();
+        if (container) {
+            container.innerHTML = `
+                <div class="garden-card empty-state" id="notificationsEmptyBed" style="padding: 48px 24px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 38px; margin-bottom: 12px;">♧</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--olive-deep); font-weight: 600;">
+                        Your garden is calm and peaceful.
+                    </h3>
+                    <p style="color: var(--muted); margin: 8px auto 20px; font-size: 14px; max-width: 480px; line-height: 1.6;">
+                        No new notifications at the moment. When faculty members review your applications or publish new matching projects, your updates will appear here.
+                    </p>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <a href="projects.html" class="garden-button">Explore Projects in Bloom 🌿</a>
+                        <a href="growth.html" class="garden-button secondary">Tend Your Skills ✿</a>
+                    </div>
+                </div>`;
+        }
+        return;
+    }
+
+    const typeIcons = {
+        project: "🌿",
+        application: "✉",
+        team: "🌳",
+        growth: "🌱",
+        skill: "🌾",
+        success: "✿",
+        warning: "🍂",
+        info: "♧"
+    };
+
+    if (container) {
+        container.innerHTML = notifs.map(n => {
+            const isRead = Boolean(n.is_read);
+            const icon = typeIcons[n.type] || "♧";
+            const timeStr = n.created_at ? formatTimeAgo(n.created_at) : "";
+
+            return `
+                <article class="garden-card notification-item ${isRead ? 'read' : 'unread'}"
+                         data-notification-id="${n.id}"
+                         data-notification="${n.id}"
+                         style="cursor: pointer; margin-bottom: 14px;">
+                    <div class="notification-icon ${escapeHtml(n.type || 'info')}">
+                        ${icon}
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-top">
+                            <h3>${escapeHtml(n.title)}</h3>
+                            <span>${timeStr}</span>
+                        </div>
+                        <p>${escapeHtml(n.message)}</p>
+                        ${n.link ? `<a href="${safeUrl(n.link)}" class="notification-link" style="margin-top: 8px; display: inline-block;">View details →</a>` : ''}
+                    </div>
+                    ${isRead ? '' : '<span class="unread-dot"></span>'}
+                </article>`;
+        }).join("");
+
+        // Wire click to mark individual notification as read
+        $$(".notification-item", container).forEach(item => {
+            item.addEventListener("click", async (e) => {
+                const notifId = item.dataset.notificationId || item.dataset.notification;
+                if (!notifId) return;
+
+                const isAlreadyRead = item.classList.contains("read");
+                if (!isAlreadyRead) {
+                    item.classList.remove("unread");
+                    item.classList.add("read");
+                    const dot = $(".unread-dot", item);
+                    if (dot) dot.remove();
+
+                    // Persist to backend
+                    await api(`/notifications/${notifId}/read`, { method: "POST" });
+                    refreshUnreadHeader();
+                }
+            });
         });
-    });
-    updateUnreadBadge();
+
+        refreshUnreadHeader();
+    }
+
+    // Wire Mark All as Read button
+    if (markAllBtn) {
+        markAllBtn.onclick = async () => {
+            if (markAllBtn.disabled) return;
+            markAllBtn.disabled = true;
+            markAllBtn.textContent = "Marking... ✓";
+
+            const { ok, data } = await api("/notifications/read-all", { method: "POST" });
+            if (ok && data.success) {
+                toast("All notifications marked as read.");
+                if (container) {
+                    $$(".notification-item", container).forEach(item => {
+                        item.classList.remove("unread");
+                        item.classList.add("read");
+                        const dot = $(".unread-dot", item);
+                        if (dot) dot.remove();
+                    });
+                }
+                refreshUnreadHeader();
+            } else {
+                toast(data.message || "Could not mark notifications as read.");
+            }
+            markAllBtn.disabled = false;
+            markAllBtn.textContent = "✓ Mark All as Read";
+        };
+    }
 }
 
 function updateUnreadBadge() {
     const unread = $$(".notification-item:not(.read)").length;
-    const badge = $("[data-unread-count]");
+    const badge = $("#notificationUnreadBadge") || $("[data-unread-count]");
     if (badge) {
-        badge.textContent = unread;
+        badge.textContent = unread > 0 ? `${unread} UNREAD` : "0 UNREAD";
         badge.style.display = unread > 0 ? "" : "none";
     }
 }

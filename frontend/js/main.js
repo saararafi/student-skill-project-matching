@@ -1152,6 +1152,7 @@ function initializeApplicationActions() {
 ========================================================= */
 
 function initializeNotifications() {
+    if (document.querySelector("#notificationsContainer")) return;
     const notifications = document.querySelectorAll("[data-notification]");
 
     notifications.forEach((notification) => {

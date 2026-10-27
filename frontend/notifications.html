@@ -145,8 +145,8 @@
             </div>
 
 
-            <div class="user-avatar">
-                S
+            <div class="user-avatar" data-user-avatar>
+                ?
             </div>
 
         </header>
@@ -159,7 +159,6 @@
 
         <section class="garden-card notification-header-card">
 
-
             <div>
 
                 <div class="botanical-badge">
@@ -170,13 +169,12 @@
                     Your garden has news.
                 </h2>
 
-                <p>
-                    You have <strong>4 unread notifications</strong>.
+                <p id="unreadNotificationSummary">
+                    You have <strong id="unreadNotificationCount">0 unread notifications</strong>.
                     Here's what has been happening.
                 </p>
 
             </div>
-
 
             <button
                 type="button"
@@ -191,405 +189,45 @@
 
 
         <!-- =========================
-             TODAY
+             NOTIFICATION FEED
         ========================== -->
 
         <section>
 
-
             <div class="garden-section-title">
 
                 <div>
-
                     <span>
-                        TODAY
+                        ACTIVITY FEED
                     </span>
 
                     <h2>
-                        Fresh from the garden
+                        Garden Messages
                     </h2>
-
                 </div>
 
-            </div>
-
-
-            <div class="notification-list"
-                 data-unread-count>0</div>
-
-            <div class="notification-list">
-
-
-                <!-- NOTIFICATION 1 -->
-
-                <article
-                    class="garden-card notification-item unread"
-                    data-notification
-                >
-
-                    <div class="notification-icon project">
-                        🌸
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                A new project matches your garden
-                            </h3>
-
-                            <span>
-                                2 hours ago
-                            </span>
-
-                        </div>
-
-                        <p>
-                            <strong>
-                                Smart Campus Resource Allocation
-                            </strong>
-                            matches your profile with an
-                            <strong>88% compatibility</strong>.
-                        </p>
-
-
-                        <a
-                            href="project-details.html"
-                            class="notification-link"
-                        >
-                            View project →
-                        </a>
-
-                    </div>
-
-
-                    <span class="unread-dot"></span>
-
-                </article>
-
-
-
-                <!-- NOTIFICATION 2 -->
-
-                <article
-                    class="garden-card notification-item unread"
-                    data-notification
-                >
-
-                    <div class="notification-icon application">
-                        ✉
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                Application submitted successfully
-                            </h3>
-
-                            <span>
-                                5 hours ago
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Your application for
-                            <strong>
-                                Intelligent Queue Management
-                            </strong>
-                            has been sent for faculty review.
-                        </p>
-
-
-                        <a
-                            href="applications.html"
-                            class="notification-link"
-                        >
-                            View application →
-                        </a>
-
-                    </div>
-
-
-                    <span class="unread-dot"></span>
-
-                </article>
-
-
-
-                <!-- NOTIFICATION 3 -->
-
-                <article
-                    class="garden-card notification-item unread"
-                    data-notification
-                >
-
-                    <div class="notification-icon team">
-                        🌳
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                Your team is growing
-                            </h3>
-
-                            <span>
-                                Yesterday
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Your application for
-                            <strong>
-                                Student Skill Matching System
-                            </strong>
-                            was accepted. You can now view your team.
-                        </p>
-
-
-                        <a
-                            href="team.html"
-                            class="notification-link"
-                        >
-                            View team →
-                        </a>
-
-                    </div>
-
-
-                    <span class="unread-dot"></span>
-
-                </article>
-
-
-
-                <!-- NOTIFICATION 4 -->
-
-                <article
-                    class="garden-card notification-item unread"
-                    data-notification
-                >
-
-                    <div class="notification-icon growth">
-                        🌱
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                Your profile could grow further
-                            </h3>
-
-                            <span>
-                                Yesterday
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Adding your previous work and availability
-                            can improve the accuracy of your project
-                            recommendations.
-                        </p>
-
-
-                        <a
-                            href="profile.html"
-                            class="notification-link"
-                        >
-                            Update profile →
-                        </a>
-
-                    </div>
-
-
-                    <span class="unread-dot"></span>
-
-                </article>
+                <span class="botanical-badge" id="notificationUnreadBadge" style="display: none;">
+                    0 UNREAD
+                </span>
 
             </div>
 
-        </section>
+            <div id="notificationsContainer" class="notification-feed">
 
-
-
-        <!-- =========================
-             EARLIER
-        ========================== -->
-
-        <section>
-
-
-            <div class="garden-section-title">
-
-                <div>
-
-                    <span>
-                        EARLIER
-                    </span>
-
-                    <h2>
-                        Previous signs
-                    </h2>
-
+                <!-- Clean botanical empty state initially -->
+                <div class="garden-card empty-state" id="notificationsEmptyBed" style="padding: 48px 24px; text-align: center; border-radius: 14px;">
+                    <div style="font-size: 38px; margin-bottom: 12px;">♧</div>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--olive-deep); font-weight: 600;">
+                        Your garden is calm and peaceful.
+                    </h3>
+                    <p style="color: var(--muted); margin: 8px auto 20px; font-size: 14px; max-width: 480px; line-height: 1.6;">
+                        No new notifications at the moment. When faculty members review your applications or publish new matching projects, your updates will appear here.
+                    </p>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <a href="projects.html" class="garden-button">Explore Projects in Bloom 🌿</a>
+                        <a href="growth.html" class="garden-button secondary">Tend Your Skills ✿</a>
+                    </div>
                 </div>
-
-            </div>
-
-
-            <div class="notification-list">
-
-
-                <!-- NOTIFICATION 5 -->
-
-                <article
-                    class="garden-card notification-item read"
-                    data-notification
-                >
-
-                    <div class="notification-icon skill">
-                        🌾
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                A skill gap was detected
-                            </h3>
-
-                            <span>
-                                3 days ago
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Your current team has limited coverage in
-                            <strong>
-                                Data Visualization
-                            </strong>.
-                        </p>
-
-
-                        <a
-                            href="gaps.html"
-                            class="notification-link"
-                        >
-                            View skill gaps →
-                        </a>
-
-                    </div>
-
-                </article>
-
-
-
-                <!-- NOTIFICATION 6 -->
-
-                <article
-                    class="garden-card notification-item read"
-                    data-notification
-                >
-
-                    <div class="notification-icon profile">
-                        ✿
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                Profile updated
-                            </h3>
-
-                            <span>
-                                5 days ago
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Your Python proficiency was updated to
-                            <strong>4/5</strong>.
-                        </p>
-
-
-                        <a
-                            href="profile.html"
-                            class="notification-link"
-                        >
-                            View profile →
-                        </a>
-
-                    </div>
-
-                </article>
-
-
-
-                <!-- NOTIFICATION 7 -->
-
-                <article
-                    class="garden-card notification-item read"
-                    data-notification
-                >
-
-                    <div class="notification-icon project">
-                        🌿
-                    </div>
-
-
-                    <div class="notification-content">
-
-                        <div class="notification-top">
-
-                            <h3>
-                                New project available
-                            </h3>
-
-                            <span>
-                                1 week ago
-                            </span>
-
-                        </div>
-
-                        <p>
-                            A new project in
-                            <strong>
-                                Education Technology
-                            </strong>
-                            has been added to SkillMatch.
-                        </p>
-
-
-                        <a
-                            href="projects.html"
-                            class="notification-link"
-                        >
-                            Explore projects →
-                        </a>
-
-                    </div>
-
-                </article>
 
             </div>
 
