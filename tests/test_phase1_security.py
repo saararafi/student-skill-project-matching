@@ -21,6 +21,22 @@ from werkzeug.security import generate_password_hash
 
 
 class Phase1SecurityTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import tempfile, shutil
+        from backend.config import Config
+        cls._tmpdir = tempfile.mkdtemp(prefix='phase1-test-')
+        cls._db_path = os.path.join(cls._tmpdir, 'test.db')
+        cls._original_db_path = Config.SQLITE_DB_PATH
+        Config.SQLITE_DB_PATH = cls._db_path
+
+    @classmethod
+    def tearDownClass(cls):
+        import shutil
+        from backend.config import Config
+        Config.SQLITE_DB_PATH = cls._original_db_path
+        shutil.rmtree(cls._tmpdir, ignore_errors=True)
+
     def setUp(self):
         clear_all_rate_limits()
         self.app = create_app()

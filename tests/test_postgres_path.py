@@ -142,7 +142,9 @@ class FakePsycopg2:
 class PostgresPathTestCase(unittest.TestCase):
 
     def setUp(self):
+        import tempfile
         self.fake = FakePsycopg2()
+        self._tmpdir = tempfile.mkdtemp(prefix='postgres-test-')
         self._saved = {
             'psycopg2': db.psycopg2,
             'available': db.PSYCOPG2_AVAILABLE,
@@ -150,6 +152,7 @@ class PostgresPathTestCase(unittest.TestCase):
             'engine': db.active_engine,
             'params': db._mysql_conn_params,
             'seed_demo': db.Config.SEED_DEMO_DATA,
+            'sqlite_path': db.Config.SQLITE_DB_PATH,
         }
 
         db.psycopg2 = self.fake
@@ -158,14 +161,18 @@ class PostgresPathTestCase(unittest.TestCase):
         db.active_engine = db.ENGINE_POSTGRES
         db._mysql_conn_params = None
         db.Config.SEED_DEMO_DATA = True
+        db.Config.SQLITE_DB_PATH = os.path.join(self._tmpdir, 'test.db')
 
     def tearDown(self):
+        import shutil
         db.psycopg2 = self._saved['psycopg2']
         db.PSYCOPG2_AVAILABLE = self._saved['available']
         db.Config.DATABASE_URL = self._saved['url']
         db.active_engine = self._saved['engine']
         db._mysql_conn_params = self._saved['params']
         db.Config.SEED_DEMO_DATA = self._saved['seed_demo']
+        db.Config.SQLITE_DB_PATH = self._saved['sqlite_path']
+        shutil.rmtree(self._tmpdir, ignore_errors=True)
 
     def statements(self):
         """Every statement across every connection the code opened."""

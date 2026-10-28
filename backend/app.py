@@ -132,9 +132,7 @@ def create_app():
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
         elif response.mimetype in ('text/css', 'application/javascript', 'text/javascript'):
-            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response.headers['Pragma'] = 'no-cache'
-            response.headers['Expires'] = '0'
+            response.headers['Cache-Control'] = 'public, max-age=3600'
         return response
 
     # Frontend serving routes

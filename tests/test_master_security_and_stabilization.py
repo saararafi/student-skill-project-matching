@@ -25,10 +25,23 @@ from backend.services.matching_service import compute_match
 class SecurityAndStabilizationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Configure test app with SQLite
+        import tempfile, shutil
+        cls._tmpdir = tempfile.mkdtemp(prefix='master-test-')
+        cls._db_path = os.path.join(cls._tmpdir, 'test.db')
+        cls._original_db_path = Config.SQLITE_DB_PATH
+        cls._original_seed_demo = Config.SEED_DEMO_DATA
+        Config.SQLITE_DB_PATH = cls._db_path
+        Config.SEED_DEMO_DATA = True
         cls.app = create_app()
         cls.app.config['TESTING'] = True
         cls.client = cls.app.test_client()
+
+    @classmethod
+    def tearDownClass(cls):
+        import shutil
+        Config.SQLITE_DB_PATH = cls._original_db_path
+        Config.SEED_DEMO_DATA = cls._original_seed_demo
+        shutil.rmtree(cls._tmpdir, ignore_errors=True)
 
     def test_production_secret_key_rejection(self):
         """Production environment must not allow weak default secret key."""
@@ -143,27 +156,27 @@ class SecurityAndStabilizationTests(unittest.TestCase):
     def test_idor_student_profile_isolation(self):
         """A student cannot access another student's profile by tampering with student_id param."""
         with self.client.session_transaction() as sess:
-            sess['user_id'] = 1
+            sess['user_id'] = 2
             sess['role'] = 'student'
 
-        res = self.client.get('/api/student/profile?student_id=2')
+        res = self.client.get('/api/student/profile?student_id=9999')
         # Server must reject IDOR attempt with 403 Forbidden
         self.assertEqual(res.status_code, 403)
 
     def test_idor_student_skills_isolation(self):
         """A student cannot view another student's skills via student_id query param."""
         with self.client.session_transaction() as sess:
-            sess['user_id'] = 1
+            sess['user_id'] = 2
             sess['role'] = 'student'
 
-        res = self.client.get('/api/student/skills?student_id=2')
+        res = self.client.get('/api/student/skills?student_id=9999')
         # Server must reject IDOR attempt with 403 Forbidden
         self.assertEqual(res.status_code, 403)
 
     def test_certificate_file_magic_bytes_validation(self):
         """Certificate upload must reject disguised executable/script files even with .pdf extension."""
         with self.client.session_transaction() as sess:
-            sess['user_id'] = 1
+            sess['user_id'] = 2
             sess['role'] = 'student'
 
         # Fake PDF that contains raw executable script text
@@ -181,7 +194,7 @@ class SecurityAndStabilizationTests(unittest.TestCase):
     def test_certificate_directory_traversal_blocked(self):
         """Attempting directory traversal in certificate filename must be blocked."""
         with self.client.session_transaction() as sess:
-            sess['user_id'] = 1
+            sess['user_id'] = 2
             sess['role'] = 'student'
 
         res = self.client.get('/api/student/certificates/..%2f..%2fbackend%2fconfig.py')

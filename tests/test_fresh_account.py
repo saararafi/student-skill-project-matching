@@ -76,8 +76,24 @@ class TestRegistrationPage(unittest.TestCase):
 
 class TestAFreshAccountStartsEmpty(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        import tempfile, shutil
+        cls._tmpdir = tempfile.mkdtemp(prefix='fresh-test-')
+        cls._db_path = os.path.join(cls._tmpdir, 'test.db')
+        from backend.config import Config
+        cls._original_db_path = Config.SQLITE_DB_PATH
+        Config.SQLITE_DB_PATH = cls._db_path
+        cls.app = create_app()
+
+    @classmethod
+    def tearDownClass(cls):
+        import shutil
+        from backend.config import Config
+        Config.SQLITE_DB_PATH = cls._original_db_path
+        shutil.rmtree(cls._tmpdir, ignore_errors=True)
+
     def setUp(self):
-        self.app = create_app()
         self.client = self.app.test_client()
 
     def register(self, email):

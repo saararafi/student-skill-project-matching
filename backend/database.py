@@ -663,14 +663,6 @@ def init_db():
             (12, 'Docker', 'DevOps & Deployment')
         ])
 
-        # Ensure active faculty account exists
-        cur.execute("SELECT COUNT(id) FROM users WHERE email = 'faculty@skillmatch.edu';")
-        if cur.fetchone()[0] == 0:
-            cur.execute(
-                "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)",
-                ('Faculty Coordinator', 'faculty@skillmatch.edu', generate_password_hash('faculty@123'), 'faculty')
-            )
-
         # Seed SQLite Demo Data if SEED_DEMO_DATA is enabled and demo users are missing
         cur.execute("SELECT COUNT(id) FROM users WHERE email = 'saara@example.com';")
         has_demo_users = (cur.fetchone()[0] > 0)
@@ -695,7 +687,7 @@ def init_db():
                 (5, 5, 'Electronics & Communication', '3rd Year', '5th Semester', 'Full-time', 'Systems programmer passionate about C++, IoT, and real-time processing.', 'https://github.com/arjun-n', 'https://linkedin.com/in/arjun-n')
             ])
 
-            cur.executemany("INSERT INTO student_skills (student_id, skill_id, proficiency_level, certificate_filename, certificate_original_name, certificate_status, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))", [
+            cur.executemany("INSERT OR IGNORE INTO student_skills (student_id, skill_id, proficiency_level, certificate_filename, certificate_original_name, certificate_status, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))", [
                 (1, 1, 4, 'cert_saara_python.pdf', 'Python_Specialization_Certificate.pdf', 'Verified'),
                 (1, 2, 3, None, None, 'None'),
                 (1, 3, 5, 'cert_saara_html.pdf', 'Responsive_Web_Design.pdf', 'Verified'),
@@ -721,7 +713,7 @@ def init_db():
                 (5, 1, 3, None, None, 'None')
             ])
 
-            cur.executemany("INSERT INTO student_interests (student_id, interest) VALUES (?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO student_interests (student_id, interest) VALUES (?, ?)", [
                 (1, 'Artificial Intelligence'),
                 (1, 'Web Development'),
                 (1, 'Cybersecurity'),
@@ -737,7 +729,7 @@ def init_db():
                 (5, 'Embedded Systems')
             ])
 
-            cur.executemany("INSERT INTO student_experiences (student_id, experience_title) VALUES (?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO student_experiences (student_id, experience_title) VALUES (?, ?)", [
                 (1, 'Web Development'),
                 (1, 'Python Projects'),
                 (1, 'Database Projects'),
@@ -751,7 +743,7 @@ def init_db():
                 (5, 'Network Security')
             ])
 
-            cur.executemany("INSERT INTO projects (id, faculty_id, title, description, domain, required_availability, team_size, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO projects (id, faculty_id, title, description, domain, required_availability, team_size, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
                 (1, 6, 'Smart Healthcare Management System', 'An intelligent healthcare portal that facilitates patient appointment management, automated triage scoring using predictive analytics, and electronic medical record management.', 'Healthcare', 'Full-time', 4, 'Open'),
                 (2, 6, 'Campus Resource & Lab Booking System', 'A centralized web portal for engineering college students and faculty to schedule laboratory sessions, reserve equipment, and manage shared departmental computing resources.', 'Education Technology', 'Part-time', 4, 'Open'),
                 (3, 7, 'AI-Powered Study & Quiz Assistant', 'A personalized AI tutoring system that generates context-aware quizzes, evaluates student progress, and recommends tailored study notes and references.', 'Artificial Intelligence', 'Full-time', 3, 'Open'),
@@ -759,7 +751,7 @@ def init_db():
                 (5, 6, 'Automated Cybersecurity Threat Monitoring', 'A network packet inspection and anomaly detection system for collegiate networks to detect unauthorized intrusion attempts and flag anomalous activity.', 'Cybersecurity', 'Full-time', 3, 'Open')
             ])
 
-            cur.executemany("INSERT INTO project_skills (project_id, skill_id, required_level) VALUES (?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO project_skills (project_id, skill_id, required_level) VALUES (?, ?, ?)", [
                 (1, 1, 5),
                 (1, 9, 4),
                 (1, 7, 3),
@@ -787,7 +779,7 @@ def init_db():
                 (5, 6, 3)
             ])
 
-            cur.executemany("INSERT INTO project_interests (project_id, interest) VALUES (?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO project_interests (project_id, interest) VALUES (?, ?)", [
                 (1, 'Artificial Intelligence'),
                 (1, 'Healthcare'),
                 (1, 'Web Development'),
@@ -801,7 +793,7 @@ def init_db():
                 (5, 'Network Security')
             ])
 
-            cur.executemany("INSERT INTO project_experiences (project_id, experience_title) VALUES (?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO project_experiences (project_id, experience_title) VALUES (?, ?)", [
                 (1, 'Python Projects'),
                 (1, 'Database Projects'),
                 (1, 'Machine Learning'),
@@ -815,27 +807,35 @@ def init_db():
                 (5, 'Network Security')
             ])
 
-            cur.executemany("INSERT INTO teams (id, project_id, name, leader_id) VALUES (?, ?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO teams (id, project_id, name, leader_id) VALUES (?, ?, ?, ?)", [
                 (1, 1, 'PulseCare Innovation Team', 1)
             ])
 
-            cur.executemany("INSERT INTO team_members (team_id, student_id, role) VALUES (?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO team_members (team_id, student_id, role) VALUES (?, ?, ?)", [
                 (1, 1, 'Team Lead & Backend Developer'),
                 (1, 3, 'Database Engineer')
             ])
 
-            cur.executemany("INSERT INTO applications (project_id, student_id, status, message, match_score) VALUES (?, ?, ?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO applications (project_id, student_id, status, message, match_score) VALUES (?, ?, ?, ?, ?)", [
                 (1, 1, 'Accepted', 'Excited to contribute to health informatics and backend architecture.', 88.50),
                 (2, 1, 'Pending', 'Interested in building the lab booking interface.', 91.25),
                 (3, 2, 'Pending', 'Passionate about AI-assisted education tools.', 79.00),
                 (4, 4, 'Accepted', 'Can build the entire front-end user experience in React.', 94.00)
             ])
 
-            cur.executemany("INSERT INTO notifications (user_id, title, message, type, link) VALUES (?, ?, ?, ?, ?)", [
+            cur.executemany("INSERT OR IGNORE INTO notifications (user_id, title, message, type, link) VALUES (?, ?, ?, ?, ?)", [
                 (1, 'Certificate Approved', 'Your certificate for Python Specialization was verified successfully.', 'success', 'profile.html'),
                 (1, 'Application Update', 'Your application for Smart Healthcare Management System was accepted!', 'success', 'applications.html'),
                 (1, 'New Project Matching You', 'Campus Resource System has a 91% match with your profile.', 'info', 'projects.html')
             ])
+
+        # Ensure active faculty account exists
+        cur.execute("SELECT COUNT(id) FROM users WHERE email = 'faculty@skillmatch.edu';")
+        if cur.fetchone()[0] == 0:
+            cur.execute(
+                "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)",
+                ('Faculty Coordinator', 'faculty@skillmatch.edu', generate_password_hash('faculty@123'), 'faculty')
+            )
 
         conn.commit()
         print("[Database] Successfully initialized SQLite database schema at database/skillmatch.db.")

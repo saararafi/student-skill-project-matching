@@ -345,6 +345,35 @@ async function renderDashboard() {
                 </div>`).join("");
         }
     }
+
+    const activityFeed = $("[data-dashboard-activity]");
+    if (activityFeed) {
+        const items = [];
+        (d.notifications || []).slice(0, 3).forEach(n => items.push({
+            icon: n.type === "success" ? "✿" : "❧",
+            title: n.title,
+            body: n.message
+        }));
+        (d.applications || []).slice(0, 2).forEach(a => items.push({
+            icon: "🌱",
+            title: `Applied to ${a.project_title}`,
+            body: `Status: ${a.status} · Compatibility: ${Math.round(a.match_score || 0)}%`
+        }));
+        if (items.length > 0) {
+            activityFeed.innerHTML = items.map(it => `
+                <div style="display:flex;gap:13px;align-items:flex-start;">
+                    <span style="color:var(--gold);font-size:18px;">${it.icon}</span>
+                    <div>
+                        <strong style="font-family:'Cormorant Garamond', serif;font-size:17px;color:var(--olive-deep);">
+                            ${escapeHtml(it.title)}
+                        </strong>
+                        <p style="margin-top:3px;font-size:9px;color:var(--muted);">
+                            ${escapeHtml(it.body)}
+                        </p>
+                    </div>
+                </div>`).join("");
+        }
+    }
 }
 
 /* ------------------------------------------------------------
@@ -1190,7 +1219,8 @@ async function renderProjectDetails() {
     const skillsBox = $("[data-detail-skills]");
     const gapBox = $("[data-detail-gaps]");
     const applyBtn = $("[data-apply]");
-    if (!skillsBox && !gapBox && !applyBtn) return;
+    const titleEl = $("[data-detail-title]");
+    if (!skillsBox && !gapBox && !applyBtn && !titleEl) return;
 
     const projectId = await resolveProjectId();
     if (!projectId) {
@@ -1200,6 +1230,93 @@ async function renderProjectDetails() {
     const { ok, data } = await api(`/projects/${projectId}`);
     if (!ok || !data.project) return;
     const p = data.project;
+
+    // Project Hero Info
+    if (titleEl) titleEl.textContent = p.title;
+    const descEl = $("[data-detail-description]");
+    if (descEl) descEl.textContent = p.description;
+    const domainEl = $("[data-detail-domain]");
+    if (domainEl) domainEl.textContent = `🌿 ${p.domain || "General"}`;
+    const sizeEl = $("[data-detail-team-size]");
+    if (sizeEl) sizeEl.textContent = `👥 ${p.team_size || 4} members`;
+    const availEl = $("[data-detail-availability]");
+    if (availEl) availEl.textContent = `◷ ${p.required_availability || "Flexible"}`;
+    const statusEl = $("[data-detail-status]");
+    if (statusEl) statusEl.textContent = p.status === "Open" ? "OPEN FOR APPLICATIONS" : (p.status || "Open").toUpperCase();
+
+    // Match Score & Badge
+    const finalScore = Math.round((p.match && p.match.final_score) || 0);
+    const scoreCircle = $("[data-detail-score-circle]");
+    if (scoreCircle) scoreCircle.style.setProperty("--score", finalScore);
+    const scoreText = $("[data-detail-score]");
+    if (scoreText) scoreText.textContent = `${finalScore}%`;
+    const scoreLabel = $("[data-detail-score-label]");
+    if (scoreLabel) {
+        scoreLabel.textContent = finalScore >= 80 ? "Strong Compatibility" : finalScore >= 50 ? "Moderate Compatibility" : "Growth Opportunity";
+    }
+    const overallBadge = $("[data-detail-overall-badge]");
+    if (overallBadge) overallBadge.textContent = `${finalScore}% Overall`;
+
+    // Long Description & Objectives
+    const longDesc = $("[data-detail-long-description]");
+    if (longDesc) longDesc.textContent = p.description;
+    const objectivesBox = $("[data-detail-objectives]");
+    if (objectivesBox) {
+        const skillsList = (p.required_skills || []).map(s => s.name);
+        const objectives = [
+            { num: "01", title: "Core Architecture", desc: `Implement the fundamental architecture and ${p.domain || "domain"} logic for ${p.title}.` },
+            { num: "02", title: "Skill Application", desc: skillsList.length ? `Leverage technologies including ${skillsList.slice(0, 3).join(", ")} to solve practical challenges.` : "Collaborate on modern technical implementations." },
+            { num: "03", title: "Team Collaboration", desc: `Coordinate across a dedicated team of ${p.team_size || 4} to deliver milestone goals.` }
+        ];
+        objectivesBox.innerHTML = objectives.map(obj => `
+            <div class="objective-item">
+                <span>${obj.num}</span>
+                <div>
+                    <h3>${escapeHtml(obj.title)}</h3>
+                    <p>${escapeHtml(obj.desc)}</p>
+                </div>
+            </div>`).join("");
+    }
+
+    // Match Breakdown Scores
+    const scores = (p.match && p.match.scores) || {};
+    const skillScore = Math.round(scores.skill_score || 0);
+    const interestScore = Math.round(scores.interest_score || 0);
+    const expScore = Math.round(scores.experience_score || 0);
+    const availScore = Math.round(scores.availability_score || 0);
+
+    const sScoreEl = $("[data-detail-skill-score]");
+    if (sScoreEl) sScoreEl.textContent = `${skillScore}%`;
+    const sBarEl = $("[data-detail-skill-bar]");
+    if (sBarEl) sBarEl.style.width = `${skillScore}%`;
+    const sNamesEl = $("[data-detail-skill-names]");
+    if (sNamesEl) {
+        const names = (p.required_skills || []).map(s => s.name).join(" · ");
+        sNamesEl.textContent = names || "General skills";
+    }
+
+    const iScoreEl = $("[data-detail-interest-score]");
+    if (iScoreEl) iScoreEl.textContent = `${interestScore}%`;
+    const iBarEl = $("[data-detail-interest-bar]");
+    if (iBarEl) iBarEl.style.width = `${interestScore}%`;
+
+    const eScoreEl = $("[data-detail-experience-score]");
+    if (eScoreEl) eScoreEl.textContent = `${expScore}%`;
+    const eBarEl = $("[data-detail-experience-bar]");
+    if (eBarEl) eBarEl.style.width = `${expScore}%`;
+
+    const aScoreEl = $("[data-detail-availability-score]");
+    if (aScoreEl) aScoreEl.textContent = `${availScore}%`;
+    const aBarEl = $("[data-detail-availability-bar]");
+    if (aBarEl) aBarEl.style.width = `${availScore}%`;
+
+    // Team requirements
+    const reqSizeEl = $("[data-detail-req-team-size]");
+    if (reqSizeEl) reqSizeEl.textContent = `${p.team_size || 4} students`;
+    const currMemEl = $("[data-detail-current-members]");
+    if (currMemEl) currMemEl.textContent = `${(p.team_members || []).length} / ${p.team_size || 4}`;
+    const projStatEl = $("[data-detail-project-status]");
+    if (projStatEl) projStatEl.textContent = p.status || "Open";
 
     if (skillsBox) {
         const mine = {};
