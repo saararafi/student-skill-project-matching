@@ -909,3 +909,287 @@ textarea:focus {
     border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.16);
 }
+
+
+/* =========================================================
+   DASHBOARD / MY GARDEN HARMONIOUS BALANCED LAYOUT
+   ========================================================= */
+
+/* Two-column balanced grid system */
+.dashboard-two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 28px;
+    align-items: stretch;
+}
+
+.dashboard-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.dashboard-col .garden-section-title {
+    margin-bottom: 14px;
+}
+
+.dashboard-col .garden-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    margin-bottom: 0;
+}
+
+/* Card bottom action alignment */
+.card-footer-action {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+/* Profile health card formatting */
+.profile-health-card {
+    padding: 24px;
+    margin-bottom: 28px;
+}
+
+.health-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.health-card-header .project-domain {
+    margin-bottom: 6px;
+}
+
+.garden-card-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    line-height: 1.25;
+    color: var(--olive-deep, #26351b);
+    margin: 0;
+}
+
+.garden-card-heading em {
+    color: var(--gold-deep, #a37b35);
+    font-style: italic;
+}
+
+.garden-card-subtext {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted, #7c8274);
+    max-width: 600px;
+}
+
+.health-progress-track {
+    margin-top: 18px;
+    height: 8px;
+    background: var(--sage, #e1e7d4);
+    border-radius: var(--radius-pill, 999px);
+    overflow: hidden;
+}
+
+.health-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--olive, #536b32), var(--gold, #c6a15b));
+    border-radius: var(--radius-pill, 999px);
+    transition: width 0.8s ease;
+}
+
+/* Stat cards alignment */
+.dashboard-grid {
+    margin-bottom: 28px;
+}
+
+.dashboard-grid .stat-card {
+    padding: 22px 24px;
+}
+
+.dashboard-grid .stat-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--olive-deep, #26351b);
+}
+
+.dashboard-grid .stat-card p {
+    font-size: 12px;
+    color: var(--muted, #7c8274);
+    margin-top: 2px;
+}
+
+.dashboard-grid .stat-card .stat-number {
+    font-size: 42px;
+    margin: 10px 0 4px;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold-deep, #a37b35);
+}
+
+.dashboard-grid .stat-card .stat-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--olive-dark, #405128);
+}
+
+/* Match breakdown card */
+.breakdown-card .match-components {
+    margin-top: 8px;
+}
+
+.breakdown-note {
+    margin-top: 18px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--muted, #7c8274);
+}
+
+/* Capacity card */
+.capacity-panel .capacity-card {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.capacity-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--olive-deep, #26351b);
+    margin: 0;
+}
+
+.capacity-subtext {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted, #7c8274);
+}
+
+/* Team panel */
+.team-panel .team-branch {
+    margin-top: 12px;
+}
+
+.team-coverage-box {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: var(--sage, #e1e7d4);
+    border-radius: var(--radius-sm, 8px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.team-coverage-label {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    color: var(--olive-dark, #405128);
+}
+
+.team-coverage-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--olive-deep, #26351b);
+}
+
+/* Watering card */
+.watering-card .watering-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--olive-deep, #26351b);
+}
+
+.watering-card .watering-description {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted, #7c8274);
+}
+
+/* Activity panel */
+.dashboard-activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.dashboard-activity-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.activity-icon {
+    color: var(--gold, #c6a15b);
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.activity-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--olive-deep, #26351b);
+    display: block;
+}
+
+.activity-body {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted, #7c8274);
+}
+
+/* Footer */
+.garden-footer {
+    margin-top: 48px;
+    padding: 28px 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted, #7c8274);
+}
+
+/* Responsive collapse */
+@media (max-width: 900px) {
+    .dashboard-two-col {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Component typography enhancements */
+.skill-plant-level {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+.growth-year {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+}
+.growth-description {
+    font-size: 13px;
+    line-height: 1.55;
+}
+.growth-title {
+    font-size: 20px;
+}
+.match-component-label {
+    font-size: 12px;
+    font-weight: 500;
+}
+.match-component-value {
+    font-size: 16px;
+    font-weight: 600;
+}

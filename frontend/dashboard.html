@@ -2,1073 +2,381 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Garden | SkillMatch</title>
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap" rel="stylesheet">
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Italianno&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="css/style.css?v=4">
-    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=4">
-    <link rel="stylesheet" href="css/design-system.css?v=4">
-
+    <link rel="stylesheet" href="css/style.css?v=5">
+    <link rel="stylesheet" href="css/skillmatch-layout-fix.css?v=5">
+    <link rel="stylesheet" href="css/design-system.css?v=5">
 </head>
-
 
 <body class="app-body">
 
-
 <div class="app-layout">
-
 
     <!-- =====================================================
          SIDEBAR
          ===================================================== -->
-
     <aside class="sidebar">
-
         <div class="sidebar-logo">
             ❧ Skill<span>Match</span>
         </div>
-
 
         <div class="sidebar-caption">
             MY GARDEN
         </div>
 
-
         <nav class="sidebar-nav">
-
             <a href="dashboard.html" class="active">
                 <span class="nav-icon">❧</span>
                 My Garden
             </a>
-
             <a href="growth.html">
                 <span class="nav-icon">✿</span>
                 My Growth
             </a>
-
             <a href="projects.html">
                 <span class="nav-icon">🌿</span>
                 Projects in Bloom
             </a>
-
             <a href="team.html">
                 <span class="nav-icon">🌳</span>
                 Garden Team
             </a>
-
             <a href="gaps.html">
                 <span class="nav-icon">🌾</span>
                 What Needs Watering?
             </a>
-
             <a href="applications.html">
                 <span class="nav-icon">✉</span>
                 Applications
             </a>
-
             <a href="notifications.html">
                 <span class="nav-icon">♧</span>
                 Notifications
             </a>
-
         </nav>
-
 
         <div class="sidebar-caption sidebar-caption-bottom">
             ACCOUNT
         </div>
 
-
         <nav class="sidebar-nav">
-
             <a href="profile.html">
                 <span class="nav-icon">◉</span>
                 Profile
             </a>
-
             <a href="settings.html">
                 <span class="nav-icon">⚙</span>
                 Settings
             </a>
-
             <a href="#" data-logout>
                 <span class="nav-icon">↪</span>
                 Leave Garden
             </a>
-
         </nav>
-
     </aside>
-
-
 
     <!-- =====================================================
          MAIN CONTENT
          ===================================================== -->
-
     <main class="app-main">
 
-
         <!-- HEADER -->
-
         <header class="app-header reveal">
-
             <div class="app-welcome">
-
-                <small>
-                    WELCOME BACK, <span data-dashboard-welcome>there</span>
-                </small>
-
-                <h1>
-                    Your garden is
-                    <em>growing.</em>
-                </h1>
-
+                <small>WELCOME BACK, <span data-dashboard-welcome>there</span></small>
+                <h1>Your garden is <em>growing.</em></h1>
                 <p class="header-subtitle">
-                    Nurture your skills, discover meaningful
-                    projects and grow alongside the right team.
+                    Nurture your skills, discover meaningful projects and grow alongside the right team.
                 </p>
-
             </div>
-
-
-            <div class="user-avatar" data-user-avatar>
-                ?
-            </div>
-
+            <div class="user-avatar" data-user-avatar>?</div>
         </header>
-
-
 
         <!-- =================================================
              PROFILE HEALTH
              ================================================= -->
-
-        <section class="garden-card profile-health-card reveal"
-                 style="padding: 22px; margin-bottom: 25px;">
-
-            <div style="
-                display:flex;
-                align-items:center;
-                justify-content:space-between;
-                gap:20px;
-                flex-wrap:wrap;
-            ">
-
+        <section class="garden-card profile-health-card reveal">
+            <div class="health-card-header">
                 <div>
-
-                    <div class="project-domain">
-                        ✿ YOUR GARDEN HEALTH
-                    </div>
-
-                    <h2 style="
-                        font-family:'Cormorant Garamond', serif;
-                        font-size:27px;
-                        color:var(--olive-deep, #26351b);
-                    ">
-                        Your profile is
-                        <em style="
-                            color:var(--gold-deep, #a37b35);
-                        " data-dashboard-completeness-text>
-                            0% complete.
-                        </em>
+                    <div class="project-domain">✿ YOUR GARDEN HEALTH</div>
+                    <h2 class="garden-card-heading">
+                        Your profile is <em data-dashboard-completeness-text>0% complete.</em>
                     </h2>
-
-                    <p style="
-                        margin-top:6px;
-                        font-size:10px;
-                        line-height:1.7;
-                        color:var(--muted, #7c8274);
-                    ">
-                        Add your previous work and availability
-                        to help SkillMatch understand your garden
-                        more completely.
+                    <p class="garden-card-subtext">
+                        Add your previous work, technical competencies, and weekly availability to help SkillMatch generate personalized project matches.
                     </p>
-
                 </div>
-
-
-                <a href="profile.html"
-                   class="garden-button primary">
-
-                    Complete Profile →
-
-                </a>
-
+                <a href="profile.html" class="garden-button primary">Complete Profile →</a>
             </div>
-
-
-            <div style="
-                margin-top:18px;
-                height:7px;
-                background:var(--sage, #e1e7d4);
-            ">
-
-                <div style="
-                    width:0%;
-                    height:100%;
-                    background:linear-gradient(
-                        90deg,
-                        var(--olive, #536b32),
-                        var(--gold, #c6a15b)
-                    );
-                " data-dashboard-completeness-bar>
-                </div>
-
+            <div class="health-progress-track">
+                <div class="health-progress-bar" data-dashboard-completeness-bar></div>
             </div>
-
         </section>
 
-
-
         <!-- =================================================
-             STATISTICS
+             STATISTICS (3 COLUMNS)
              ================================================= -->
-
         <section class="dashboard-grid reveal">
-
+            <div class="dashboard-card stat-card garden-card">
+                <h3>Skills</h3>
+                <p>Seeds planted</p>
+                <div class="stat-number">00</div>
+                <div class="stat-label">TECHNICAL SKILLS</div>
+            </div>
 
             <div class="dashboard-card stat-card garden-card">
-
-                <h3>
-                    Skills
-                </h3>
-
-                <p>
-                    Seeds planted
-                </p>
-
-                <div class="stat-number">
-                    08
-                </div>
-
-                <div class="stat-label">
-                    TECHNICAL SKILLS
-                </div>
-
+                <h3>Interests</h3>
+                <p>Areas exploring</p>
+                <div class="stat-number">00</div>
+                <div class="stat-label">INTEREST AREAS</div>
             </div>
-
-
 
             <div class="dashboard-card stat-card garden-card">
-
-                <h3>
-                    Interests
-                </h3>
-
-                <p>
-                    Areas you're exploring
-                </p>
-
-                <div class="stat-number">
-                    05
-                </div>
-
-                <div class="stat-label">
-                    INTEREST AREAS
-                </div>
-
+                <h3>Experiences</h3>
+                <p>Growth collected</p>
+                <div class="stat-number">00</div>
+                <div class="stat-label">EXPERIENCES</div>
             </div>
-
-
-
-            <div class="dashboard-card stat-card garden-card">
-
-                <h3>
-                    Growth
-                </h3>
-
-                <p>
-                    Experience collected
-                </p>
-
-                <div class="stat-number">
-                    03
-                </div>
-
-                <div class="stat-label">
-                    EXPERIENCES
-                </div>
-
-            </div>
-
-
         </section>
 
-
-
         <!-- =================================================
-             FEATURED PROJECT MATCH
+             ROW 1: RECOMMENDATIONS & COMPATIBILITY BREAKDOWN
              ================================================= -->
-
-        <div class="garden-section-title">
-
-            <small>
-                YOUR GARDEN'S RECOMMENDATION
-            </small>
-
-            <h2>
-                A project ready to
-                <em>bloom.</em>
-            </h2>
-
-        </div>
-
-
-
-        <section class="project-match-card reveal">
-
-
-            <div class="project-match-header">
-
-
-                <div>
-
-                    <span class="project-match-domain">
-                        RECOMMENDATION
-                    </span>
-
-                    <h2 class="project-match-title">
-                        Discover Projects
-                    </h2>
-
+        <div class="dashboard-two-col">
+            <!-- FEATURED PROJECT MATCH -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>YOUR RECOMMENDATION</small>
+                    <h2>A project ready to <em>bloom.</em></h2>
                 </div>
-
-
-                <div class="match-score-circle"
-                     style="--score:0;">
-
-                    <strong data-score="0">
-                        0%
-                    </strong>
-
-                    <small>
-                        MATCH
-                    </small>
-
-                </div>
-
-
-            </div>
-
-
-            <p class="project-match-description">
-                Explore available projects or update your skills in My Growth to generate personalized compatibility recommendations.
-            </p>
-
-
-            <div class="project-tags"></div>
-
-
-            <div class="project-match-footer">
-
-                <span class="botanical-badge">
-                    Awaiting project matching
-                </span>
-
-
-                <a href="projects.html"
-                   class="garden-button primary">
-
-                    Explore Projects →
-
-                </a>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             MATCH BREAKDOWN
-             ================================================= -->
-
-        <div class="garden-section-title">
-
-            <small>
-                WHY THIS PROJECT?
-            </small>
-
-            <h2>
-                Your match,
-                <em>explained.</em>
-            </h2>
-
-        </div>
-
-
-
-        <section class="garden-card reveal"
-                 style="padding:25px;">
-
-
-            <div class="match-components">
-
-
-                <div class="match-component">
-
-                    <span class="match-component-label">
-                        Skill Compatibility
-                    </span>
-
-                    <div class="match-component-track">
-
-                        <div class="match-component-fill"
-                             style="width:0%;">
+                <section class="project-match-card garden-card reveal">
+                    <div class="project-match-header">
+                        <div>
+                            <span class="project-match-domain">RECOMMENDATION</span>
+                            <h2 class="project-match-title">Discover Projects</h2>
                         </div>
-
+                        <div class="match-score-circle" style="--score:0;">
+                            <strong data-score="0">0%</strong>
+                            <small>MATCH</small>
+                        </div>
                     </div>
-
-                    <span class="match-component-value">
-                        0%
-                    </span>
-
-                </div>
-
-
-
-                <div class="match-component">
-
-                    <span class="match-component-label">
-                        Interest Compatibility
-                    </span>
-
-                    <div class="match-component-track">
-
-                        <div class="match-component-fill"
-                             style="width:0%;">
-                        </div>
-
-                    </div>
-
-                    <span class="match-component-value">
-                        0%
-                    </span>
-
-                </div>
-
-
-
-                <div class="match-component">
-
-                    <span class="match-component-label">
-                        Previous Experience
-                    </span>
-
-                    <div class="match-component-track">
-
-                        <div class="match-component-fill"
-                             style="width:0%;">
-                        </div>
-
-                    </div>
-
-                    <span class="match-component-value">
-                        0%
-                    </span>
-
-                </div>
-
-
-
-                <div class="match-component">
-
-                    <span class="match-component-label">
-                        Availability
-                    </span>
-
-                    <div class="match-component-track">
-
-                        <div class="match-component-fill"
-                             style="width:0%;">
-                        </div>
-
-                    </div>
-
-                    <span class="match-component-value">
-                        0%
-                    </span>
-
-                </div>
-
-
-            </div>
-
-
-            <p style="
-                margin-top:22px;
-                font-size:10px;
-                line-height:1.7;
-                color:var(--muted, #7c8274);
-            ">
-
-                Your overall compatibility is calculated from
-                multiple attributes rather than a single skill.
-                These components will later be generated by the
-                SkillMatch algorithms through the Flask backend.
-
-            </p>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             TWO COLUMN AREA
-             ================================================= -->
-
-        <div style="
-            display:grid;
-            grid-template-columns:
-                minmax(0, 1.4fr)
-                minmax(280px, .8fr);
-            gap:22px;
-            margin-top:25px;
-        ">
-
-
-            <!-- SKILL GARDEN -->
-
-            <section class="garden-card reveal"
-                     style="padding:25px;">
-
-                <div class="project-domain">
-                    🌱 SKILL GARDEN
-                </div>
-
-                <h2 style="
-                    font-family:'Cormorant Garamond', serif;
-                    font-size:27px;
-                    color:var(--olive-deep, #26351b);
-                ">
-                    What is
-                    <em style="
-                        color:var(--gold-deep, #a37b35);
-                    ">
-                        growing?
-                    </em>
-                </h2>
-
-
-                <div class="skill-plants">
-
-
-                    <div class="skill-plant"
-                         data-skill="Python">
-
-                        <div class="skill-plant-flower">
-                            ✿
-                        </div>
-
-                        <div class="skill-plant-name">
-                            Python
-                        </div>
-
-                        <div class="skill-plant-level">
-                            80% · GROWING
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="skill-plant"
-                         data-skill="HTML / CSS">
-
-                        <div class="skill-plant-flower">
-                            ✿
-                        </div>
-
-                        <div class="skill-plant-name">
-                            HTML / CSS
-                        </div>
-
-                        <div class="skill-plant-level">
-                            95% · BLOOMING
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="skill-plant"
-                         data-skill="Java">
-
-                        <div class="skill-plant-flower">
-                            ✿
-                        </div>
-
-                        <div class="skill-plant-name">
-                            Java
-                        </div>
-
-                        <div class="skill-plant-level">
-                            100% · BLOOMING
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="skill-plant"
-                         data-skill="MySQL">
-
-                        <div class="skill-plant-flower">
-                            ✿
-                        </div>
-
-                        <div class="skill-plant-name">
-                            MySQL
-                        </div>
-
-                        <div class="skill-plant-level">
-                            60% · GROWING
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <a href="growth.html"
-                   class="garden-button"
-                   style="margin-top:20px;">
-
-                    Tend My Skills →
-
-                </a>
-
-            </section>
-
-
-
-            <!-- AVAILABILITY -->
-
-            <section class="garden-card reveal"
-                     style="padding:25px;">
-
-                <div class="project-domain">
-                    ❧ YOUR CAPACITY
-                </div>
-
-                <h2 style="
-                    font-family:'Cormorant Garamond', serif;
-                    font-size:27px;
-                    color:var(--olive-deep, #26351b);
-                ">
-                    Room to
-                    <em style="
-                        color:var(--gold-deep, #a37b35);
-                    ">
-                        grow.
-                    </em>
-                </h2>
-
-
-                <div class="capacity-card"
-                     style="margin-top:20px;">
-
-                    <div class="capacity-ring"
-                         style="--capacity:50;">
-
-                        <div class="capacity-ring-inner">
-
-                            <strong>
-                                10h
-                            </strong>
-
-                            <span>
-                                AVAILABLE
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <p style="
-                            font-family:'Cormorant Garamond', serif;
-                            font-size:20px;
-                            color:var(--olive-deep, #26351b);
-                        ">
-                            Weekly capacity
-                        </p>
-
-                        <p style="
-                            margin-top:5px;
-                            font-size:9px;
-                            line-height:1.7;
-                            color:var(--muted, #7c8274);
-                        ">
-                            20 hours available<br>
-                            10 hours currently committed
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <a href="growth.html"
-                   class="garden-button"
-                   style="margin-top:20px;">
-
-                    Manage Availability
-
-                </a>
-
-            </section>
-
-
-        </div>
-
-
-
-        <!-- =================================================
-             GROWTH + TEAM
-             ================================================= -->
-
-        <div style="
-            display:grid;
-            grid-template-columns:
-                minmax(0, 1fr)
-                minmax(0, 1fr);
-            gap:22px;
-            margin-top:25px;
-        ">
-
-
-            <!-- GROWTH TIMELINE -->
-
-            <section class="garden-card reveal"
-                     style="padding:25px;">
-
-                <div class="project-domain">
-                    ✿ GROWTH TIMELINE
-                </div>
-
-                <h2 style="
-                    font-family:'Cormorant Garamond', serif;
-                    font-size:27px;
-                    color:var(--olive-deep, #26351b);
-                ">
-                    How your garden
-                    <em style="
-                        color:var(--gold-deep, #a37b35);
-                    ">
-                        grew.
-                    </em>
-                </h2>
-
-
-                <div class="growth-timeline">
-
-
-                    <div class="growth-item">
-
-                        <span class="growth-year">
-                            RECENT
-                        </span>
-
-                        <div class="growth-title">
-                            Flask added
-                        </div>
-
-                        <p class="growth-description">
-                            Added backend development to
-                            your growing technical garden.
-                        </p>
-
-                    </div>
-
-
-
-                    <div class="growth-item">
-
-                        <span class="growth-year">
-                            EARLIER
-                        </span>
-
-                        <div class="growth-title">
-                            Web development
-                        </div>
-
-                        <p class="growth-description">
-                            HTML and CSS skills began
-                            taking shape.
-                        </p>
-
-                    </div>
-
-
-
-                    <div class="growth-item">
-
-                        <span class="growth-year">
-                            BEGINNING
-                        </span>
-
-                        <div class="growth-title">
-                            First technical seeds
-                        </div>
-
-                        <p class="growth-description">
-                            Your first programming foundations
-                            were planted.
-                        </p>
-
-                    </div>
-
-
-                </div>
-
-            </section>
-
-
-
-            <!-- TEAM COMPATIBILITY -->
-
-            <section class="garden-card reveal"
-                     style="padding:25px;">
-
-                <div class="project-domain">
-                    🌳 GARDEN TEAM
-                </div>
-
-                <h2 style="
-                    font-family:'Cormorant Garamond', serif;
-                    font-size:27px;
-                    color:var(--olive-deep, #26351b);
-                ">
-                    Skills grow better
-                    <em style="
-                        color:var(--gold-deep, #a37b35);
-                    ">
-                        together.
-                    </em>
-                </h2>
-
-
-                <div class="team-branch"
-                     style="margin-top:20px;">
-
-                    <p class="muted-text" style="padding: 10px 0; font-size: 11px;">
-                        Explore projects to join a garden team.
+                    <p class="project-match-description">
+                        Explore available projects or update your skills in My Growth to generate personalized compatibility recommendations.
                     </p>
-
-                </div>
-
-
-                <div style="
-                    margin-top:18px;
-                    padding:12px;
-                    background:var(--sage, #e1e7d4);
-                ">
-
-                    <span style="
-                        font-size:8px;
-                        letter-spacing:1px;
-                        color:var(--olive-dark, #405128);
-                    ">
-                        TEAM SKILL COVERAGE
-                    </span>
-
-                    <strong data-dashboard-team-coverage style="
-                        display:block;
-                        margin-top:4px;
-                        font-family:'Cormorant Garamond', serif;
-                        font-size:22px;
-                        color:var(--olive-deep, #26351b);
-                    ">
-                        0%
-                    </strong>
-
-                </div>
-
-
-                <a href="team.html"
-                   class="garden-button"
-                   style="margin-top:18px;">
-
-                    Explore Team →
-
-                </a>
-
-            </section>
-
-
-        </div>
-
-
-
-        <!-- =================================================
-             WHAT NEEDS WATERING
-             ================================================= -->
-
-        <div class="garden-section-title">
-
-            <small>
-                SKILL DEVELOPMENT
-            </small>
-
-            <h2>
-                What needs
-                <em>watering?</em>
-            </h2>
-
-        </div>
-
-
-
-        <section class="watering-card reveal">
-
-
-            <div class="watering-title">
-                Your garden has room to grow.
-            </div>
-
-
-            <p class="watering-description">
-
-                Based on the requirements of projects that
-                interest you, these areas could strengthen
-                your future matches.
-
-            </p>
-
-
-            
-
-
-            <a href="gaps.html"
-               class="garden-button"
-               style="margin-top:18px;">
-
-                Explore Skill Gaps →
-
-            </a>
-
-
-                    <div class="gap-list" id="dashboardGapList">
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             RECENT ACTIVITY
-             ================================================= -->
-
-        <div class="garden-section-title">
-
-            <small>
-                RECENT ACTIVITY
-            </small>
-
-            <h2>
-                Little signs of
-                <em>growth.</em>
-            </h2>
-
-        </div>
-
-
-
-        <section class="garden-card reveal"
-                 style="padding:22px;">
-
-
-            <div data-dashboard-activity style="
-                display:grid;
-                gap:14px;
-            ">
-                <div style="
-                    display:flex;
-                    gap:13px;
-                    align-items:flex-start;
-                ">
-                    <span style="
-                        color:var(--gold);
-                        font-size:18px;
-                    ">
-                        ✿
-                    </span>
-                    <div>
-                        <strong style="
-                            font-family:'Cormorant Garamond', serif;
-                            font-size:17px;
-                            color:var(--olive-deep);
-                        ">
-                            Welcome to your Garden
-                        </strong>
-                        <p style="
-                            margin-top:3px;
-                            font-size:9px;
-                            color:var(--muted);
-                        ">
-                            Explore projects in bloom and tend your skills to watch your garden grow.
-                        </p>
+                    <div class="project-tags"></div>
+                    <div class="project-match-footer">
+                        <span class="botanical-badge">Awaiting project matching</span>
+                        <a href="projects.html" class="garden-button primary">Explore Projects →</a>
                     </div>
-                </div>
+                </section>
             </div>
 
+            <!-- MATCH BREAKDOWN -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>WHY THIS PROJECT?</small>
+                    <h2>Your match, <em>explained.</em></h2>
+                </div>
+                <section class="garden-card breakdown-card reveal">
+                    <div class="match-components">
+                        <div class="match-component">
+                            <span class="match-component-label">Skill Compatibility</span>
+                            <div class="match-component-track">
+                                <div class="match-component-fill" style="width:0%;"></div>
+                            </div>
+                            <span class="match-component-value">0%</span>
+                        </div>
+                        <div class="match-component">
+                            <span class="match-component-label">Interest Compatibility</span>
+                            <div class="match-component-track">
+                                <div class="match-component-fill" style="width:0%;"></div>
+                            </div>
+                            <span class="match-component-value">0%</span>
+                        </div>
+                        <div class="match-component">
+                            <span class="match-component-label">Previous Experience</span>
+                            <div class="match-component-track">
+                                <div class="match-component-fill" style="width:0%;"></div>
+                            </div>
+                            <span class="match-component-value">0%</span>
+                        </div>
+                        <div class="match-component">
+                            <span class="match-component-label">Availability</span>
+                            <div class="match-component-track">
+                                <div class="match-component-fill" style="width:0%;"></div>
+                            </div>
+                            <span class="match-component-value">0%</span>
+                        </div>
+                    </div>
+                    <p class="breakdown-note">
+                        Your overall compatibility is calculated from multiple attributes rather than a single skill, balancing competencies, interests, and schedule fit.
+                    </p>
+                    <div class="card-footer-action">
+                        <a href="projects.html" class="garden-button">View All Projects →</a>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-            <a href="notifications.html"
-               class="garden-button"
-               style="margin-top:20px;">
+        <!-- =================================================
+             ROW 2: SKILL GARDEN & CAPACITY
+             ================================================= -->
+        <div class="dashboard-two-col">
+            <!-- SKILL GARDEN -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>TECHNICAL SEEDS</small>
+                    <h2>What is <em>growing?</em></h2>
+                </div>
+                <section class="garden-card skill-garden-panel reveal">
+                    <div class="project-domain">🌱 SKILL GARDEN</div>
+                    <div class="skill-plants">
+                        <p class="muted-text">Explore skills in My Growth to tend your garden.</p>
+                    </div>
+                    <div class="card-footer-action">
+                        <a href="growth.html" class="garden-button">Tend My Skills →</a>
+                    </div>
+                </section>
+            </div>
 
-                View Notifications →
+            <!-- AVAILABILITY CAPACITY -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>COMMITMENT</small>
+                    <h2>Room to <em>grow.</em></h2>
+                </div>
+                <section class="garden-card capacity-panel reveal">
+                    <div class="project-domain">❧ YOUR CAPACITY</div>
+                    <div class="capacity-card">
+                        <div class="capacity-ring" style="--capacity:50;">
+                            <div class="capacity-ring-inner">
+                                <strong>10h</strong>
+                                <span>AVAILABLE</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="capacity-title">Weekly capacity</h3>
+                            <p class="capacity-subtext">
+                                20 hours total availability<br>
+                                10 hours committed to projects
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer-action">
+                        <a href="growth.html" class="garden-button">Manage Availability →</a>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-            </a>
+        <!-- =================================================
+             ROW 3: GROWTH TIMELINE & GARDEN TEAM
+             ================================================= -->
+        <div class="dashboard-two-col">
+            <!-- GROWTH TIMELINE -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>JOURNEY</small>
+                    <h2>How your garden <em>grew.</em></h2>
+                </div>
+                <section class="garden-card timeline-panel reveal">
+                    <div class="project-domain">✿ GROWTH TIMELINE</div>
+                    <div class="growth-timeline">
+                        <p class="muted-text">Your growth story starts with your first skill.</p>
+                    </div>
+                    <div class="card-footer-action">
+                        <a href="growth.html" class="garden-button">View Growth Journey →</a>
+                    </div>
+                </section>
+            </div>
 
+            <!-- GARDEN TEAM -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>COLLABORATION</small>
+                    <h2>Skills grow better <em>together.</em></h2>
+                </div>
+                <section class="garden-card team-panel reveal">
+                    <div class="project-domain">🌳 GARDEN TEAM</div>
+                    <div class="team-branch">
+                        <p class="muted-text">Explore projects to join a garden team.</p>
+                    </div>
+                    <div class="team-coverage-box">
+                        <span class="team-coverage-label">TEAM SKILL COVERAGE</span>
+                        <strong class="team-coverage-value" data-dashboard-team-coverage>0%</strong>
+                    </div>
+                    <div class="card-footer-action">
+                        <a href="team.html" class="garden-button">Explore Team →</a>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-        </section>
+        <!-- =================================================
+             ROW 4: WHAT NEEDS WATERING & RECENT ACTIVITY
+             ================================================= -->
+        <div class="dashboard-two-col">
+            <!-- WHAT NEEDS WATERING -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>SKILL DEVELOPMENT</small>
+                    <h2>What needs <em>watering?</em></h2>
+                </div>
+                <section class="garden-card watering-card reveal">
+                    <div class="watering-title">Your garden has room to grow.</div>
+                    <p class="watering-description">
+                        Based on requirements of projects that match your interests, strengthening these skills will boost your compatibility.
+                    </p>
+                    <div class="gap-list" id="dashboardGapList"></div>
+                    <div class="card-footer-action">
+                        <a href="gaps.html" class="garden-button">Explore Skill Gaps →</a>
+                    </div>
+                </section>
+            </div>
 
+            <!-- RECENT ACTIVITY -->
+            <div class="dashboard-col">
+                <div class="garden-section-title">
+                    <small>ACTIVITY</small>
+                    <h2>Little signs of <em>growth.</em></h2>
+                </div>
+                <section class="garden-card activity-panel reveal">
+                    <div data-dashboard-activity class="dashboard-activity-feed">
+                        <div class="dashboard-activity-item">
+                            <span class="activity-icon">✿</span>
+                            <div>
+                                <strong class="activity-title">Welcome to your Garden</strong>
+                                <p class="activity-body">
+                                    Explore projects in bloom and tend your skills to watch your garden grow.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer-action">
+                        <a href="notifications.html" class="garden-button">View Notifications →</a>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-        <footer style="
-            margin-top:45px;
-            padding:25px 0;
-            text-align:center;
-            font-size:8px;
-            letter-spacing:1.5px;
-            color:var(--muted, #7c8274);
-        ">
-
+        <!-- FOOTER -->
+        <footer class="garden-footer">
             ❧ SKILLMATCH · GROW WHERE YOU BELONG ❧
-
         </footer>
-
 
     </main>
 
 </div>
 
-
-<script src="js/main.js?v=4"></script>
-<script src="js/live.js?v=4"></script>
+<script src="js/main.js?v=5"></script>
+<script src="js/live.js?v=5"></script>
 </body>
 
 </html>

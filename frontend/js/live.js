@@ -361,15 +361,11 @@ async function renderDashboard() {
         }));
         if (items.length > 0) {
             activityFeed.innerHTML = items.map(it => `
-                <div style="display:flex;gap:13px;align-items:flex-start;">
-                    <span style="color:var(--gold);font-size:18px;">${it.icon}</span>
+                <div class="dashboard-activity-item">
+                    <span class="activity-icon">${it.icon}</span>
                     <div>
-                        <strong style="font-family:'Cormorant Garamond', serif;font-size:17px;color:var(--olive-deep);">
-                            ${escapeHtml(it.title)}
-                        </strong>
-                        <p style="margin-top:3px;font-size:9px;color:var(--muted);">
-                            ${escapeHtml(it.body)}
-                        </p>
+                        <strong class="activity-title">${escapeHtml(it.title)}</strong>
+                        <p class="activity-body">${escapeHtml(it.body)}</p>
                     </div>
                 </div>`).join("");
         }
