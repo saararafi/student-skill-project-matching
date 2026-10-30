@@ -366,6 +366,40 @@
             </div>
         </div>
 
+        <!-- =================================================
+             CERTIFICATE UPLOAD MODAL
+             ================================================= -->
+        <div class="cert-modal-overlay" id="certModalOverlay">
+            <div class="cert-modal">
+                <div class="cert-modal-header">
+                    <h3>📜 Skill Certificate Verification</h3>
+                    <button type="button" class="cert-close-btn" id="closeCertModal">&times;</button>
+                </div>
+                <form id="certUploadForm">
+                    <input type="hidden" id="certSkillId" name="skill_id">
+                    <input type="hidden" id="certSkillName" name="skill_name">
+                    <p style="margin: 0 0 10px; font-size: 0.95rem; color: #444;">
+                        Upload an official certificate or coursework proof for <strong id="certModalSkillTitle" style="color: #26351b;"></strong>:
+                    </p>
+                    <div class="cert-file-drop" id="certDropZone">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 6px;">📂</span>
+                        <span>Click or drag &amp; drop certificate here</span>
+                        <small style="display: block; color: #777; margin-top: 4px;">PDF, PNG, JPG or JPEG (Max 16 MB)</small>
+                        <input type="file" id="certFileInput" name="certificate" accept=".pdf,.png,.jpg,.jpeg">
+                        <div class="cert-file-chosen-text" id="certChosenText">No file selected yet</div>
+                    </div>
+                    <div class="settings-actions" style="margin-top: 20px;">
+                        <button type="submit" class="garden-button" id="submitCertBtn">
+                            🌿 Upload &amp; Request Verification
+                        </button>
+                        <button type="button" class="garden-button secondary" id="cancelCertBtn">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- FOOTER -->
         <footer class="garden-footer">
             ❧ SKILLMATCH · GROW WHERE YOU BELONG ❧

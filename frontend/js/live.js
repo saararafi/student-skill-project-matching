@@ -267,9 +267,13 @@ async function renderDashboard() {
                 const pct = Math.round((sk.proficiency_level / 5) * 100);
                 const stage = pct >= 90 ? "BLOOMING" : pct >= 70 ? "GROWING" : "SPROUTING";
                 const cert = sk.certificate_status === "Verified"
-                    ? `<div class="skill-plant-cert verified">📜 Verified</div>`
+                    ? `<a href="${API}/certificates/${encodeURIComponent(sk.certificate_filename || '')}" target="_blank"
+                           class="skill-cert-badge verified" title="Verified certificate">Verified ✓</a>`
                     : sk.certificate_status === "Pending"
-                        ? `<div class="skill-plant-cert pending">📜 Pending ⏳</div>` : "";
+                        ? `<a href="${API}/certificates/${encodeURIComponent(sk.certificate_filename || '')}" target="_blank"
+                               class="skill-cert-badge pending" title="Verification pending">Pending ⏳</a>`
+                        : `<button type="button" class="skill-cert-badge upload"
+                                   data-skill-id="${sk.skill_id || sk.id}" data-skill-name="${escapeHtml(sk.name)}" title="Upload verification certificate">+ Certificate</button>`;
                 return `
                     <div class="skill-plant">
                         <div class="skill-plant-flower">${flowers[i % flowers.length]}</div>
@@ -278,6 +282,16 @@ async function renderDashboard() {
                         ${cert}
                     </div>`;
             }).join("");
+
+            $$("button.skill-cert-badge.upload", plants).forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const sid = btn.dataset.skillId;
+                    const sname = btn.dataset.skillName;
+                    if (typeof openCertModal === "function") {
+                        openCertModal(sid, sname);
+                    }
+                });
+            });
         }
     }
 

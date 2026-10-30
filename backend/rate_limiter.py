@@ -30,6 +30,11 @@ def is_rate_limited(key, max_attempts=5, window_seconds=300):
     if current_app and current_app.config.get('TESTING') and not current_app.config.get('ENFORCE_RATE_LIMIT_IN_TESTS'):
         return False, 0
 
+    from backend.config import Config
+    if not Config.IS_PRODUCTION and ('127.0.0.1' in key or 'localhost' in key):
+        if not (current_app and current_app.config.get('ENFORCE_RATE_LIMIT_IN_TESTS')):
+            max_attempts = 50
+
     now = time.time()
     cutoff = now - window_seconds
     timestamps = _attempts[key]

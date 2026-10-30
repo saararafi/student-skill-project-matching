@@ -37,7 +37,16 @@ async function secureFetch(url, options = {}) {
     const method = (opts.method || "GET").toUpperCase();
     opts.headers = { ...(opts.headers || {}) };
     if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
-        const csrf = getCookie("csrf_token");
+        let csrf = getCookie("csrf_token");
+        if (!csrf) {
+            try {
+                const tokenRes = await fetch(`${API_BASE}/auth/csrf-token`, { credentials: "include" });
+                const tokenData = await tokenRes.json();
+                if (tokenData && tokenData.csrf_token) {
+                    csrf = tokenData.csrf_token;
+                }
+            } catch (e) {}
+        }
         if (csrf && !opts.headers["X-CSRF-Token"]) {
             opts.headers["X-CSRF-Token"] = csrf;
         }
@@ -287,19 +296,62 @@ function setupCertificateModal() {
     const form = document.querySelector("#certUploadForm");
     const fileInput = document.querySelector("#certFileInput");
     const chosenText = document.querySelector("#certChosenText");
+    const dropZone = document.querySelector("#certDropZone");
 
     if (!modal) return;
 
-    const closeModal = () => modal.classList.remove("active");
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+    const closeModal = () => {
+        modal.classList.remove("active");
+        if (fileInput) fileInput.value = "";
+        if (chosenText) {
+            chosenText.textContent = "No file selected yet";
+            chosenText.style.color = "#777";
+        }
+    };
 
-    modal.addEventListener("click", (e) => {
+    if (closeBtn) closeBtn.onclick = closeModal;
+    if (cancelBtn) cancelBtn.onclick = closeModal;
+
+    modal.onclick = (e) => {
         if (e.target === modal) closeModal();
-    });
+    };
+
+    if (dropZone && fileInput) {
+        dropZone.onclick = (e) => {
+            if (e.target !== fileInput) {
+                fileInput.click();
+            }
+        };
+
+        ["dragenter", "dragover"].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.style.borderColor = "var(--gold, #c6a15b)";
+                dropZone.style.background = "#fdfaf2";
+            });
+        });
+
+        ["dragleave", "drop"].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.style.borderColor = "";
+                dropZone.style.background = "";
+            });
+        });
+
+        dropZone.addEventListener("drop", (e) => {
+            const dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length > 0) {
+                fileInput.files = dt.files;
+                fileInput.dispatchEvent(new Event("change"));
+            }
+        });
+    }
 
     if (fileInput && chosenText) {
-        fileInput.addEventListener("change", () => {
+        fileInput.onchange = () => {
             if (fileInput.files.length > 0) {
                 const f = fileInput.files[0];
                 chosenText.textContent = `Selected: ${f.name} (${Math.round(f.size / 1024)} KB)`;
@@ -308,11 +360,11 @@ function setupCertificateModal() {
                 chosenText.textContent = "No file selected yet";
                 chosenText.style.color = "#777";
             }
-        });
+        };
     }
 
     if (form) {
-        form.addEventListener("submit", async (e) => {
+        form.onsubmit = async (e) => {
             e.preventDefault();
             const submitBtn = document.querySelector("#submitCertBtn");
 
@@ -336,7 +388,15 @@ function setupCertificateModal() {
                 if (data.success) {
                     showGardenToast("Certificate uploaded! Verification pending 📜");
                     closeModal();
-                    initializeLiveProfile();
+                    if (typeof refreshSkillPlants === "function") {
+                        refreshSkillPlants();
+                    }
+                    if (typeof renderDashboard === "function") {
+                        renderDashboard();
+                    }
+                    if (typeof initializeLiveProfile === "function") {
+                        initializeLiveProfile();
+                    }
                 } else {
                     showGardenToast(data.message || "Failed to upload.");
                 }
@@ -348,7 +408,7 @@ function setupCertificateModal() {
                     submitBtn.textContent = "🌿 Upload & Request Verification";
                 }
             }
-        });
+        };
     }
 }
 
