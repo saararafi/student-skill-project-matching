@@ -38,7 +38,7 @@ body {
     margin: 0;
     color: var(--sm-ink);
     background: var(--sm-cream);
-    font-family: "Montserrat", sans-serif;
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.65;
 }
 
@@ -150,6 +150,8 @@ button:disabled {
     color: #5f6656;
     text-decoration: none;
     font-size: 12px;
+    font-family: "DM Sans", sans-serif;
+    white-space: nowrap;
     border-radius: 11px;
     transition: background 180ms ease, color 180ms ease,
                 transform 180ms ease;
@@ -763,6 +765,8 @@ button:focus-visible {
 .sidebar .sidebar-nav a,
 .sidebar .sidebar-brand + .sidebar-nav a {
     color: rgba(247, 242, 229, 0.84);
+    font-family: "DM Sans", sans-serif;
+    white-space: nowrap;
 }
 
 .sidebar .sidebar-nav a:hover,

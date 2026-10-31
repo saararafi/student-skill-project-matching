@@ -1071,6 +1071,8 @@ button {
 
     color: rgba(247,242,229,.68);
 
+    white-space: nowrap;
+
     transition: .3s;
 }
 
@@ -6864,6 +6866,7 @@ iframe {
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    white-space: nowrap;
 }
 
 /* Main content starts directly beside the sidebar */
