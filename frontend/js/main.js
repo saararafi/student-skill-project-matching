@@ -101,17 +101,98 @@ function initializeLogin() {
     const loginForm = document.querySelector("#loginForm");
     if (!loginForm) return;
 
+    const email = document.querySelector("#email");
+    const password = document.querySelector("#password");
+    const alertBox = document.querySelector("#loginAlert");
+    const alertText = document.querySelector("#loginAlertText");
+    const submitBtn = loginForm.querySelector(".login-button");
+
+    function showError(msg, targetInput) {
+        if (alertBox && alertText) {
+            alertText.textContent = msg;
+            alertBox.style.display = "flex";
+            alertBox.classList.remove("shake");
+            void alertBox.offsetWidth; // re-trigger animation
+            alertBox.classList.add("shake");
+        }
+        if (targetInput) {
+            const wrapper = targetInput.closest(".input-wrapper");
+            if (wrapper) {
+                wrapper.classList.remove("shake");
+                void wrapper.offsetWidth;
+                wrapper.classList.add("has-error", "shake");
+            }
+            targetInput.focus();
+        } else {
+            loginForm.querySelectorAll(".input-wrapper").forEach(w => {
+                w.classList.add("has-error", "shake");
+            });
+        }
+        showGardenToast(msg);
+    }
+
+    function clearError(targetInput) {
+        if (alertBox) {
+            alertBox.style.display = "none";
+            alertBox.classList.remove("shake");
+        }
+        if (targetInput) {
+            const wrapper = targetInput.closest(".input-wrapper");
+            if (wrapper) wrapper.classList.remove("has-error", "shake");
+        } else {
+            loginForm.querySelectorAll(".input-wrapper").forEach(w => {
+                w.classList.remove("has-error", "shake");
+            });
+        }
+    }
+
+    // Real-time input listeners to clear errors dynamically as the user types
+    [email, password].forEach(input => {
+        if (!input) return;
+        input.addEventListener("input", () => {
+            clearError(input);
+        });
+    });
+
+    // Real-time email validation on blur
+    if (email) {
+        email.addEventListener("blur", () => {
+            const val = email.value.trim();
+            if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                showError("Please enter a valid email address.", email);
+            }
+        });
+    }
+
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = document.querySelector("#email");
-        const password = document.querySelector("#password");
-
         if (!email || !password) return;
 
-        if (!email.value.trim() || !password.value.trim()) {
-            showGardenToast("Please fill in all required fields.");
+        const emailVal = email.value.trim();
+        const passwordVal = password.value; // Preserve exact password
+
+        if (!emailVal) {
+            showError("Please enter your email address.", email);
             return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+            showError("Please enter a valid email address.", email);
+            return;
+        }
+
+        if (!passwordVal) {
+            showError("Please enter your password.", password);
+            return;
+        }
+
+        clearError();
+
+        const originalBtnText = submitBtn ? submitBtn.textContent : "Enter SkillMatch →";
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Checking credentials... 🌿";
         }
 
         try {
@@ -119,8 +200,8 @@ function initializeLogin() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: email.value.trim(),
-                    password: password.value.trim()
+                    email: emailVal,
+                    password: passwordVal
                 })
             });
 
@@ -128,19 +209,25 @@ function initializeLogin() {
             if (data.success) {
                 sessionStorage.setItem("user", JSON.stringify(data.user));
                 showGardenToast(`Welcome back, ${data.user.name} 🌿`);
+                if (submitBtn) submitBtn.textContent = "Welcome! Entering... 🌿";
                 setTimeout(() => {
                     const isFaculty = data.user && (data.user.role === "faculty" || data.user.role === "admin");
                     window.location.href = isFaculty ? "faculty.html" : "projects.html";
                 }, 600);
             } else {
-                showGardenToast(data.message || "Invalid credentials.");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
+                const msg = data.message || "Invalid email or password.";
+                showError(msg, password);
             }
         } catch (err) {
-            // Offline / fallback mode
-            showGardenToast("Welcome to SkillMatch 🌿");
-            setTimeout(() => {
-                window.location.href = "projects.html";
-            }, 600);
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+            showError("Unable to connect to server. Please try again.", null);
         }
     });
 }
