@@ -2576,6 +2576,33 @@ function wireRegistration() {
     const login = $("#loginForm");
     if (!form) return;
 
+    // Role switcher logic
+    const roleBtns = form.querySelectorAll(".role-btn");
+    const roleInput = form.querySelector("#registerRole");
+    const studentFields = form.querySelector("#studentFields");
+    const facultyFields = form.querySelector("#facultyFields");
+    const submitBtn = form.querySelector(".login-button");
+
+    if (roleBtns.length) {
+        roleBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                roleBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                const selectedRole = btn.dataset.role;
+                if (roleInput) roleInput.value = selectedRole;
+                if (selectedRole === "faculty") {
+                    if (studentFields) studentFields.style.display = "none";
+                    if (facultyFields) facultyFields.style.display = "";
+                    if (submitBtn) submitBtn.textContent = "Create Faculty Desk 🏛️";
+                } else {
+                    if (studentFields) studentFields.style.display = "";
+                    if (facultyFields) facultyFields.style.display = "none";
+                    if (submitBtn) submitBtn.textContent = "Create My Profile 🌱";
+                }
+            });
+        });
+    }
+
     // On the standalone registration page there is no toggle: the form is
     // simply on screen, so only the submit handler is wired up.
     if (toggle) toggle.addEventListener("click", () => {
@@ -2592,6 +2619,8 @@ function wireRegistration() {
         const name = $("#registerName").value.trim();
         const email = $("#registerEmail").value.trim();
         const password = $("#registerPassword").value;
+        const role = (roleInput && roleInput.value) || "student";
+
         if (!name || !email || !password) {
             toast("Please fill in all required fields.");
             return;
@@ -2601,21 +2630,51 @@ function wireRegistration() {
             return;
         }
 
+        const payload = {
+            name,
+            email,
+            password,
+            role
+        };
+
+        if (role === "faculty") {
+            const facDept = $("#registerFacultyDepartment");
+            const designation = $("#registerDesignation");
+            const facCode = $("#registerFacultyCode");
+            payload.department = (facDept && facDept.value.trim()) || "Computer Science Engineering";
+            payload.designation = (designation && designation.value.trim()) || "Faculty Guide";
+            payload.faculty_code = (facCode && facCode.value.trim()) || "";
+        } else {
+            const stuDept = $("#registerDepartment");
+            const stuYear = $("#registerYear");
+            payload.department = (stuDept && stuDept.value.trim()) || undefined;
+            payload.year = (stuYear && stuYear.value.trim()) || undefined;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Creating account... ⏳";
+        }
+
         const { ok, data } = await api("/auth/register", {
             method: "POST",
-            body: JSON.stringify({
-                name, email, password,
-                role: "student",
-                // Leave a blank field to the server default rather
-                // than sending an empty string.
-                department: ($("#registerDepartment") && $("#registerDepartment").value.trim()) || undefined,
-                year: ($("#registerYear") && $("#registerYear").value.trim()) || undefined
-            })
+            body: JSON.stringify(payload)
         });
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = role === "faculty" ? "Create Faculty Desk 🏛️" : "Create My Profile 🌱";
+        }
+
         if (ok && data.success) {
             sessionStorage.setItem("user", JSON.stringify(data.user));
-            toast(`Welcome to the garden, ${name}! 🌿`);
-            setTimeout(() => { window.location.href = "profile.html"; }, 800);
+            if (data.user && (data.user.role === "faculty" || data.user.role === "admin")) {
+                toast(`Welcome to the faculty desk, ${name}! 🏛️`);
+                setTimeout(() => { window.location.href = "faculty.html"; }, 800);
+            } else {
+                toast(`Welcome to the garden, ${name}! 🌿`);
+                setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+            }
         } else {
             toast(data.message || "Could not create the account.");
         }

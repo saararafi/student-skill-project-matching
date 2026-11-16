@@ -152,7 +152,19 @@
         </form>
 
 
-        <form id="registerForm" style="display: none;">
+                <form id="registerForm" style="display: none;">
+
+            <div class="role-selector">
+                <button type="button" class="role-btn active" data-role="student">
+                    <span class="role-icon">🌿</span>
+                    <span class="role-title">Student</span>
+                </button>
+                <button type="button" class="role-btn" data-role="faculty">
+                    <span class="role-icon">🏛️</span>
+                    <span class="role-title">Faculty Guide</span>
+                </button>
+            </div>
+            <input type="hidden" id="registerRole" name="role" value="student">
 
             <div class="input-group">
                 <label>Full Name</label>
@@ -174,23 +186,51 @@
                 <label>Password</label>
                 <div class="input-wrapper">
                     <span>✦</span>
-                    <input type="password" id="registerPassword" placeholder="At least 6 characters" minlength="6" required>
+                    <input type="password" id="registerPassword" placeholder="At least 8 characters" minlength="8" required>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>Department</label>
-                <div class="input-wrapper">
-                    <span>🌿</span>
-                    <input type="text" id="registerDepartment" placeholder="Computer Science Engineering">
+            <div id="studentFields">
+                <div class="input-group">
+                    <label>Department</label>
+                    <div class="input-wrapper">
+                        <span>🌿</span>
+                        <input type="text" id="registerDepartment" placeholder="Computer Science Engineering">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Year of Study</label>
+                    <div class="input-wrapper">
+                        <span>◷</span>
+                        <input type="text" id="registerYear" placeholder="3rd Year">
+                    </div>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>Year of Study</label>
-                <div class="input-wrapper">
-                    <span>◷</span>
-                    <input type="text" id="registerYear" placeholder="3rd Year">
+            <div id="facultyFields" style="display: none;">
+                <div class="input-group">
+                    <label>Department</label>
+                    <div class="input-wrapper">
+                        <span>🏛️</span>
+                        <input type="text" id="registerFacultyDepartment" placeholder="Computer Science Engineering">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Designation / Title</label>
+                    <div class="input-wrapper">
+                        <span>✦</span>
+                        <input type="text" id="registerDesignation" placeholder="e.g. Associate Professor / Project Guide">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Faculty Passcode</label>
+                    <div class="input-wrapper">
+                        <span>🔑</span>
+                        <input type="password" id="registerFacultyCode" placeholder="Enter faculty passcode (e.g. FACULTY2026)">
+                    </div>
                 </div>
             </div>
 

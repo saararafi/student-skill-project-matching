@@ -75,10 +75,25 @@ def register():
     name = data.get('name', '').strip()
     email = data.get('email', '').strip().lower()
     password = data.get('password', '')  # Preserve exact password (no silent strip)
-    # Public registration MUST always create a student account (Issue 19)
-    role = 'student'
-    department = data.get('department', 'Computer Science Engineering').strip()
-    year = data.get('year', '3rd Year').strip()
+    # Role determination
+    requested_role = (data.get('role') or '').strip().lower()
+    faculty_code = (data.get('faculty_code') or '').strip()
+
+    VALID_FACULTY_KEYS = {'FACULTY2026', 'faculty@123', 'SKILLMATCH_FACULTY'}
+
+    if requested_role == 'faculty' and faculty_code in VALID_FACULTY_KEYS:
+        role = 'faculty'
+    elif requested_role == 'faculty' and faculty_code and faculty_code not in VALID_FACULTY_KEYS:
+        return jsonify({
+            "success": False,
+            "message": "Invalid faculty passcode. Please check your credentials or contact coordinator."
+        }), 400
+    else:
+        # Public registration without valid faculty key forces student role (Issue 19)
+        role = 'student'
+
+    department = (data.get('department') or 'Computer Science Engineering').strip()
+    year = (data.get('year') or '3rd Year').strip()
 
     if not name or not email or not password:
         return jsonify({"success": False, "message": "Name, email and password are required."}), 400
@@ -106,21 +121,22 @@ def register():
             user_id = row['id'] if row else None
 
         student_id = None
-        sem = (data.get('semester') or '').strip()
-        avail = (data.get('availability') or 'Part-time').strip() or 'Part-time'
-        cur.execute(
-            adapt_sql(
-                "INSERT INTO students (user_id, department, year, semester, availability, bio, weekly_hours) "
-                "VALUES (%s, %s, %s, %s, %s, '', 0)",
-                engine
-            ),
-            (user_id, department, year, sem, avail)
-        )
-        student_id = cur.lastrowid
-        if not student_id and engine == 'postgres':
-            cur.execute("SELECT lastval() AS id")
-            row = cur.fetchone()
-            student_id = row['id'] if row else None
+        if role == 'student':
+            sem = (data.get('semester') or '').strip()
+            avail = (data.get('availability') or 'Part-time').strip() or 'Part-time'
+            cur.execute(
+                adapt_sql(
+                    "INSERT INTO students (user_id, department, year, semester, availability, bio, weekly_hours) "
+                    "VALUES (%s, %s, %s, %s, %s, '', 0)",
+                    engine
+                ),
+                (user_id, department, year, sem, avail)
+            )
+            student_id = cur.lastrowid
+            if not student_id and engine == 'postgres':
+                cur.execute("SELECT lastval() AS id")
+                row = cur.fetchone()
+                student_id = row['id'] if row else None
 
     session['user_id'] = user_id
     session['role'] = role
