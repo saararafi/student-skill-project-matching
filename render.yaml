@@ -15,6 +15,10 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.8"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: TRUSTED_PROXIES
+        value: "1"
       - key: SECRET_KEY
         generateValue: true
       - key: SESSION_COOKIE_SECURE

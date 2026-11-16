@@ -42,7 +42,7 @@ _load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Environment detection
 ENV = os.environ.get('FLASK_ENV', os.environ.get('ENVIRONMENT', 'development')).strip().lower()
-IS_PRODUCTION = ENV in ('production', 'prod')
+IS_PRODUCTION = ENV in ('production', 'prod') or os.environ.get('RENDER') == 'true'
 
 # Insecure default keys that must never be accepted in production
 INSECURE_SECRET_KEYS = {
@@ -108,12 +108,17 @@ class Config:
     CSRF_ENABLED = os.environ.get('CSRF_ENABLED', '1') == '1'
 
     # CORS Allowed Origins (explicit list; never wildcard in credentialed mode)
+    _render_url = os.environ.get('RENDER_EXTERNAL_URL', '').strip().rstrip('/')
+    _raw_cors = os.environ.get(
+        'CORS_ALLOWED_ORIGINS',
+        'http://127.0.0.1:5000,http://localhost:5000,http://127.0.0.1:3000,http://localhost:3000'
+    )
+    if _render_url and _render_url not in _raw_cors:
+        _raw_cors = f"{_raw_cors},{_render_url}"
+
     CORS_ALLOWED_ORIGINS = [
         origin.strip()
-        for origin in os.environ.get(
-            'CORS_ALLOWED_ORIGINS',
-            'http://127.0.0.1:5000,http://localhost:5000,http://127.0.0.1:3000,http://localhost:3000'
-        ).split(',')
+        for origin in _raw_cors.split(',')
         if origin.strip()
     ]
 
@@ -124,7 +129,7 @@ class Config:
     def validate_production_keys(cls):
         env = os.environ.get('FLASK_ENV', os.environ.get('ENVIRONMENT', 'development')).strip().lower()
         key = os.environ.get('SECRET_KEY', '').strip()
-        if env in ('production', 'prod'):
+        if env in ('production', 'prod') or os.environ.get('RENDER') == 'true':
             if not key or key.lower() in INSECURE_SECRET_KEYS or len(key) < 16:
                 raise RuntimeError(
                     "CRITICAL SECURITY CONFIGURATION ERROR: "
